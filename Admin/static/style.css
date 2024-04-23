@@ -1,10 +1,13 @@
+/*import字体进来*/
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+/*基础网页预设*/
 *{
     margin:0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Montserrat';
 }
+
 body{
     font-family: 'Montserrat';
     justify-content: center;
@@ -15,26 +18,20 @@ body{
 }
 
 .container{
-   position: relative;
-   top: 0;
+   position: absolute;
+   top:10%;
    left: 0;
    height: 100%;
    width: 300px;
-   background-color: black;
+   background-color: lightgrey;
 
 
 }
-
-.container h2{
-    color: white;
-    text-align: center;
-}
-
 
 
 .container ul{
     list-style: none;
-    align-self: center;
+    align-items: center;
     padding-bottom: 20px;
     margin: 5px;
     padding: 20px;
@@ -48,8 +45,8 @@ body{
 }
 
 .container a{
-    align-items: justify;
-    color: white;
+    
+    color: black;
     text-decoration: none;
     padding-right: 10px;
     font-weight: 400;
@@ -59,4 +56,48 @@ body{
 
 .container i{
     padding: 20px;
+}
+
+.Try{
+    padding:30px;
+    height:10vh;
+    width:100%;
+    background-color: rgb(102,102, 102);
+    justify-content: space-between;
+    align-items: center;
+    display:flex;
+    position: relative;
+    
+}
+.Try h2{
+    color: white;
+    font-size: 20px;
+    padding: 30px 4%;
+
+}
+.Try a{
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 20px;
+    padding: 30px 0;
+    padding-left: 750px;
+    padding-right: 100px;
+    
+
+}
+
+main {
+    position:absolute;
+    
+    width: 100%;
+    background-color: black;
+    
+}
+
+.FCI h2 {
+    color: black;
+    font-weight: bold;
+    font-size: 25px;
+
 }
