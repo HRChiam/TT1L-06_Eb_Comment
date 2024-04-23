@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset = "UTF-8" />
-        <meta name = "viewport" content = "width = device-width, initial-scale = 1" />
-        <title>
-            Lecturer Upload
-        </title>
-    </head>
-    <body>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width = device-width, initial-scale = 1" />
+    <title>
+        Lecturer Upload
+    </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'keyin_styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
         <h1>Upload Lecturer Information</h1>
-        <form action = "/upload" method = "post" enctype = "multipart/form-data">
-            <label for = "name">Name:</label>
-            <input type = "text" name = "name" id = "name" required><br>
-            <label for = "photo">Photo:</label>
-            <input type = "file" name = "photo" id = "photo" required><br>
-            <label for = "phone">Phone number:</label>
-            <input type = "text" name = "phone" id = "phone" required><br>
-            <label for = "email">Email address:</label>
-            <input type = "email" name = "email" id = "email" required><br>
-            <input type = "submit" value = "Submit">
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" required><br>
+            <label for="photo">Photo:</label>
+            <input type="file" name="photo" id="photo" required><br>
+            <label for="phone">Phone number:</label>
+            <input type="text" name="phone" id="phone" required><br>
+            <label for="email">Email address:</label>
+            <input type="email" name="email" id="email" required><br>
+            <input type="submit" value="Submit">
         </form>
-    </body>
+    </div>
+</body>
+
 </html>
