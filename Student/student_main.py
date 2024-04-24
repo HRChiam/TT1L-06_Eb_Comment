@@ -26,7 +26,7 @@ def upload():
 
     Lecturers.append(lecturer_info)
 
-    return redirect(url_for('success'))
+    return redirect(url_for('keyinsuccess'))
 
 @web.route('/keyinsuccess')
 def keyinsuccess():
