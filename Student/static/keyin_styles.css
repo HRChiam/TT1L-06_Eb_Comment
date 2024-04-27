@@ -1,0 +1,53 @@
+body {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    text-align: center;
+    color: indigo;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    padding-right: 10px;
+    font-weight: bold;
+}
+
+input[type = "text"],
+input[type = "email"],
+input[type = "file"] {
+    width: 100%;
+    padding: 10px 0px 10px 0px;
+    margin-bottom: 20px;
+    border: 1px solid #63C5DA;
+    border-radius: 3px;
+}
+
+input[type = "submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #0492C2;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 18px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+input[type = "submit"]:hover {
+    background-color: #1520A6;
+    color: white;
+    font-size: 18px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
