@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for
 
 web = Flask(__name__)
@@ -15,7 +16,10 @@ def upload():
     phone = request.form['phone']
     email = request.form['email']
 
-    photo.save('uploads/' + photo.filename)
+    if not os.path.exists('uploads'):
+        os.makedirs('uploads')
+
+    photo.save(os.path.join('uploads/' + photo.filename))
 
     lecturer_info = {
         'name': name,
