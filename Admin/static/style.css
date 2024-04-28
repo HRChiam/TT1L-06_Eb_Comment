@@ -94,11 +94,17 @@ main {
     left: 20%;
 }
 
+.FCI {
+    POSITION: relative;
+    top: 10px;
+    left: 20px;
+}
+
 .fcicontainer{
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto auto auto;
     position: absolute;
-    margin-top: 20px;
+    margin-top: 40px;
 
     
 }
@@ -135,9 +141,9 @@ main {
 
 .graphbox {
     position: relative;
-    top: 150px;
-    left: 40px;
-    width: 1000px;
+    top: 160px;
+    left: 35px;
+    width: 500px;
     display: grid;
     grid-template-columns: auto auto;
     grid-gap: 30px;
@@ -145,23 +151,23 @@ main {
     
 }
 
-.box{
-    position: flex;
+canvas{
+    position: relative;
     background-color: whitesmoke;
     padding: 10px;
-    width: 450px;
-    height:300px;
-    box-shadow: 0 5px 5px black;
-    border-radius: 20px;
+    width: 500px;
+    height:600px;
+    box-shadow: 0 0px 5px black;
+    
 
 }
 
-.box1 {
-    position: flex;
-    background-color: whitesmoke;
-    padding: 10px;
-    width: 450px;
-    height:300px;
-    box-shadow: 0 5px 5px black;
-    border-radius: 20px;
+.table{
+    position: relative;
+    margin:0;
+    padding:0;
+    top: 180px;
+    left: 40px;
+    font-family: sans-serif;
 }
+
