@@ -13,11 +13,11 @@
 
 <body>
     <div class="container">
-        <div class = "header">
-            <img id = "logo" src = "{{ url_for('static', filename='MMU-logo.jpeg') }}" alt = "MMU Logo">
-            <div class = "blue-bar"></div>
-            <div class = "red-bar"></div>
-            <span id = "webname">Eb_Comment</span>
+        <div class="header">
+            <img id="logo" src="{{ url_for('static', filename='MMU-logo.jpeg') }}" alt="MMU Logo">
+            <div class="blue-bar"></div>
+            <div class="red-bar"></div>
+            <span id="webname">Eb_Comment</span>
         </div>
         <h1>Upload Lecturer Information</h1>
         <form action="/upload" method="post" enctype="multipart/form-data">
