@@ -1,10 +1,13 @@
+/*import字体进来*/
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+/*基础网页预设*/
 *{
     margin:0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Montserrat';
 }
+
 body{
     font-family: 'Montserrat';
     justify-content: center;
@@ -16,40 +19,34 @@ body{
 
 .container{
    position: relative;
-   top: 0;
    left: 0;
+   top: 69px;
    height: 100%;
    width: 300px;
-   background-color: black;
-
-
+   background-color: lightgrey;
 }
 
-.container h2{
-    color: white;
-    text-align: center;
+.sidebar{
+    height: 100%;
 }
-
-
-
-.container ul{
+.sidebar ul{
     list-style: none;
-    align-self: center;
+    align-items: center;
     padding-bottom: 20px;
     margin: 5px;
     padding: 20px;
     
 }
 
-.container li{
+.sidebar li{
     
     padding-top: 10px;
     
 }
 
-.container a{
-    align-items: justify;
-    color: white;
+.sidebar a{
+    
+    color: black;
     text-decoration: none;
     padding-right: 10px;
     font-weight: 400;
@@ -57,6 +54,142 @@ body{
 
 }
 
-.container i{
+.sidebar i{
     padding: 20px;
 }
+
+.Try{
+    padding:30px;
+    height:10vh;
+    width:100%;
+    background-color: rgb(102,102, 102);
+    justify-content: space-between;
+    align-items: center;
+    display:flex;
+    position: absolute;
+    top: 0;
+    
+}
+.Try h2{
+    color: white;
+    font-size: 20px;
+    padding: 30px 4%;
+
+}
+.Try a{
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 20px;
+    padding: 30px 0;
+    padding-left: 750px;
+    padding-right: 100px;
+    
+
+}
+
+main {
+    position: absolute;
+    top: 10%;
+    left: 20%;
+}
+
+.FCI {
+    POSITION: relative;
+    top: 10px;
+    left: 20px;
+}
+
+.fcicontainer{
+    display: grid;
+    grid-template-columns: auto auto auto;
+    position: absolute;
+    margin-top: 40px;
+
+    
+}
+
+.fcisubcontain{
+    display: flex;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    background-color: white;
+    margin: 0 20px 40px 40px;
+    padding: 10px;
+    width: 200px;
+    justify-content: center;
+}
+.subcontaindes{
+    padding: 10px;
+    margin-right: 5px;
+
+}
+
+.subcontainpic{
+    align-items: center;
+    display: flex;
+}
+
+.subcontaindes h2 h3{
+    font-size: 20px;
+}
+
+.subcontainpic i{
+    font-size: 40px;
+    color: blue;
+}
+
+.graphbox {
+    position: relative;
+    top: 160px;
+    left: 35px;
+    width: 580px;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 30px;
+    padding: 10px;
+    
+}
+
+.graphbox1 {
+    position: relative;
+    top: 170px;
+    left: 35px;
+    width: 1170px;
+    display: grid;
+    grid-template-columns: auto;
+    grid-gap: 30px;
+    padding: 10px;
+}
+
+.line{
+    position: relative;
+    background-color: whitesmoke;
+    padding: 10px;
+    width: 1170px;
+    box-shadow: 0 0px 5px black;
+}
+
+canvas{
+    position: relative;
+    background-color: whitesmoke;
+    padding: 10px;
+    width: 1000px;
+    height:600px;
+    box-shadow: 0 0px 5px black;
+    
+
+}
+
+.table{
+    position: relative;
+    margin:0;
+    padding:0;
+    top: 180px;
+    left: 40px;
+    font-family: sans-serif;
+}
+
+ table,td,th{
+    padding: 20px;
+ }

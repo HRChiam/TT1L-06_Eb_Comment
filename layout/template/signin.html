@@ -1,15 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign in to EbComment</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width = device-width, initial-scale = 1" />
+
+    <title>Sign in</title>
+    <link href="logsign.css" rel="stylesheet" type="text/css">
 </head>
+
 <body>
-    <h1>Welcome to EbComment!!</h1>
-    <h4>Sign in here</h4>
-    <a href="home.html">Back</a><br>
+
+    <div class="bar-text-wel"> Eb_Comment </div>
+    <div class="bar-text-back"><a href="home.html">Back</a> </div>
+    <div class="rectangle-bar"></div>
+   
+
+    <div class="box">
+        <div class="eb-sign">
+            <h1>Welcome to Eb_Comment!</h1>
+        </div> 
+    
+     
+        <h2>Create your account</h2>
+        <form action="/process_signin" method="post" enctype="multipart/form-data">
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username" required><br>
+            <label for="email">Email Address:</label>
+            <input type="email" name="email" id="email" required><br>
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" required><br>
+            <label for="comfirm_password">Comfirm Password:</label>
+            <input type="password" name="comfirm_password" id="comfirm_password" required><br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
 
     
 </body>
+
 </html>
