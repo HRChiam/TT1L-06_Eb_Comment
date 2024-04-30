@@ -15,33 +15,68 @@ header {
 }
 
 .header_container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    align-items: center; 
 }
 
-#MM, #U {
-    font-family: 'Arial Black', sans-serif;
-    font-size: 30px;
+.text-container {
+    display: flex;
+    align-items: center; 
+}
+
+#MM,
+#U,
+#header_webname {
+    font-weight: bold;
+    text-shadow: 
+    -0.4px -0.4px 0 white, 
+    0.4px -0.4px 0 white, 
+    -0.4px 0.4px 0 white, 
+    0.4px 0.4px 0 white;
 }
 
 #MM {
-    color: #0A509E
+    margin-left: 10px;
+    font-size: 40px;
+    color: #0A509E;
+    font-family: 'Cooper Black', sans-serif;
 }
 
 #U {
+    font-size: 40px;
     color: #ED2429;
-    padding-right: 10px;
+    font-family: 'Cooper Black', sans-serif;
 }
 
 #header_webname {
     font-size: 30px;
-    font-weight: bold;
     font-family: 'Harlow Solid', serif;
-    font-style: italic;
+    margin-left: 20px;
+}
+
+.bar-container {
+    display: flex;
+    align-items: center; 
+    margin-left: 20px;
+}
+
+.blue-bar2,
+.red-bar2 {
+    height: 40px;
+    width: 5px;
+    margin: 0 2px;
+    box-shadow: 0 0 0.5px 0.5px black;
+}
+
+
+.blue-bar2 {
+    background-color: #0A509E;
+    left: calc(18% - -18px);
+}
+
+.red-bar2 {
+    background-color: #ED2429;
+    right: calc(82% - 33px);
 }
 
 .background {
