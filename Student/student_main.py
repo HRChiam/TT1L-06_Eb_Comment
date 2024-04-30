@@ -3,9 +3,13 @@ from flask import Flask, render_template, request, redirect, url_for
 
 web = Flask(__name__)
 
+@web.route('/')
+def studentmain():
+    return render_template('studentmain.html')
+
 Lecturers = []
 
-@web.route('/')
+@web.route('/keyin')
 def keyin():
     return render_template('keyin.html')
 
