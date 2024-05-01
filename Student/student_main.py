@@ -7,6 +7,10 @@ web = Flask(__name__)
 def studentfront():
     return render_template('studentfront.html')
 
+@web.route('/main')
+def studentmain():
+    return render_template('studentmain.html')
+
 Lecturers = []
 
 @web.route('/keyin')

@@ -150,6 +150,7 @@ header {
     line-height: 60px;
     background-color: white;
     border: 1px solid black;
+    border-radius: 3px;
     z-index: 1;
 }
 
@@ -263,21 +264,27 @@ input[type="submit"]:hover {
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
-a {
-    display: block; 
-    width: 200px; 
-    margin: 0 auto; 
+.success_box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.upload_another_lecturer,
+.back_to_main{
+    width: 250px;
     padding: 10px;
     background-color: #0492C2;
     color: white;
-    border: none;
     border-radius: 3px;
+    text-decoration: none;
     cursor: pointer;
-    text-align: center; 
+    text-align: center;
     font-size: 18px;
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
-a:hover {
+.upload_another_lecturer:hover,
+.back_to_main:hover {
     background-color: #1520A6;
 }
