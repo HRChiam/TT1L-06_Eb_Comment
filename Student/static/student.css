@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Harlow+Solid&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cooper+Black&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -5,7 +8,7 @@
 }
 
 header {
-    background-color: #067ea7;
+    background-color: #0094d4;
     color: black;
     padding: 10px 0;
     position: fixed;
@@ -24,31 +27,33 @@ header {
     align-items: center; 
 }
 
-#MM,
-#U,
-#header_webname {
-    font-weight: bold;
-    text-shadow: 
-    -0.4px -0.4px 0 white, 
-    0.4px -0.4px 0 white, 
-    -0.4px 0.4px 0 white, 
-    0.4px 0.4px 0 white;
-}
-
 #MM {
     margin-left: 10px;
     font-size: 40px;
     color: #0A509E;
     font-family: 'Cooper Black', sans-serif;
+    font-weight: bold;
+    text-shadow: 
+    -0.4px -0.4px 0 #052142, 
+    0.4px -0.4px 0 #052142, 
+    -0.4px 0.4px 0 #052142, 
+    0.4px 0.4px 0 #052142;
 }
 
 #U {
     font-size: 40px;
     color: #ED2429;
     font-family: 'Cooper Black', sans-serif;
+    font-weight: bold;
+    text-shadow: 
+    -0.4px -0.4px 0 #a11a1c, 
+    0.4px -0.4px 0 #a11a1c, 
+    -0.4px 0.4px 0 #a11a1c, 
+    0.4px 0.4px 0 #a11a1c;
 }
 
 #header_webname {
+    font-weight: bold;
     font-size: 30px;
     font-family: 'Harlow Solid', serif;
     margin-left: 20px;
@@ -65,21 +70,22 @@ header {
     height: 40px;
     width: 5px;
     margin: 0 2px;
-    box-shadow: 0 0 0.5px 0.5px black;
 }
 
 
 .blue-bar2 {
     background-color: #0A509E;
+    box-shadow: 0 0 0.5px 0.3px #1683ff;
     left: calc(18% - -18px);
 }
 
 .red-bar2 {
     background-color: #ED2429;
+    box-shadow: 0 0 0.5px 0.3px #a11a1c;
     right: calc(82% - 33px);
 }
 
-.background {
+.keyin_background {
     background-image: url("background.webp");
     background-size: cover;
     background-position: center;
@@ -127,12 +133,12 @@ header {
 
 .blue-bar {
     background-color: #0A509E;
-    left: calc(50% - -8px);
+    left: calc(45% - -13px);
 }
 
 .red-bar {
     background-color: #ED2429;
-    right: calc(50% - 22px);
+    right: calc(55% - 27px);
 }
 
 #webname {
@@ -146,6 +152,8 @@ header {
 }
 
 h1 {
+    margin-top: 20px;
+    margin-bottom: 20px;
     text-align: center;
     font-weight: bolder;
 }

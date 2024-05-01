@@ -4,8 +4,8 @@ from flask import Flask, render_template, request, redirect, url_for
 web = Flask(__name__)
 
 @web.route('/')
-def studentmain():
-    return render_template('studentmain.html')
+def studentfront():
+    return render_template('studentfront.html')
 
 Lecturers = []
 
