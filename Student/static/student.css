@@ -151,6 +151,7 @@ header {
     background-color: white;
     border: 1px solid black;
     border-radius: 3px;
+    text-decoration: none;
     z-index: 1;
 }
 
