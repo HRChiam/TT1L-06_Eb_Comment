@@ -88,25 +88,12 @@ header {
 
 .frontpage_background {
     display: flex;
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
-}
-
-.cyberjaya_background {
-    flex: 1;
-    background-image: url('MMU\ Cyberjaya\ campus.jpg'); 
-    background-size: cover;
-    background-position: center;
-}
-
-.melaka_background {
-    flex: 1;
-    background-image: url('MMU\ Melaka\ campus.jpg'); 
-    background-size: cover;
-    background-position: center;
+    overflow: hidden;
 }
 
 .frontpage_background::before {
@@ -118,6 +105,52 @@ header {
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
+    z-index: 1;
+}
+
+.cyberjaya_background {
+    flex: 1;
+    background-image: url('MMU\ Cyberjaya\ campus.jpg'); 
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.melaka_background {
+    flex: 1;
+    background-image: url('MMU\ Melaka\ campus.jpg'); 
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.cyberjaya_background::before,
+.melaka_background::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+}
+
+.cyberjaya_box,
+.melaka_box {
+    width: 300px;
+    height: 60px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 32px;
+    text-align: center;
+    line-height: 60px;
+    background-color: white;
+    border: 1px solid black;
+    z-index: 1;
 }
 
 .keyin_background {
