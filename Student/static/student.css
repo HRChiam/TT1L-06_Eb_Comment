@@ -15,6 +15,7 @@ header {
     width: 100%;
     top: 0;
     z-index: 1000;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.4);
 }
 
 .header_container {
@@ -83,6 +84,40 @@ header {
     background-color: #ED2429;
     box-shadow: 0 0 0.5px 0.3px #a11a1c;
     right: calc(82% - 33px);
+}
+
+.frontpage_background {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+}
+
+.cyberjaya_background {
+    flex: 1;
+    background-image: url('MMU\ Cyberjaya\ campus.jpg'); 
+    background-size: cover;
+    background-position: center;
+}
+
+.melaka_background {
+    flex: 1;
+    background-image: url('MMU\ Melaka\ campus.jpg'); 
+    background-size: cover;
+    background-position: center;
+}
+
+.frontpage_background::before {
+    content: '';
+    width: 5px;
+    background-color: white;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .keyin_background {
