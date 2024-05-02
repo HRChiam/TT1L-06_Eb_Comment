@@ -7,20 +7,24 @@
     <title>
         Success
     </title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='keyin_styles.css') }}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Harlow+Solid&display=swap">
+    <link rel="stylesheet" href="{{ url_for('static', filename='student.css') }}">
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <img id="logo" src="{{ url_for('static', filename='MMU-logo.jpeg') }}" alt="MMU Logo">
-            <div class="blue-bar"></div>
-            <div class="red-bar"></div>
-            <span id="webname">Eb_Comment</span>
+    <div class="keyin_background">
+        <div class="keyinform">
+            <div class="header_design">
+                <img id="logo" src="{{ url_for('static', filename='MMU-logo.jpeg') }}" alt="MMU Logo">
+                <div class="blue-bar"></div>
+                <div class="red-bar"></div>
+                <span id="webname">Eb_Comment</span>
+            </div>
+            <h1>Information Uploaded Successfully!</h1>
+            <div class="success_box">
+                <a href="/keyin" class="upload_another_lecturer">Upload Another Lecturer</a>
+                <a href="/main" class="back_to_main">Back to Main Page</a>
+            </div>
         </div>
-        <h1>Information Uploaded Successfully!</h1>
-        <a href="/">Upload Another Lecturer</a>
     </div>
 </body>
 
