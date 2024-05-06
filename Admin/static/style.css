@@ -15,6 +15,7 @@ body{
     margin: 0;
     padding: 0;
     min-width: 100vh;
+
 }
 
 
@@ -52,7 +53,7 @@ body{
     position: absolute;
     left: 0;
     top: 75px;
-    height: 300vh;
+    height: 1100px;
     width: 300px;
     background-color: lightgrey;
  
@@ -195,8 +196,8 @@ canvas{
     width: 1150px;
     justify-content: center;
     left: 20%;
-    margin-left: 10px;
-    margin-top:20px ;
+    margin-left: 40px;
+    margin-top:40px ;
 
 }
 table tr{
@@ -204,7 +205,7 @@ table tr{
 
 }
 .table table {
-    margin-left: 40px;
+    margin-left: 20px;
     margin-right: auto;
 }
  table,td,th{
@@ -247,9 +248,166 @@ table tr{
     background-color: rgb(237,242,242);
  }
 
- .yes {
-    background-color: green;
+ .Edit {
+    border: 2px solid;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-family: monospace;
+    cursor: pointer;
+    margin: 10px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+    background-color: rgb(155,164,179);
+    color: white;
     border-radius: 20px;
-    
+ }
+
+ .Edit:hover {
+    color: black;
+ }
+
+ .table i {
+    font-size: 30px;
+    cursor: pointer;
+ }
+
+ .table i:hover {
+    color:rgb(155,164,179);
+ }
+
+
+/*profile page*/
+ .profile {
+    position:absolute;
+    padding: 30px;
+    font-size: 17px;
+    margin-left: 300px;
+ }
+
+ .profile h3 {
+    position:relative;
+    left: 75px;
+    top: 20px;
+ }
+
+ .subprofile {
+    position: relative;
+    border: 1px solid;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    width: 1030px;
+    box-shadow: black 0px 1px 4px;
+    border-radius: 10px;
+    background-color: whitesmoke;
+    height: 540px;
+    margin-left: 75px;
+    margin-top: 30px;
     
  }
+
+ .subprofile h1 label input select{
+    margin: 5px;
+ }
+
+ .susubprofile {
+    border: 1px solid;
+    padding-bottom: 500px;
+    padding-left: 70px;
+    padding-right: 70px;
+    padding-top: 20px;
+    background-color: white;
+    border-radius: 10px;
+
+ }
+ 
+ .susubprofile h2 {
+    margin-top: 70px;
+    font-size: 19px;
+ }
+
+ .susubprofile img {
+    transform: scale(1.8); /* 图片放大 1.2 倍 */
+    margin-top: 80px;
+    margin-left: 12px;
+    display: flex;
+    justify-content: center;
+ }
+
+ .suprofile {
+    border: 1px solid;
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: 10px 20px;
+    border-radius: 10px;
+    padding-right: 30px;
+    background-color: white;
+ }
+
+ .suprofile label{
+    margin: 10px;
+ }
+
+.suprofile input {
+    outline: none;
+    border: none;
+}
+
+label {
+    font-weight: bold;
+}
+
+.label-name {
+    display: flex;
+    flex-direction: row;
+    margin-right: 100px;
+}
+ 
+.butt {
+    display: flex;
+    flex-direction:row;
+    padding: 20px;
+    position: absolute;
+    left: 45%;
+    
+
+}
+
+.Submit{
+    border: 2px solid;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-family: monospace;
+    cursor: pointer;
+    margin: 10px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+    background-color: rgb(155,164,179);
+    color: white;
+    border-radius: 20px;
+}
+
+.Cancel{
+    border: 2px solid;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-family: monospace;
+    cursor: pointer;
+    margin: 10px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+    background-color: rgb(155,164,179);
+    color: white;
+    border-radius: 20px;
+}
+
+.Submit:hover{
+    color: black;
+}
+
+.Cancel:hover {
+    color: black;
+}
