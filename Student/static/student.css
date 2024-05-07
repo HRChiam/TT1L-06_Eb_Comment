@@ -136,9 +136,29 @@ header {
 
 .menu_container a {
     display: block;
-    padding: 10px;
+    padding: 10px 20px;
     color: black;
     text-decoration: none;
+    position: relative;
+}
+
+.menu_container a::before {
+    content: ">";
+    position: absolute;
+    left: 10px; 
+    transition: transform 0.3s ease;
+}
+
+.menu_container a.rotate::before {
+    transform: rotate(90deg);
+}
+
+.submenu {
+    display: none; 
+}
+
+.submenu.active {
+    display: block; 
 }
 
 .frontpage_background {
