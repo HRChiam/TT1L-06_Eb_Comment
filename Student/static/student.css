@@ -134,6 +134,13 @@ header {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.3);
     z-index: 1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.cyberjaya_background:hover::before,
+.melaka_background:hover::before {
+    opacity: 1;
 }
 
 .cyberjaya_box,
@@ -152,7 +159,30 @@ header {
     border: 1px solid black;
     border-radius: 3px;
     text-decoration: none;
-    z-index: 1;
+    z-index: 2;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    color: black;
+    display: none;
+}
+
+.cyberjaya_box:hover{
+    background-color: #052142; 
+    color: white;
+    border-color: white;
+}
+
+.melaka_box:hover {
+    background-color: #a11a1c;
+    color: white;
+    border-color: white;
+}
+
+.cyberjaya_background:hover .cyberjaya_box {
+    display: block;
+}
+
+.melaka_background:hover .melaka_box {
+    display: block;
 }
 
 .keyin_background {
