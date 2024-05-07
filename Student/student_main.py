@@ -1,7 +1,22 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
+from werkzeug.utils import secure_filename
+from flask_sqlalchemy import SQLAlchemy
 
 web = Flask(__name__)
+web.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://KEEHUIYEE:KeE-0924@127.0.0.1/users'
+db = SQLAlchemy(web)
+
+class Lecturer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    photo = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(15), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @web.route('/')
 def studentfront():
@@ -10,8 +25,6 @@ def studentfront():
 @web.route('/main')
 def studentmain():
     return render_template('studentmain.html')
-
-Lecturers = []
 
 @web.route('/keyin')
 def keyin():
@@ -24,25 +37,22 @@ def upload():
     phone = request.form['phone']
     email = request.form['email']
 
-    if not os.path.exists('uploads'):
-        os.makedirs('uploads')
+    if photo and allowed_file(photo.filename):
+        filename = secure_filename(photo.filename)
+        photo.save(os.path.join('uploads', filename))
 
-    photo.save(os.path.join('uploads/' + photo.filename))
+        lecturer = Lecturer(name=name, photo=filename, phone=phone, email=email)
+        db.session.add(lecturer)
+        db.session.commit()
 
-    lecturer_info = {
-        'name': name,
-        'photo': photo.filename,
-        'phone': phone,
-        'email': email
-    }
+        return redirect(url_for('keyinsuccess'))
 
-    Lecturers.append(lecturer_info)
-
-    return redirect(url_for('keyinsuccess'))
+    return "Invalid file format"
 
 @web.route('/keyinsuccess')
 def keyinsuccess():
     return render_template('keyinsuccess.html')
 
 if __name__ == '__main__':
+    db.create_all
     web.run(debug = True)
