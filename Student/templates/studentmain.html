@@ -14,6 +14,11 @@
     <header>
         <div class="header_container">
             <div class="text-container">
+                <div class="hamburger" onclick="toggleMenu()">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </div>
                 <span id="MM">MM</span>
                 <span id="U">U</span>
             </div>
@@ -22,9 +27,46 @@
                 <div class="red-bar2"></div>
             </div>
             <span id="header_webname">Eb_Comment</span>
-            <a href = "/keyin">Upload Lecturer Information</a>
+            <nav class="menu_container" id="menuContainer">
+                <a href="#">Cyberjaya</a>
+                <div class="submenu">
+                    <a href="#">FCI</a>
+                    <a href="#">FOM</a>
+                    <a href="#">FOE</a>
+                    <a href="#">FCM</a>
+                    <a href="#">FCA</a>
+                    <a href="#">FAC</a>
+                </div>
+                <a href="#">Melaka</a>
+                <div class="submenu">
+                    <a href="#">FIST</a>
+                    <a href="#">FOB</a>
+                    <a href="#">FOL</a>
+                    <a href="#">FET</a>
+                </div>
+                <a href="/keyin">Upload Lecturer Information</a>
+            </nav>
         </div>
     </header>
 
+    <script>
+        function toggleMenu() {
+            var menuContainer = document.getElementById('menuContainer');
+            menuContainer.classList.toggle('active');
+        }
+
+        var menuItems = document.querySelectorAll('.menu_container a');
+        menuItems.forEach(function (menuItem) {
+            menuItem.addEventListener('click', function () {
+                var submenu = menuItem.nextElementSibling;
+                if (submenu && submenu.classList.contains('submenu')) {
+                    submenu.classList.toggle('active');
+                    menuItem.classList.toggle('rotate');
+                }
+            });
+        });
+    </script>
+
 </body>
+
 </html>
