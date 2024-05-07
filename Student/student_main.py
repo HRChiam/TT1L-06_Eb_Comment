@@ -23,6 +23,8 @@ def upload():
     photo = request.files['photo']
     phone = request.form['phone']
     email = request.form['email']
+    campus = request.form['campus']
+    faculty = request.form['faculty']
 
     if not os.path.exists('uploads'):
         os.makedirs('uploads')
@@ -33,7 +35,9 @@ def upload():
         'name': name,
         'photo': photo.filename,
         'phone': phone,
-        'email': email
+        'email': email,
+        'campus': campus,
+        'faculty': faculty
     }
 
     Lecturers.append(lecturer_info)
