@@ -6,17 +6,28 @@
     <meta name="viewport" content="width = device-width, initial-scale = 1" />
 
     <title>Login</title>
+<<<<<<< HEAD
     <link href="../static/logsign.css" rel="stylesheet">
 
+=======
+    <link href="logsign.css" rel="stylesheet" type="text/css">
+ 
+>>>>>>> 7a3fef985099601fdec8d666faa9b55cd39cba08
 
 </head>
 
 <body>
     <div class="bar-text-wel"> Eb_Comment </div>
+<<<<<<< HEAD
     <div class="bar-text-back"><a href="{{ url_for('home') }}">Back</a> </div>
     <div class="rectangle-bar"></div>
     <body class="logsign-background"></body>
 
+=======
+    <div class="bar-text-back"><a href="home.html">Back</a> </div>
+    <div class="rectangle-bar"></div>
+     
+>>>>>>> 7a3fef985099601fdec8d666faa9b55cd39cba08
     <div class="box">
 
         <div class="eb-log">
@@ -24,12 +35,16 @@
         </div>
 
         <h2>Log in</h2>
+<<<<<<< HEAD
         
+=======
+>>>>>>> 7a3fef985099601fdec8d666faa9b55cd39cba08
         <form action="/process_login" method="post" enctype="multipart/form-data">
             <label for="username">Username:</label>
             <input type="text" name="username" id="username" required><br>
             <label for="email">Email Address:</label>
             <input type="email" name="email" id="email" required><br>
+<<<<<<< HEAD
 
             {% if error %}
             <p class="error-message">{{ error }}</p>
@@ -44,10 +59,23 @@
         </form>
 
         
+=======
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" required><br>
+            <a href="forgot.html">Forgot password?</a>
+            <input type="submit" value="Submit">
+        </form>
+
+       
+>>>>>>> 7a3fef985099601fdec8d666faa9b55cd39cba08
     </div>
 
 
 
 </body>
 
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> 7a3fef985099601fdec8d666faa9b55cd39cba08

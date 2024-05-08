@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Harlow+Solid&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cooper+Black&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -5,46 +8,259 @@
 }
 
 header {
-    background-color: #067ea7;
+    background-color: #0094d4;
     color: black;
     padding: 10px 0;
     position: fixed;
     width: 100%;
     top: 0;
     z-index: 1000;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.4);
 }
 
 .header_container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
 }
 
-#MM, #U {
-    font-family: 'Arial Black', sans-serif;
-    font-size: 30px;
+.text-container {
+    display: flex;
+    align-items: center;
 }
 
 #MM {
-    color: #0A509E
+    margin-left: 10px;
+    font-size: 40px;
+    color: #0A509E;
+    font-family: 'Cooper Black', sans-serif;
+    font-weight: bold;
+    text-shadow:
+        -0.4px -0.4px 0 #052142,
+        0.4px -0.4px 0 #052142,
+        -0.4px 0.4px 0 #052142,
+        0.4px 0.4px 0 #052142;
 }
 
 #U {
+    font-size: 40px;
     color: #ED2429;
-    padding-right: 10px;
+    font-family: 'Cooper Black', sans-serif;
+    font-weight: bold;
+    text-shadow:
+        -0.4px -0.4px 0 #a11a1c,
+        0.4px -0.4px 0 #a11a1c,
+        -0.4px 0.4px 0 #a11a1c,
+        0.4px 0.4px 0 #a11a1c;
 }
 
 #header_webname {
-    font-size: 30px;
     font-weight: bold;
+    font-size: 30px;
     font-family: 'Harlow Solid', serif;
-    font-style: italic;
+    margin-left: 20px;
 }
 
-.background {
+.bar-container {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.blue-bar2,
+.red-bar2 {
+    height: 40px;
+    width: 5px;
+    margin: 0 2px;
+}
+
+
+.blue-bar2 {
+    background-color: #0A509E;
+    box-shadow: 0 0 0.5px 0.3px #1683ff;
+    left: calc(18% - -18px);
+}
+
+.red-bar2 {
+    background-color: #ED2429;
+    box-shadow: 0 0 0.5px 0.3px #a11a1c;
+    right: calc(82% - 33px);
+}
+
+.hamburger {
+    display: block;
+    cursor: pointer;
+    z-index: 999;
+    margin-left: 20px;
+}
+
+.hamburger .line {
+    width: 30px;
+    height: 3px;
+    background-color: #333;
+    margin: 6px 0;
+    transition: 0.4s;
+}
+
+.hamburger.active .line:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.hamburger.active .line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active .line:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+}
+
+.menu_container {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background-color: #f9f9f9;
+    padding: 10px 0;
+    text-align: left;
+    display: none; 
+    transition: width 0.3s ease;
+}
+
+.menu_container.active {
+    display: block; 
+    width: 300px;
+    height: auto;
+    background-color: #0094d4;
+    border-radius: 10px;
+    box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.4)
+}
+
+.menu_container a {
+    display: block;
+    padding: 10px 20px;
+    color: black;
+    text-decoration: none;
+    position: relative;
+}
+
+.menu_container a::before {
+    content: ">";
+    position: absolute;
+    left: 10px; 
+    transition: transform 0.3s ease;
+}
+
+.menu_container a.rotate::before {
+    transform: rotate(90deg);
+}
+
+.submenu {
+    display: none; 
+}
+
+.submenu.active {
+    display: block; 
+}
+
+.frontpage_background {
+    display: flex;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.frontpage_background::before {
+    content: '';
+    width: 5px;
+    background-color: white;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.cyberjaya_background {
+    flex: 1;
+    background-image: url('MMU\ Cyberjaya\ campus.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.melaka_background {
+    flex: 1;
+    background-image: url('MMU\ Melaka\ campus.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.cyberjaya_background::before,
+.melaka_background::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.cyberjaya_background:hover::before,
+.melaka_background:hover::before {
+    opacity: 1;
+}
+
+.cyberjaya_box,
+.melaka_box {
+    width: 300px;
+    height: 60px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 32px;
+    text-align: center;
+    line-height: 60px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 3px;
+    text-decoration: none;
+    z-index: 2;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    color: black;
+    display: none;
+}
+
+.cyberjaya_box:hover {
+    background-color: #052142;
+    color: white;
+    border-color: white;
+}
+
+.melaka_box:hover {
+    background-color: #a11a1c;
+    color: white;
+    border-color: white;
+}
+
+.cyberjaya_background:hover .cyberjaya_box {
+    display: block;
+}
+
+.melaka_background:hover .melaka_box {
+    display: block;
+}
+
+.keyin_background {
     background-image: url("background.webp");
     background-size: cover;
     background-position: center;
@@ -92,12 +308,12 @@ header {
 
 .blue-bar {
     background-color: #0A509E;
-    left: calc(50% - -8px);
+    left: calc(45% - -13px);
 }
 
 .red-bar {
     background-color: #ED2429;
-    right: calc(50% - 22px);
+    right: calc(55% - 27px);
 }
 
 #webname {
@@ -111,6 +327,8 @@ header {
 }
 
 h1 {
+    margin-top: 20px;
+    margin-bottom: 20px;
     text-align: center;
     font-weight: bolder;
 }
@@ -124,10 +342,11 @@ label {
 
 input[type="text"],
 input[type="email"],
-input[type="file"] {
+input[type="file"],
+select {
     width: 100%;
     padding: 10px 0px 10px 0px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border: 1px solid #63C5DA;
     border-radius: 3px;
     font-size: 15px;
@@ -152,21 +371,27 @@ input[type="submit"]:hover {
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
-a {
-    display: block; 
-    width: 200px; 
-    margin: 0 auto; 
+.success_box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.upload_another_lecturer,
+.back_to_main {
+    width: 250px;
     padding: 10px;
     background-color: #0492C2;
     color: white;
-    border: none;
     border-radius: 3px;
+    text-decoration: none;
     cursor: pointer;
-    text-align: center; 
+    text-align: center;
     font-size: 18px;
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
-a:hover {
+.upload_another_lecturer:hover,
+.back_to_main:hover {
     background-color: #1520A6;
 }

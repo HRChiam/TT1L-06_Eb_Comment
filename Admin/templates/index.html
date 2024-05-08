@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="../static/style.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="Try"><h2>Eb-comment</h2><input type="research"><i class='bx bx-search-alt-2'></i><a href="#">KEE HUI YEE</a></div>
+    
+    <div class="sidebar">
+        <ul>
+            <li><a href="/"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
+            <li><a href="/user"><i class='bx bxs-grid-alt'></i>User Control</a></li>
+            <li><a href="/comment"><i class='bx bxs-grid-alt'></i>Comment Control</a></li>
+            <li><a href="#"><i class='bx bxs-grid-alt'></i>Sign out</a></li>
+        </ul>
+    </div>
+    
+    
+    <div class="fcicontainer">
+        <div class="fciwrapper">
+            <div class="fcisubcontain">
+                <div class="subcontaindes">
+                    <h2>54</h2>
+                    <h3>Lecture</h3>
+                </div>
+                <div class="subcontainpic">
+                    <i class='bx bx-user-circle'></i>
+                </div>
+            </div>
+            <div class="fcisubcontain">
+                <div class="subcontaindes">
+                    <h2>24</h2>
+                    <h3>Student</h3>
+                </div>
+                <div class="subcontainpic">
+                    <i class='bx bxs-user'></i>
+                </div>
+            </div>
+            <div class="fcisubcontain">
+                <div class="subcontaindes">
+                    <h2>90</h2>
+                    <h3>Comment</h3>
+                </div>
+                <div class="subcontainpic">
+                    <i class='bx bxs-chat'></i>
+                </div>
+            </div>
+        </div>
+        <div class="graphbox">
+            <canvas class="my" id="myChart"></canvas>
+            <canvas class="my1" id="mychart2" ></canvas>
+        </div>
+        <div class="graphbox1">
+            <canvas class="line" id="lineChart"></canvas>
+        </div>
+
+    <script>
+        // JavaScript code to create the chart
+        // Get the canvas element
+        var ctx = document.getElementById('myChart').getContext('2d');
+
+        // Create the data for the chart
+        var data = {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple'],
+            datasets: [{
+                label: 'Sample Data',
+                data: [12, 19, 3, 5, 2],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Create the options for the chart
+        var options = {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        };
+
+        // Create the chart
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: options
+        });
+    </script>
+    <script>
+        // JavaScript code to create the chart
+        // Get the canvas element
+        var ctx = document.getElementById('mychart2').getContext('2d');
+
+        // Create the data for the chart
+        var data = {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple'],
+            datasets: [{
+                label: 'Sample Data',
+                data: [12, 19, 3, 5, 2],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Create the options for the chart
+        var options = {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        };
+
+        // Create the chart
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: options
+        });
+    </script>
+    <script>
+    var ctx = document.getElementById('lineChart').getContext('2d');
+    var lineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+            datasets: [{
+                label: 'Sales Data',
+                data: [50, 70, 60, 80, 75, 90],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+<script>
+    var ctx = document.getElementById('lineChart').getContext('2d');
+    var lineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+            datasets: [{
+                label: 'Sales Data',
+                data: [50, 70, 60, 80, 75, 90],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+</script>
+
+
+</body>        
+</html>

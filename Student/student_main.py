@@ -4,6 +4,10 @@ from flask import Flask, render_template, request, redirect, url_for
 web = Flask(__name__)
 
 @web.route('/')
+def studentfront():
+    return render_template('studentfront.html')
+
+@web.route('/main')
 def studentmain():
     return render_template('studentmain.html')
 
@@ -19,6 +23,8 @@ def upload():
     photo = request.files['photo']
     phone = request.form['phone']
     email = request.form['email']
+    campus = request.form['campus']
+    faculty = request.form['faculty']
 
     if not os.path.exists('uploads'):
         os.makedirs('uploads')
@@ -29,7 +35,9 @@ def upload():
         'name': name,
         'photo': photo.filename,
         'phone': phone,
-        'email': email
+        'email': email,
+        'campus': campus,
+        'faculty': faculty
     }
 
     Lecturers.append(lecturer_info)

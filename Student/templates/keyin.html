@@ -8,11 +8,10 @@
         Lecturer Upload
     </title>
     <link rel="stylesheet" href="{{ url_for('static', filename='student.css') }}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Harlow+Solid&display=swap">
 </head>
 
 <body>
-    <div class="background">
+    <div class="keyin_background">
         <div class="keyinform">
             <div class="header_design">
                 <img id="logo" src="{{ url_for('static', filename='MMU-logo.jpeg') }}" alt="MMU Logo">
@@ -30,8 +29,39 @@
                 <input type="text" name="phone" id="phone" required><br>
                 <label for="email">Email address:</label>
                 <input type="email" name="email" id="email" required><br>
+                <label for="campus">Campus:</label>
+                <select name="campus" id="campus" required onchange="updateFacultyOptions()">
+                    <option value="cyberjaya">Cyberjaya</option>
+                    <option value="melaka">Melaka</option>
+                </select><br>
+                <label for="faculty">Faculty:</label>
+                <select name="faculty" id="faculty" required>
+                </select><br>
                 <input type="submit" value="Submit">
             </form>
+
+            <script>
+                function updateFacultyOptions() {
+                    var campusSelect = document.getElementById("campus");
+                    var facultySelect = document.getElementById("faculty");
+                    var selectedCampus = campusSelect.options[campusSelect.selectedIndex].value;
+
+                    facultySelect.innerHTML = '';
+
+                    var faculties = {};
+                    faculties['cyberjaya'] = ['FCI', 'FOM', 'FCA', 'FCM', 'FOE', 'FAC'];
+                    faculties['melaka'] = ['FIST', 'FOB', 'FOL', 'FET'];
+
+                    faculties[selectedCampus].forEach(function (faculty) {
+                        var option = document.createElement("option");
+                        option.text = faculty;
+                        option.value = faculty;
+                        facultySelect.add(option);
+                    });
+                }
+
+                updateFacultyOptions();
+            </script>
         </div>
     </div>
 </body>
