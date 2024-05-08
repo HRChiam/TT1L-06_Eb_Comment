@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset password</title>
+    <link href="../static/logsign.css" rel="stylesheet">
+    
+ 
+</head>
+<body>
+    <div class="bar-text-wel"> Eb_Comment </div>
+    <div class="bar-text-back"><a href="{{ url_for('login') }}">Back</a> </div>
+    <div class="rectangle-bar"></div>
+    <body class="password-background"></body>
+ 
+    <div class="box-password">
+    <div class='text-reset'> <h1>Reset Password</h1> </div>
+    <h3>Enter your email address</h3>
+    
+    <form action="reset_password.php" method="post">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <input class="submit-reset" type="submit" value="Submit">
+    </form>
+    </div>
+</body>
+</html>
+
+
