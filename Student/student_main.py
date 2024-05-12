@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
-from models import db, User
+from models import db, Lecturer
 
 web = Flask(__name__)
 web.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:/Users/User/Projects/Student/database.db'
@@ -20,7 +20,7 @@ Lecturers = []
 def keyin():
     return render_template('keyin.html')
 
-@web.route('/upload', methods = ['POST'])
+@web.route('/upload', methods=['POST'])
 def upload():
     name = request.form['name']
     photo = request.files['photo']
@@ -34,16 +34,9 @@ def upload():
 
     photo.save(os.path.join('uploads/' + photo.filename))
 
-    lecturer_info = {
-        'name': name,
-        'photo': photo.filename,
-        'phone': phone,
-        'email': email,
-        'campus': campus,
-        'faculty': faculty
-    }
-
-    Lecturers.append(lecturer_info)
+    lecturer = Lecturer(name=name, photo=photo.filename, phone=phone, email=email, campus=campus, faculty=faculty)
+    db.session.add(lecturer)
+    db.session.commit()
 
     return redirect(url_for('keyinsuccess'))
 
