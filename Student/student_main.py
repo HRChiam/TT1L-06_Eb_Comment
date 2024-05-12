@@ -1,7 +1,10 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
+from models import db, User
 
 web = Flask(__name__)
+web.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:/Users/User/Projects/Student/database.db'
+db.init_app(web)
 
 @web.route('/')
 def studentfront():
@@ -45,4 +48,6 @@ def keyinsuccess():
     return render_template('keyinsuccess.html')
 
 if __name__ == '__main__':
-    web.run(debug = True)
+    with web.app_context():
+        db.create_all() 
+    web.run(debug=True)
