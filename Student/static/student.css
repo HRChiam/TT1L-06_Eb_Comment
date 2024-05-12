@@ -20,12 +20,12 @@ header {
 
 .header_container {
     display: flex;
-    align-items: center; 
+    align-items: center;
 }
 
 .text-container {
     display: flex;
-    align-items: center; 
+    align-items: center;
 }
 
 #MM {
@@ -34,11 +34,11 @@ header {
     color: #0A509E;
     font-family: 'Cooper Black', sans-serif;
     font-weight: bold;
-    text-shadow: 
-    -0.4px -0.4px 0 #052142, 
-    0.4px -0.4px 0 #052142, 
-    -0.4px 0.4px 0 #052142, 
-    0.4px 0.4px 0 #052142;
+    text-shadow:
+        -0.4px -0.4px 0 #052142,
+        0.4px -0.4px 0 #052142,
+        -0.4px 0.4px 0 #052142,
+        0.4px 0.4px 0 #052142;
 }
 
 #U {
@@ -46,11 +46,11 @@ header {
     color: #ED2429;
     font-family: 'Cooper Black', sans-serif;
     font-weight: bold;
-    text-shadow: 
-    -0.4px -0.4px 0 #a11a1c, 
-    0.4px -0.4px 0 #a11a1c, 
-    -0.4px 0.4px 0 #a11a1c, 
-    0.4px 0.4px 0 #a11a1c;
+    text-shadow:
+        -0.4px -0.4px 0 #a11a1c,
+        0.4px -0.4px 0 #a11a1c,
+        -0.4px 0.4px 0 #a11a1c,
+        0.4px 0.4px 0 #a11a1c;
 }
 
 #header_webname {
@@ -62,7 +62,7 @@ header {
 
 .bar-container {
     display: flex;
-    align-items: center; 
+    align-items: center;
     margin-left: 20px;
 }
 
@@ -84,6 +84,81 @@ header {
     background-color: #ED2429;
     box-shadow: 0 0 0.5px 0.3px #a11a1c;
     right: calc(82% - 33px);
+}
+
+.hamburger {
+    display: block;
+    cursor: pointer;
+    z-index: 999;
+    margin-left: 20px;
+}
+
+.hamburger .line {
+    width: 30px;
+    height: 3px;
+    background-color: #333;
+    margin: 6px 0;
+    transition: 0.4s;
+}
+
+.hamburger.active .line:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.hamburger.active .line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active .line:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+}
+
+.menu_container {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background-color: #f9f9f9;
+    padding: 10px 0;
+    text-align: left;
+    display: none; 
+    transition: width 0.3s ease;
+}
+
+.menu_container.active {
+    display: block; 
+    width: 300px;
+    height: auto;
+    background-color: #0094d4;
+    border-radius: 10px;
+    box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.4)
+}
+
+.menu_container a {
+    display: block;
+    padding: 10px 20px;
+    color: black;
+    text-decoration: none;
+    position: relative;
+}
+
+.menu_container a::before {
+    content: ">";
+    position: absolute;
+    left: 10px; 
+    transition: transform 0.3s ease;
+}
+
+.menu_container a.rotate::before {
+    transform: rotate(90deg);
+}
+
+.submenu {
+    display: none; 
+}
+
+.submenu.active {
+    display: block; 
 }
 
 .frontpage_background {
@@ -110,7 +185,7 @@ header {
 
 .cyberjaya_background {
     flex: 1;
-    background-image: url('MMU\ Cyberjaya\ campus.jpg'); 
+    background-image: url('MMU\ Cyberjaya\ campus.jpg');
     background-size: cover;
     background-position: center;
     position: relative;
@@ -118,7 +193,7 @@ header {
 
 .melaka_background {
     flex: 1;
-    background-image: url('MMU\ Melaka\ campus.jpg'); 
+    background-image: url('MMU\ Melaka\ campus.jpg');
     background-size: cover;
     background-position: center;
     position: relative;
@@ -165,8 +240,8 @@ header {
     display: none;
 }
 
-.cyberjaya_box:hover{
-    background-color: #052142; 
+.cyberjaya_box:hover {
+    background-color: #052142;
     color: white;
     border-color: white;
 }
@@ -267,10 +342,11 @@ label {
 
 input[type="text"],
 input[type="email"],
-input[type="file"] {
+input[type="file"],
+select {
     width: 100%;
     padding: 10px 0px 10px 0px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border: 1px solid #63C5DA;
     border-radius: 3px;
     font-size: 15px;
@@ -302,7 +378,7 @@ input[type="submit"]:hover {
 }
 
 .upload_another_lecturer,
-.back_to_main{
+.back_to_main {
     width: 250px;
     padding: 10px;
     background-color: #0492C2;
