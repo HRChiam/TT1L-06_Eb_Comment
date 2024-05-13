@@ -3,31 +3,71 @@
 
 <head>
     <meta charset="UTF-8" />
+<<<<<<< HEAD
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign in</title>
+    <link href="../static/logsign.css" rel="stylesheet">
+=======
     <meta name="viewport" content="width = device-width, initial-scale = 1" />
 
     <title>Sign in</title>
     <link href="logsign.css" rel="stylesheet" type="text/css">
+>>>>>>> 7a3fef985099601fdec8d666faa9b55cd39cba08
 </head>
 
 <body>
 
     <div class="bar-text-wel"> Eb_Comment </div>
+<<<<<<< HEAD
+    <div class="bar-text-back"><a href="{{ url_for('home') }}">Back</a> </div>
+    <div class="rectangle-bar"></div>
+    <body class="logsign-background"></body>
+=======
     <div class="bar-text-back"><a href="home.html">Back</a> </div>
     <div class="rectangle-bar"></div>
    
+>>>>>>> 7a3fef985099601fdec8d666faa9b55cd39cba08
 
     <div class="box">
         <div class="eb-sign">
             <h1>Welcome to Eb_Comment!</h1>
+<<<<<<< HEAD
+        </div>
+
+=======
         </div> 
     
      
+>>>>>>> 7a3fef985099601fdec8d666faa9b55cd39cba08
         <h2>Create your account</h2>
         <form action="/process_signin" method="post" enctype="multipart/form-data">
             <label for="username">Username:</label>
             <input type="text" name="username" id="username" required><br>
             <label for="email">Email Address:</label>
             <input type="email" name="email" id="email" required><br>
+<<<<<<< HEAD
+
+            {% if error and error.email %}
+            <p class="error-message">{{ error.email }}</p>
+            {% endif %}
+
+            <label for="password">Password:<div class="grey">(must be at least 8 characters long and contain at least 4 numbers)</div></label>
+            <input type="password" name="password" id="password" required><br>
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" name="confirm_password" id="confirm_password" required><br>
+
+            {% if error and error.password %}
+            <p class="error-message">{{ error.password }}</p>
+            {% endif %}
+
+            <input class="submit-acc" type="submit" value="Submit">
+        </form>
+    </div>
+
+</body>
+
+</html>
+=======
             <label for="password">Password:</label>
             <input type="password" name="password" id="password" required><br>
             <label for="comfirm_password">Comfirm Password:</label>
@@ -40,3 +80,4 @@
 </body>
 
 </html>
+>>>>>>> 7a3fef985099601fdec8d666faa9b55cd39cba08
