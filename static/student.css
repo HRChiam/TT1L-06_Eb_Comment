@@ -121,12 +121,12 @@ header {
     background-color: #f9f9f9;
     padding: 10px 0;
     text-align: left;
-    display: none; 
+    display: none;
     transition: width 0.3s ease;
 }
 
 .menu_container.active {
-    display: block; 
+    display: block;
     width: 300px;
     height: auto;
     background-color: #0094d4;
@@ -145,7 +145,7 @@ header {
 .menu_container a::before {
     content: ">";
     position: absolute;
-    left: 10px; 
+    left: 10px;
     transition: transform 0.3s ease;
 }
 
@@ -154,11 +154,11 @@ header {
 }
 
 .submenu {
-    display: none; 
+    display: none;
 }
 
 .submenu.active {
-    display: block; 
+    display: block;
 }
 
 .frontpage_background {
@@ -258,6 +258,38 @@ header {
 
 .melaka_background:hover .melaka_box {
     display: block;
+}
+
+.column {
+    float: left;
+    width: 25%;
+    height: auto;
+    padding: 0 10px;
+}
+
+.row {
+    padding-top: 100px;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+@media screen and (max-width: 600px) {
+    .column {
+        width: 100%;
+        display: block;
+        margin-bottom: 20px;
+    }
+}
+
+.lecturer_card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 16px;
+    text-align: center;
+    background-color: #f1f1f1;
 }
 
 .keyin_background {
