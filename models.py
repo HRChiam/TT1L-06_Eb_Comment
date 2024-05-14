@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
@@ -32,3 +33,15 @@ class Lecturer(db.Model):
     campus = db.Column(db.String(100), nullable=False)
     faculty_id = db.Column(db.Integer, ForeignKey('faculty.id'), nullable = False)
     faculty = relationship("Faculty", back_populates="lecturers")
+
+class Comment(db.Model):
+    __tablename__ = 'comment'
+
+    id = db.Column(db.Integer, primary_key=True)
+    lecturer = db.Column(db.String(100), nullable=False)
+    faculty_id = db.Column(db.Integer, ForeignKey('faculty.id'), nullable=False)
+    username = db.Column(db.String(100), nullable=False)
+    comment_text = db.Column(db.Text, nullable=False)
+    date = db.Column(db.Date, nullable=False, default=datetime.now().date())
+    time = db.Column(db.Time, nullable=False, default=datetime.now().time())
+    faculty = relationship("Faculty")
