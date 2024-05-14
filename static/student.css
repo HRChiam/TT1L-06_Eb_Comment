@@ -7,6 +7,11 @@
     box-sizing: border-box;
 }
 
+.error-container {
+    text-align: center;
+    margin-top: 50px;
+}
+
 header {
     background-color: #0094d4;
     color: black;
@@ -260,15 +265,15 @@ header {
     display: block;
 }
 
+.faculty_container {
+    padding-top: 90px;
+}
+
 .column {
     float: left;
     width: 25%;
     height: auto;
     padding: 0 10px;
-}
-
-.row {
-    padding-top: 100px;
 }
 
 .row:after {
