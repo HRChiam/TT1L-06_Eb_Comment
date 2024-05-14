@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Users, Lecturer, Faculty
+from models import db, Users, Lecturer, Faculty, LecturerTemp
 
 app = Flask(__name__)
 
@@ -130,15 +130,15 @@ def upload():
     phone = request.form['phone']
     email = request.form['email']
     campus = request.form['campus']
-    faculty = request.form['faculty']
+    faculty_id = request.form['faculty']
 
     if not os.path.exists('uploads'):
         os.makedirs('uploads')
 
     photo.save(os.path.join('uploads/' + photo.filename))
 
-    lecturer = Lecturer(name=name, photo=photo.filename, phone=phone, email=email, campus=campus, faculty=faculty)
-    db.session.add(lecturer)
+    lecturer_temp = LecturerTemp(name=name, photo=photo.filename, phone=phone, email=email, campus=campus, faculty_id=faculty_id)
+    db.session.add(lecturer_temp)
     db.session.commit()
 
     return redirect(url_for('keyinsuccess'))

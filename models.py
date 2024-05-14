@@ -21,7 +21,18 @@ class Faculty(db.Model):
     campus = db.Column(db.String(100), nullable=False)
     lecturers = relationship("Lecturer", back_populates="faculty")
 
+class LecturerTemp(db.Model):
+    __tablename__ = 'lecturer_temp'
 
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    photo = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+    email = db.Column(db.String(200), nullable=False)
+    campus = db.Column(db.String(100), nullable=False)
+    faculty_id = db.Column(db.Integer, ForeignKey('faculty.id'), nullable=False)
+    faculty = relationship("Faculty")
+    
 class Lecturer(db.Model):
     __tablename__ = 'lecturer'
 
