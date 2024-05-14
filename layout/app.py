@@ -1,8 +1,14 @@
-from typing import Dict
-from flask import Flask, request, render_template , request, redirect, url_for
-
+from datetime import datetime
+from flask import Flask, request, render_template , request, redirect, session, url_for
+from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Message
+from flask_mail import Mail
 
 app = Flask(__name__, template_folder='templates')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'  # SQLite database file
+app.secret_key = 'your_secret_key_here'
+db = SQLAlchemy(app)
+
 
 
 @app.route('/')
@@ -69,19 +75,6 @@ def process_login():
 
 
 
-# def requirement_password(password):
-    
-#     if len(password) < 8:
-#         return False
-    
-#     digit_count = sum(c.isdigit() for c in password)
-#     if digit_count < 4:
-#         return False
-#     return True
-
-
-
-
 @app.route('/process_signin', methods=['POST'])
 def process_signin():
     if request.method == 'POST':
@@ -105,6 +98,7 @@ def process_signin():
 
 
 
+
         if not (len(password) >= 8 and sum(c.isdigit() for c in password) >= 4) or password != confirm_password:
             error['password'] = "Password does not match or does not meet requirements"
 
@@ -121,6 +115,24 @@ def process_signin():
 
     
     return render_template('signin.html')
+
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.clear()
+    return redirect(url_for('home'))
+
+
+
+# @app.route('/reset_password', methods=['POST'])
+# def reset_password():
+#     email = request.form['email']
+
+#     msg = Message('Password Reset', recipients=[email])
+#     msg.body = 'To reset your password, click on the following link: http://example.com/reset_password_token'
+#     mail.send(msg)
+
+#     return 'Password reset email sent successfully. Check your email inbox.'
 
 
 
