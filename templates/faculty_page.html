@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width = device-width, initial-scale = 1">
     <title>
-        Main Page
+        Faculty Page
     </title>
     <link href="../static/student.css" rel="stylesheet">
 </head>
@@ -30,19 +30,19 @@
             <nav class="menu_container" id="menuContainer">
                 <a href="#">Cyberjaya</a>
                 <div class="submenu">
-                    <a href="/FCI">FCI</a>
-                    <a href="/FOM">FOM</a>
-                    <a href="/FOE">FOE</a>
-                    <a href="/FCM">FCM</a>
-                    <a href="/FCA">FCA</a>
-                    <a href="/FAC">FAC</a>
+                    <a href="/faculty/FCI">FCI</a>
+                    <a href="/faculty/FOM">FOM</a>
+                    <a href="/faculty/FOE">FOE</a>
+                    <a href="/faculty/FCM">FCM</a>
+                    <a href="/faculty/FCA">FCA</a>
+                    <a href="/faculty/FAC">FAC</a>
                 </div>
                 <a href="#">Melaka</a>
                 <div class="submenu">
-                    <a href="/FIST">FIST</a>
-                    <a href="/FOB">FOB</a>
-                    <a href="/FOL">FOL</a>
-                    <a href="/FET">FET</a>
+                    <a href="/faculty/FIST">FIST</a>
+                    <a href="/faculty/FOB">FOB</a>
+                    <a href="/faculty/FOL">FOL</a>
+                    <a href="/faculty/FET">FET</a>
                 </div>
                 <a href="/keyin">Upload Lecturer Information</a>
             </nav>
@@ -66,37 +66,21 @@
             });
         });
     </script>
-    
-    <div class="row">
-        <div class="column">
-            <div class="lecturer_card">
-                <h3>Lecturer 1</h3>
-                <p>Lecturer Name</p>
+    <div class="faculty_container">
+        <h2>{{ faculty.name }} Lecturers</h2>
+        <div class="lecturers">
+            {% for lecturer in lecturers %}
+            <div class="row">
+                <div class="column">
+                    <div class="lecturer_card">
+                        <img>{{ lecturer.photo }}
+                        <p>{{ lecturer.name }}</p>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="column">
-            <div class="lecturer_card">
-                <h3>Lecturer 2</h3>
-                <p>Lecturer Name</p>
-            </div>
-        </div>
-
-        <div class="column">
-            <div class="lecturer_card">
-                <h3>Lecturer 3</h3>
-                <p>Lecturer Name</p>
-            </div>
-        </div>
-
-        <div class="column">
-            <div class="lecturer_card">
-                <h3>Lecturer 4</h3>
-                <p>Lecturer Name</p>
-            </div>
+            {% endfor %}
         </div>
     </div>
-
 </body>
 
 </html>

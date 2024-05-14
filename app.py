@@ -1,10 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
-from wtforms import StringField, SubmitField
-from flask_wtf import FlaskForm
-from wtforms.validators import DataRequired
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Users, Lecturer
+from models import db, Users, Lecturer, Faculty
 
 app = Flask(__name__)
 
@@ -13,6 +10,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
 
 db.init_app(app)
+
+@app.errorhandler(404)
+def page_not_found(error):
+    # Render the error.html template with a custom message
+    return render_template('error.html', message="Page not found"), 404
+
+@app.errorhandler(500)
+def internal_server_error(error):
+    # Render the error.html template with a custom message
+    return render_template('error.html', message="Internal server error"), 500
 
 @app.route('/')
 def home():
@@ -98,46 +105,20 @@ def studentfront():
 def studentmain():
     return render_template('studentmain.html')
 
-@app.route('/FCI')
-def FCI():
-    return render_template('Cyber_FCI_lecturer.html')
+@app.route('/faculty/<faculty_name>')
+def faculty_page(faculty_name):
+    # Query the database to retrieve the faculty information
+    faculty = Faculty.query.filter_by(name=faculty_name).first()
 
-@app.route('/FCM')
-def FCM():
-    return render_template('Cyber_FCM_lecturer.html')
-
-@app.route('/FCA')
-def FCA():
-    return render_template('Cyber_FCA_lecturer.html')
-
-@app.route('/FAC')
-def FAC():
-    return render_template('Cyber_FAC_lecturer.html')
-
-@app.route('/FOM')
-def FOM():
-    return render_template('Cyber_FOM_lecturer.html')
-
-@app.route('/FOE')
-def FOE():
-    return render_template('Cyber_FOE_lecturer.html')
-
-@app.route('/FET')
-def FET():
-    return render_template('Melaka_FET_lecturer.html')
-
-@app.route('/FIST')
-def FIST():
-    return render_template('Melaka_FIST_lecturer.html')
-
-@app.route('/FOL')
-def FOL():
-    return render_template('Melaka_FOL_lecturer.html')
-
-@app.route('/FOB')
-def FOB():
-    return render_template('Melaka_FOB_lecturer.html')
-
+    if faculty:
+        # If the faculty is found, fetch information about the lecturers associated with that faculty
+        lecturers = faculty.lecturers
+        # Render the faculty page template with the fetched data
+        return render_template('faculty_page.html', faculty=faculty, lecturers=lecturers)
+    else:
+        # If the faculty is not found, render an error page
+        return render_template('error.html', message="Faculty not found")
+    
 @app.route('/keyin')
 def keyin():
     return render_template('keyin.html')
