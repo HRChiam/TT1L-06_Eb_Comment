@@ -59,7 +59,7 @@ def process_signin():
         # If no errors, save user information
         if not error:
             # Create a new Users object and add it to the session
-            new_user = Users(name=username, email=email, password=password, phone_number='')  # Add phone_number if needed
+            new_user = Users(name=username, email=email, password=password)
             db.session.add(new_user)
             db.session.commit()
 
