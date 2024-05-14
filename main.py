@@ -6,18 +6,14 @@ from wtforms.validators import DataRequired
 from flask_sqlalchemy import SQLAlchemy
 from models import db, Users, Lecturer
 
-# Create Flask app
 app = Flask(__name__)
 
-# Configure SQLite DB URI
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
 
-# Initialize SQLAlchemy
 db.init_app(app)
 
-# Routes
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -44,7 +40,6 @@ def process_signin():
 
         error= {}
 
-        # Check email format
         if email.endswith('@student.mmu.edu.my') and len(email.split('@')[0]) == 10:
             pass
         elif email.endswith('@mmu.edu.my'):
@@ -52,18 +47,14 @@ def process_signin():
         else:
             error['email'] = "Email invalid or does not meet requirements"
 
-        # Check password format and match
         if not (len(password) >= 8 and sum(c.isdigit() for c in password) >= 4) or password != confirm_password:
             error['password'] = "Password does not match or does not meet requirements"
 
-        # If no errors, save user information
         if not error:
-            # Create a new Users object and add it to the session
             new_user = Users(name=username, email=email, password=password)
             db.session.add(new_user)
             db.session.commit()
 
-            # Redirect to the appropriate page
             if email.endswith('@student.mmu.edu.my'):
                 return redirect('/front')
             elif email.endswith('@mmu.edu.my'):
@@ -106,6 +97,46 @@ def studentfront():
 @app.route('/main')
 def studentmain():
     return render_template('studentmain.html')
+
+@app.route('/FCI')
+def FCI():
+    return render_template('Cyber_FCI_lecturer.html')
+
+@app.route('/FCM')
+def FCM():
+    return render_template('Cyber_FCM_lecturer.html')
+
+@app.route('/FCA')
+def FCA():
+    return render_template('Cyber_FCA_lecturer.html')
+
+@app.route('/FAC')
+def FAC():
+    return render_template('Cyber_FAC_lecturer.html')
+
+@app.route('/FOM')
+def FOM():
+    return render_template('Cyber_FOM_lecturer.html')
+
+@app.route('/FOE')
+def FOE():
+    return render_template('Cyber_FOE_lecturer.html')
+
+@app.route('/FET')
+def FET():
+    return render_template('Melaka_FET_lecturer.html')
+
+@app.route('/FIST')
+def FIST():
+    return render_template('Melaka_FIST_lecturer.html')
+
+@app.route('/FOL')
+def FOL():
+    return render_template('Melaka_FOL_lecturer.html')
+
+@app.route('/FOB')
+def FOB():
+    return render_template('Melaka_FOB_lecturer.html')
 
 @app.route('/keyin')
 def keyin():
