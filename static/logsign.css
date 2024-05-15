@@ -288,3 +288,101 @@ input[type = "submit"]:hover {
     margin-bottom: 16px;
 }
 
+
+
+.logout-button {
+    background-color: #3da1c2; 
+    color: white;
+    font-size: 18px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    width: 13%;
+    margin-top: 40px;
+    margin-left: 545px;
+}
+
+.container-profile {
+    margin-top: 50px;
+    margin-left: 40px;
+    margin-right: 50px;
+}
+
+.profile-background{
+    background-color: #ebf5b1;
+}
+
+.logout-support {
+    margin-left: 50px;
+}
+
+.edit{
+    margin-top: 150px;
+    margin-bottom: 10px;
+    margin-left: 130px;
+    font-weight: bolder;
+    color: #661212;
+    font-size: 30px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+
+.btn-primary:hover {
+    background-color: rgb(131, 83, 163);
+}
+
+.fixed-input {
+    background-color: #f8f9fa;
+    border: none;
+}
+
+.reset-password-btn {
+    background-color: #0e365f;
+    border-color: #0b2947;
+}
+
+
+.reset-password-btn:hover {
+    background-color: #7a091c; 
+    border-color: #380303;
+}
+
+
+.photo-button{
+    margin-top: 20px;
+}
+
+.success-box {
+    margin-top: 20px;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 5px;
+    margin-left: 20px;
+    
+}
+
+.expired-msg{
+    text-align: center;
+    font-size: 50px;
+    color: #420606;
+    margin-top: 200px;
+}
+
+
+.invalid-background{
+    background-color: rgb(235, 250, 236);
+}
+
+
+.box-reset {
+    max-width: 400px;
+    margin: 100px auto;
+    margin-top: 100px;
+    padding: 30px 70px 100px 50px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 5px 5px rgba(100, 7, 7, 0.4);
+}
