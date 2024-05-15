@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="bar-text-wel"> Eb_Comment </div>
-    <!-- <div class="bar-text-back"><a href="{{ url_for('login') }}">Back</a> </div> -->
+    
     <div class="rectangle-bar"></div>
     <body class="password-background"></body>
  
@@ -26,6 +26,11 @@
         <input class="submit-reset" type="submit" value="Submit">
     </form>
 
+    {% if success %}
+    <div class="success-box">
+        <p>{{ success }}</p>
+    </div>
+{% endif %}
      </div>
 </body>
 </html>
