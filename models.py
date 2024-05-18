@@ -42,7 +42,8 @@ class Lecturer(db.Model):
     phone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(200), nullable=False)
     campus = db.Column(db.String(100), nullable=False)
-    faculty_id = db.Column(db.Integer, ForeignKey('faculty.id'), nullable = False)
+    bio = db.Column(db.Text, nullable=True)  # Add this line for bio
+    faculty_id = db.Column(db.Integer, ForeignKey('faculty.id'), nullable=False)
     faculty = relationship("Faculty", back_populates="lecturers")
 
 class Comment(db.Model):

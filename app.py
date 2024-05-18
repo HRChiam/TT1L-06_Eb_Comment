@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Users, Lecturer, Faculty, LecturerTemp
+from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment
 
 app = Flask(__name__)
 
@@ -142,6 +142,38 @@ def upload():
     db.session.commit()
 
     return redirect(url_for('keyinsuccess'))
+
+@app.route('/lecturer/<int:lecturer_id>')
+def lecturer_details(lecturer_id):
+    lecturer = Lecturer.query.get(lecturer_id)
+    if not lecturer:
+        return render_template('error.html', message="Lecturer not found")
+
+    comments = Comment.query.filter_by(lecturer=lecturer.name).all()
+    return render_template('lecturer_page.html', lecturer=lecturer, comments=comments)
+
+@app.route('/add_comment', methods=['POST'])
+def add_comment():
+    lecturer_id = request.form['lecturer_id']
+    username = request.form['username']
+    comment_text = request.form['comment_text']
+    
+    lecturer = Lecturer.query.get(lecturer_id)
+    if not lecturer:
+        return render_template('error.html', message="Lecturer not found")
+
+    new_comment = Comment(
+        lecturer=lecturer.name,
+        faculty_id=lecturer.faculty_id,
+        username=username,
+        comment_text=comment_text
+    )
+
+    db.session.add(new_comment)
+    db.session.commit()
+
+    return redirect(url_for('lecturer_details', lecturer_id=lecturer_id))
+
 
 @app.route('/keyinsuccess')
 def keyinsuccess():
