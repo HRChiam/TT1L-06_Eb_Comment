@@ -1,6 +1,5 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
 from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment
 
 app = Flask(__name__)
@@ -13,12 +12,10 @@ db.init_app(app)
 
 @app.errorhandler(404)
 def page_not_found(error):
-    # Render the error.html template with a custom message
     return render_template('error.html', message="Page not found"), 404
 
 @app.errorhandler(500)
 def internal_server_error(error):
-    # Render the error.html template with a custom message
     return render_template('error.html', message="Internal server error"), 500
 
 @app.route('/')
@@ -45,7 +42,7 @@ def process_signin():
         password = request.form['password']
         confirm_password = request.form['confirm_password']
 
-        error= {}
+        error = {}
 
         if email.endswith('@student.mmu.edu.my') and len(email.split('@')[0]) == 10:
             pass
@@ -71,7 +68,6 @@ def process_signin():
 
     return render_template('signin.html')
 
-
 @app.route('/process_login', methods=['GET', 'POST'])
 def process_login():
     if request.method == 'POST':
@@ -79,23 +75,17 @@ def process_login():
         email = request.form['email']
         password = request.form['password']
 
-     
-        student_email = email.endswith('@student.mmu.edu.my')and len(email.split('@')[0]) == 10
+        student_email = email.endswith('@student.mmu.edu.my') and len(email.split('@')[0]) == 10
 
         if student_email:
             return redirect('/front') 
-        
-
         elif email.endswith('@mmu.edu.my'):
             return redirect('/index')
-
         else:
             error_message = "Email invalid or does not meet requirements"
             return render_template('login.html', error=error_message)
 
-
     return render_template('login.html')
-
 
 @app.route('/front')
 def studentfront():
@@ -107,16 +97,12 @@ def studentmain():
 
 @app.route('/faculty/<faculty_name>')
 def faculty_page(faculty_name):
-    # Query the database to retrieve the faculty information
     faculty = Faculty.query.filter_by(name=faculty_name).first()
 
     if faculty:
-        # If the faculty is found, fetch information about the lecturers associated with that faculty
         lecturers = faculty.lecturers
-        # Render the faculty page template with the fetched data
         return render_template('faculty_page.html', faculty=faculty, lecturers=lecturers)
     else:
-        # If the faculty is not found, render an error page
         return render_template('error.html', message="Faculty not found")
     
 @app.route('/keyin')
@@ -174,7 +160,6 @@ def add_comment():
 
     return redirect(url_for('lecturer_details', lecturer_id=lecturer_id))
 
-
 @app.route('/keyinsuccess')
 def keyinsuccess():
     return render_template('keyinsuccess.html')
@@ -193,5 +178,6 @@ def comment():
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all() 
+        db.create_all()
     app.run(debug=True)
+

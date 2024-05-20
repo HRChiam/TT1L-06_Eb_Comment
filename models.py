@@ -12,7 +12,7 @@ class Users(db.Model):
 
     def __repr__(self):
         return '<Name %r>' % self.name
-    
+
 class Faculty(db.Model):
     __tablename__ = 'faculty'
 
@@ -32,7 +32,7 @@ class LecturerTemp(db.Model):
     campus = db.Column(db.String(100), nullable=False)
     faculty_id = db.Column(db.Integer, ForeignKey('faculty.id'), nullable=False)
     faculty = relationship("Faculty")
-    
+
 class Lecturer(db.Model):
     __tablename__ = 'lecturer'
 
@@ -42,7 +42,7 @@ class Lecturer(db.Model):
     phone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(200), nullable=False)
     campus = db.Column(db.String(100), nullable=False)
-    bio = db.Column(db.Text, nullable=True)  # Add this line for bio
+    bio = db.Column(db.Text, nullable=True) 
     faculty_id = db.Column(db.Integer, ForeignKey('faculty.id'), nullable=False)
     faculty = relationship("Faculty", back_populates="lecturers")
 
