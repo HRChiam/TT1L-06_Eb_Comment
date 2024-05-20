@@ -4,9 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width = device-width, initial-scale = 1">
-    <title>
-        Faculty Page
-    </title>
+    <title>Lecturer Details</title>
     <link href="../static/student.css" rel="stylesheet">
 </head>
 
@@ -67,25 +65,40 @@
         });
     </script>
 
-    <div class="faculty_container">
-        <h2>{{ faculty.name }} Lecturers</h2>
-        <div class="lecturers">
-            {% for lecturer in lecturers %}
-            <div class="row">
-                <div class="column">
-                    <div class="lecturer_card">
-                        <a href="{{ url_for('lecturer_details', lecturer_id=lecturer.id) }}">
-                            <img src="{{ url_for('static', filename='uploads/' + lecturer.photo) }}"
-                                alt="{{ lecturer.name }}">
-                            <p>{{ lecturer.name }}</p>
-                        </a>
-                    </div>
-                </div>
+<div class="lecturer_details_container">
+    <div class="lecturer_info">
+        <h2>{{ lecturer.name }} - Details</h2>
+        <img src="{{ url_for('static', filename='uploads/' + lecturer.photo) }}" alt="{{ lecturer.name }}">
+        <p><strong>Name:</strong> {{ lecturer.name }}</p>
+        <p><strong>Phone:</strong> {{ lecturer.phone }}</p>
+        <p><strong>Email:</strong> {{ lecturer.email }}</p>
+        <p><strong>Campus:</strong> {{ lecturer.campus }}</p>
+        <p><strong>Bio:</strong> {{ lecturer.bio }}</p>
+    </div>
+    <div class="comments_section">
+        <h3>Comments</h3>
+        <form action="{{ url_for('add_comment') }}" method="POST">
+            <input type="hidden" name="lecturer_id" value="{{ lecturer.id }}">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" name="username" required>
+            </div>
+            <div>
+                <label for="comment_text">Comment:</label>
+                <textarea name="comment_text" required></textarea>
+            </div>
+            <button type="submit">Add Comment</button>
+        </form>
+        <div class="comments_list">
+            {% for comment in comments %}
+            <div class="comment">
+                <p><strong>{{ comment.username }}</strong> ({{ comment.date }} {{ comment.time }}):</p>
+                <p>{{ comment.comment_text }}</p>
             </div>
             {% endfor %}
         </div>
     </div>
-
+</div>
 </body>
 
 </html>
