@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session
-from models import db, Users, Lecturer, Faculty, LecturerTemp
+from flask_sqlalchemy import SQLAlchemy
+from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment
 from flask_mail import Message ,Mail
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import URLSafeTimedSerializer
@@ -315,4 +316,3 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
-
