@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session
-from models import db, Users, Lecturer, Faculty, LecturerTemp
+from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment
+from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Message ,Mail
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import URLSafeTimedSerializer
