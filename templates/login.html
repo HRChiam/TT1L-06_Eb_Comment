@@ -4,16 +4,25 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width = device-width, initial-scale = 1" />
+
     <title>Login</title>
+    
     <link href="../static/logsign.css" rel="stylesheet">
+    <link href="logsign.css" rel="stylesheet" type="text/css">
+
+
 
 </head>
 
 <body>
+    
     <div class="bar-text-wel"> Eb_Comment </div>
-    <div class="bar-text-back"><a href="/">Back</a> </div>
+    <div class="bar-text-back"><a href="{{ url_for('home') }}">Back</a> </div>
     <div class="rectangle-bar"></div>
     <body class="logsign-background"></body>
+    
+
+
     <div class="box">
 
         <div class="eb-log">
@@ -21,24 +30,38 @@
         </div>
 
         <h2>Log in</h2>
-        
+
         <form action="/process_login" method="post" enctype="multipart/form-data">
-            <label for="username">Username:</label>
-            <input type="text" name="username" id="username" required><br>
+            
+            
             <label for="email">Email Address:</label>
             <input type="email" name="email" id="email" required><br>
 
+            
             {% if error %}
             <p class="error-message">{{ error }}</p>
             {% endif %}
+            
 
             <label for="password">Password:</label>
             <input type="password" name="password" id="password" required><br>
-            <div class="forgot-pass"><a href="/forgot">Forgot password?</a></div>
+            <div class="forgot-pass"><a href="{{ url_for('forgot') }}">Forgot password?</a></div>
             <input class="submit-acc" type="submit" value="Submit">
+
+
         </form>
+
+
+
+
+
     </div>
+
+
 
 </body>
 
+
 </html>
+
+
