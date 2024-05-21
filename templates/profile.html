@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="../static/logsign.css" rel="stylesheet">
+
+    <style>
+        #profile-picture {
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+   
+</head>
+<body>
+    
+    <div class="bar-text-wel"> Settings </div>
+    <div class="bar-text-back"><a href="{{ url_for('home') }}">Back</a> </div>
+    <div class="rectangle-bar-profile"></div>
+    <body class="profile-background"></body>
+
+    <div class='edit'>User Profile</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="e-profile">
+                        <div class="row">
+                            <div class="col-12 col-sm-auto mb-3">
+                                <div class="mx-auto" style="width: 140px;">
+                                    <!-- Profile picture -->
+                                    <div id="profile-picture" class="d-flex justify-content-center align-items-center rounded" style="height: 140px; background-color: rgb(233, 236, 239);">
+                                        <span style="color: rgb(166, 168, 170); font: bold 8pt Arial;">140x140</span>
+                                    </div>
+                                    <!-- Button to trigger file input -->
+                                    <div class="mt-2">
+                                        <input type="file" id="upload-photo" style="display: none;">
+                                        <button class="btn btn-primary photo-button" type="button" onclick="document.getElementById('upload-photo').click();">
+                                            <i class="fa fa-fw fa-camera"></i>
+                                            <span>Change Profile Picture</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col d-flex flex-column mb-3">
+                                <!-- Username input -->
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input id="username" class="form-control" type="text" name="username" placeholder="johnny.s" value="johnny.s">
+                                </div>
+
+                                    <!-- Email input (fixed) -->
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input id="email" class="form-control fixed-input" type="email" name="email" value="0123456789@student.mmu.edu.my" readonly>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col d-flex justify-content-end">
+                                <!-- Save Changes button -->
+                                <button id="save-changes-btn" class="btn btn-primary" type="button">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <!-- Logout box -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <form action="/logout" method="post">
+                        <button class="btn btn-block btn-secondary" type="submit">
+                            <i class="fa fa-sign-out"></i>
+                            <span>Logout</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <!-- Support box -->
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title font-weight-bold">Forgot Password?</h6>
+                    <p class="card-text">Your security is our priority. Click now to start password reset process and regain access to your account hassle-free.</p>
+                    
+                    <button type="button" class="btn btn-primary reset-password-btn" onclick="window.location.href='/forgot'">Reset Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('upload-photo').addEventListener('change', function() {
+        var file = this.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var profilePicture = document.getElementById('profile-picture');
+                profilePicture.style.backgroundImage = "url('" + e.target.result + "')";
+                profilePicture.innerHTML = ''; // Clear placeholder text
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.getElementById('save-changes-btn').addEventListener('click', function() {
+        this.innerText = 'Changes Saved';
+    });
+</script>
+
+</body>
+</html>
