@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask import Flask, request, render_template , request, redirect, session, url_for
-from flask_sqlalchemy import SQLAlchemy
+
 from flask_mail import Message ,Mail
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import URLSafeTimedSerializer
@@ -8,7 +8,7 @@ from itsdangerous import URLSafeTimedSerializer
 
 app = Flask(__name__, template_folder='templates')
 app.config['SECRET_KEY'] = 'your_secret_key_here'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
 app.config['MAIL_SERVER'] = 'smtp-mail.outlook.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
@@ -21,7 +21,7 @@ app.secret_key = 'your_secret_key_here'
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SECURITY_PASSWORD_SALT'] = 'your_salt'
 
-db = SQLAlchemy(app)
+
 mail = Mail(app)
 serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
