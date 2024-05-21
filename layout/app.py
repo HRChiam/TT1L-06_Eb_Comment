@@ -76,7 +76,7 @@ def invalid():
 @app.route('/process_login', methods=['GET', 'POST'])
 def process_login():
     if request.method == 'POST':
-        username = request.form['username']
+        # username = request.form['username']
         email = request.form['email']
         password = request.form['password']
 
@@ -103,8 +103,8 @@ def process_login():
 @app.route('/process_signin', methods=['POST'])
 def process_signin():
     if request.method == 'POST':
-        username = request.form['username']
         email = request.form['email']
+        nickname = request.form['nickname']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
 
