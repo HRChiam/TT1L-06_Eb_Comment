@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +10,13 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 
     <link href="../static/logsign.css" rel="stylesheet">
+
+    <style>
+        #profile-picture {
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
    
 </head>
 <body>
@@ -96,17 +102,6 @@
 </div>
 
 <script>
-    // Function to disable input fields and change button text after saving changes
-    document.getElementById('save-changes-btn').addEventListener('click', function() {
-        // Disable all input fields
-        document.querySelectorAll('input').forEach(function(input) {
-            input.disabled = true;
-        });
-
-        // Change button text
-        this.textContent = 'Changes Saved';
-    });
-    
     document.getElementById('upload-photo').addEventListener('change', function() {
         var file = this.files[0];
         if (file) {
@@ -118,6 +113,10 @@
             };
             reader.readAsDataURL(file);
         }
+    });
+
+    document.getElementById('save-changes-btn').addEventListener('click', function() {
+        this.innerText = 'Changes Saved';
     });
 </script>
 
