@@ -91,7 +91,7 @@ def invalid():
 @app.route('/process_signin', methods=['POST'])
 def process_signin():
     if request.method == 'POST':
-        username = request.form['username']
+        nickname = request.form['nickname']
         email = request.form['email']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
@@ -109,7 +109,7 @@ def process_signin():
             error['password'] = "Password does not match or does not meet requirements"
 
         if not error:
-            new_user = Users(name=username, email=email, password=password)
+            new_user = Users(name=nickname, email=email, password=password)
             db.session.add(new_user)
             db.session.commit()
 
@@ -126,7 +126,6 @@ def process_signin():
 @app.route('/process_login', methods=['GET', 'POST'])
 def process_login():
     if request.method == 'POST':
-        username = request.form['username']
         email = request.form['email']
         password = request.form['password']
 
