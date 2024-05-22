@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session
-# from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 from models import db, Users, Lecturer, Faculty, LecturerTemp
 from flask_mail import Message ,Mail
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
