@@ -1,32 +1,32 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
+from wtforms import StringField, SubmitField
+from flask_wtf import FlaskForm
+from wtforms.validators import DataRequired
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Users, Lecturer, Faculty, LecturerTemp
+from models import db, Users, Lecturer
+import sqlite3
+from datetime import datetime
 
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SECRET_KEY'] = 'huairen'
 
 db.init_app(app)
 
-@app.errorhandler(404)
-def page_not_found(error):
-    # Render the error.html template with a custom message
-    return render_template('error.html', message="Page not found"), 404
-
-@app.errorhandler(500)
-def internal_server_error(error):
-    # Render the error.html template with a custom message
-    return render_template('error.html', message="Internal server error"), 500
+def get_db_connection():
+    con = sqlite3.connect("/database.db")
+    con.row_factory = sqlite3.Row
+    return con
 
 @app.route('/')
 def home():
     return render_template('home.html')
 
 @app.route('/login')
-def login():
+def login():       
     return render_template('login.html')
 
 @app.route('/signin')
@@ -40,7 +40,7 @@ def forgot():
 @app.route('/process_signin', methods=['POST'])
 def process_signin():
     if request.method == 'POST':
-        username = request.form['username']
+        name = request.form['username']
         email = request.form['email']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
@@ -58,14 +58,22 @@ def process_signin():
             error['password'] = "Password does not match or does not meet requirements"
 
         if not error:
-            new_user = Users(name=username, email=email, password=password)
-            db.session.add(new_user)
-            db.session.commit()
+            con = get_db_connection()
+            cur = con.cursor()
+
+            cur.execute(
+                "INSERT INTO users(name, email, password) VALUES (?, ?, ?)",
+                (name, email, password)
+            )
+
+            con.commit()
+            con.close()
+
 
             if email.endswith('@student.mmu.edu.my'):
                 return redirect('/front')
             elif email.endswith('@mmu.edu.my'):
-                return redirect('/index')
+                return redirect('/admin')
 
         return render_template('signin.html', error=error)
 
@@ -88,6 +96,11 @@ def process_login():
 
         elif email.endswith('@mmu.edu.my'):
             return redirect('/index')
+        
+
+        elif username == "admin" and email == "admin@gmail.com" and password == "123":
+            session["logged_in"] = True
+            return redirect ("/admin")
 
         else:
             error_message = "Email invalid or does not meet requirements"
@@ -105,20 +118,46 @@ def studentfront():
 def studentmain():
     return render_template('studentmain.html')
 
-@app.route('/faculty/<faculty_name>')
-def faculty_page(faculty_name):
-    # Query the database to retrieve the faculty information
-    faculty = Faculty.query.filter_by(name=faculty_name).first()
+@app.route('/FCI')
+def FCI():
+    return render_template('Cyber_FCI_lecturer.html')
 
-    if faculty:
-        # If the faculty is found, fetch information about the lecturers associated with that faculty
-        lecturers = faculty.lecturers
-        # Render the faculty page template with the fetched data
-        return render_template('faculty_page.html', faculty=faculty, lecturers=lecturers)
-    else:
-        # If the faculty is not found, render an error page
-        return render_template('error.html', message="Faculty not found")
-    
+@app.route('/FCM')
+def FCM():
+    return render_template('Cyber_FCM_lecturer.html')
+
+@app.route('/FCA')
+def FCA():
+    return render_template('Cyber_FCA_lecturer.html')
+
+@app.route('/FAC')
+def FAC():
+    return render_template('Cyber_FAC_lecturer.html')
+
+@app.route('/FOM')
+def FOM():
+    return render_template('Cyber_FOM_lecturer.html')
+
+@app.route('/FOE')
+def FOE():
+    return render_template('Cyber_FOE_lecturer.html')
+
+@app.route('/FET')
+def FET():
+    return render_template('Melaka_FET_lecturer.html')
+
+@app.route('/FIST')
+def FIST():
+    return render_template('Melaka_FIST_lecturer.html')
+
+@app.route('/FOL')
+def FOL():
+    return render_template('Melaka_FOL_lecturer.html')
+
+@app.route('/FOB')
+def FOB():
+    return render_template('Melaka_FOB_lecturer.html')
+
 @app.route('/keyin')
 def keyin():
     return render_template('keyin.html')
@@ -130,15 +169,15 @@ def upload():
     phone = request.form['phone']
     email = request.form['email']
     campus = request.form['campus']
-    faculty_id = request.form['faculty']
+    faculty = request.form['faculty']
 
     if not os.path.exists('uploads'):
         os.makedirs('uploads')
 
     photo.save(os.path.join('uploads/' + photo.filename))
 
-    lecturer_temp = LecturerTemp(name=name, photo=photo.filename, phone=phone, email=email, campus=campus, faculty_id=faculty_id)
-    db.session.add(lecturer_temp)
+    lecturer = Lecturer(name=name, photo=photo.filename, phone=phone, email=email, campus=campus, faculty=faculty)
+    db.session.add(lecturer)
     db.session.commit()
 
     return redirect(url_for('keyinsuccess'))
@@ -147,17 +186,129 @@ def upload():
 def keyinsuccess():
     return render_template('keyinsuccess.html')
 
-@app.route("/index")
-def index():
-    return render_template("index.html")
+@app.route("/admin")
+def admin():
+    con = get_db_connection()
+    cursor = con.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM lecturer ")
+    num_lecturers = cursor.fetchone()[0]  # Fetch the first result
+    cursor.execute("SELECT COUNT(*) FROM users ")  # Execute a new query
+    num_users = cursor.fetchone()[0]  # Fetch the first result from the new query
+    cursor.execute("SELECT COUNT(*) FROM comment ")  # Execute a new query
+    num_comment = cursor.fetchone()[0]  # Fetch the first result from the new query
+    
+    return render_template("admin.html", num_lecturers=num_lecturers, num_users=num_users, num_comment=num_comment)
+
 
 @app.route("/user")
-def user():
-    return render_template("user.html")
+def usercontrol():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users")
+    user_data = cursor.fetchall()
+    conn.close()
 
-@app.route("/comment")
+    return render_template("admin_user.html", users=user_data)
+
+def delete_user(name):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM users WHERE name=?", (name,))
+    conn.commit()
+    conn.close()
+
+
+@app.route('/delete_user', methods=["POST"])
+def delete_user_route():
+    name = request.form['name']
+    delete_user(name)
+    return redirect('/user')
+
+def get_current_time():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+@app.route("/admin_comment")
 def comment():
-    return render_template("comment.html")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM comment")
+    comment = cursor.fetchall()
+    conn.close()
+
+    return render_template("admin_comment.html", comment=comment)
+
+def delete_comment(id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM comment WHERE id=?", (id,))
+    conn.commit()
+    conn.close()
+
+@app.route('/delete_comment', methods=["POST"])
+def delete_comment_route():
+    id = request.form['id']
+    delete_comment(id)
+    return redirect('/admin_comment')
+
+
+
+@app.route('/lecturer')
+def lecturer():
+    con = get_db_connection()
+    cursor = con.cursor()
+
+    # Fetch faculties from the database
+    cursor.execute("SELECT * FROM faculty")
+    faculty = cursor.fetchall()
+    # Close database connection
+    con.close()
+
+    return render_template('admin_teacher_profile.html', faculties=faculty)
+
+
+
+from flask import request
+import os
+
+@app.route('/uploadlecturer', methods=["GET", "POST"])
+def uploadlecturer():
+    if request.method == "POST":
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        faculty = request.form.get('faculty')
+        faculty_id = request.form['faculty_id']
+        campus = request.form['campus']
+        
+        
+        # Handle file upload
+        photo_path = None
+        if 'photo' in request.files:
+            photo = request.files['photo']
+            if photo.filename != '':
+                # Save the file
+                photo_path = os.path.join('uploads', photo.filename)
+                photo.save(photo_path)
+
+        # Set a default value if no photo is uploaded
+        if photo_path is None:
+            photo_path = "default_photo.jpg"  # Provide a default photo path
+        
+        if name and email and phone and faculty:
+            con = get_db_connection()
+            cursor = con.cursor()
+            cursor.execute("INSERT INTO lecturer (name, email, phone, faculty, photo, campus, faculty_id) VALUES ( ?, ?, ?, ?, ?, ?,?)",
+                           (name, email, phone, faculty, photo_path, campus, faculty_id))
+            con.commit()
+            con.close()
+            return redirect('/lecturer')
+        
+    return redirect('lecturer')
+
+
+   
+
 
 if __name__ == '__main__':
     with app.app_context():
