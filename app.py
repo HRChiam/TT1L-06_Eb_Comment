@@ -1,22 +1,38 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+import logging
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment
-from flask_sqlalchemy import SQLAlchemy
-from flask_mail import Message ,Mail
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from flask_mail import Message, Mail
 from itsdangerous import URLSafeTimedSerializer
+from dotenv import load_dotenv
 
+load_dotenv()
+
+
+DATABASE_NAME = "database.db"
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_NAME}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_secret_key')
+app.config['MAIL_SERVER'] = 'smtp-mail.outlook.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME', 'ebcomment123@outlook.my')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD', 'hjszkqeytfsdnldp')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER', 'ebcomment123@outlook.my')
+app.config['SECURITY_PASSWORD_SALT'] = os.getenv('SECURITY_PASSWORD_SALT', 'your_security_password_salt')
 
 db.init_app(app)
+mail = Mail(app)
+serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login'
+logger = logging.getLogger(__name__)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -26,16 +42,13 @@ def load_user(user_id):
 def page_not_found(error):
     return render_template('error.html', message="Page not found"), 404
 
-
 @app.errorhandler(500)
 def internal_server_error(error):
     return render_template('error.html', message="Internal server error"), 500
 
-
 @app.route('/')
 def home():
     return render_template('home.html')
-
 
 @app.route('/login')
 def login():
@@ -53,54 +66,134 @@ def logout():
 
 @app.route('/process_signin', methods=['POST'])
 def process_signin():
-    if request.method == 'POST':
-        nickname = request.form['nickname']
-        email = request.form['email']
-        password = request.form['password']
-        confirm_password = request.form['confirm_password']
+    email = request.form['email']
+    nickname = request.form['nickname']
+    password = request.form['password']
+    confirm_password = request.form['confirm_password']
 
-        error = {}
+    error = {}
 
-        # Email validation
-        if email.endswith('@student.mmu.edu.my') and len(email.split('@')[0]) == 10:
-            pass
-        elif email.endswith('@mmu.edu.my'):
-            pass
-        else:
-            error['email'] = "Email invalid or does not meet requirements"
+    # Email validation
+    if email.endswith('@student.mmu.edu.my') and len(email.split('@')[0]) == 10:
+        pass
+    elif email.endswith('@mmu.edu.my'):
+        pass
+    else:
+        error['email'] = "Email invalid or does not meet requirements"
 
-        # Password validation
-        if not (len(password) >= 8 and sum(c.isdigit() for c in password) >= 4) or password != confirm_password:
-            error['password'] = "Password does not match or does not meet requirements"
+    # Password validation
+    if not (len(password) >= 8 and sum(c.isdigit() for c in password) >= 4) or password != confirm_password:
+        error['password'] = "Password does not match or does not meet requirements"
 
-        if not error:
-            new_user = Users(nickname=nickname, email=email)
-            new_user.set_password(password)  # Set hashed password
-            db.session.add(new_user)
-            db.session.commit()
+    if not error:
+        new_user = Users(nickname=nickname, email=email)
+        new_user.set_password(password)  # Set hashed password
+        db.session.add(new_user)
+        db.session.commit()
 
-            return redirect('/login')
+        return redirect('/login')
 
-        return render_template('signin.html', error=error)
-
-    return render_template('signin.html')
-
+    return render_template('signin.html', error=error)
 
 @app.route('/process_login', methods=['POST'])
 def process_login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        user = Users.query.filter_by(email=email).first()
-        if user and user.check_password(password):
-            login_user(user)
-            if email.endswith('@student.mmu.edu.my'):
-                return redirect('/front')
-            elif email.endswith('@mmu.edu.my'):
-                return redirect('/index')
-        else:
-            flash('Invalid email or password', 'danger')
+    email = request.form['email']
+    password = request.form['password']
+
+    user = Users.query.filter_by(email=email).first()
+    
+    if user and user.check_password(password):
+        login_user(user)
+        if email.endswith('@student.mmu.edu.my'):
+            return redirect('/front')
+        elif email.endswith('@mmu.edu.my'):
+            return redirect('/index')
+    else:
+        flash('Invalid email or password', 'danger')
     return render_template('login.html')
+
+@app.route('/forgot')
+def forgot():
+    return render_template('forgot.html')
+
+@app.route('/reset_password_form')
+def reset_password_form():
+    return render_template('reset_password_form.html')
+
+@app.route('/invalid')
+def invalid():
+    return render_template('invalid.html')
+
+@app.route('/reset_password', methods=['POST'])
+def reset_password():
+    email = request.form['email']
+    user = Users.query.filter_by(email=email).first()
+    if user:
+        token = serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
+        reset_link = url_for('reset_password_with_token', token=token, _external=True)
+        send_reset_email(email, reset_link)
+        flash('Password reset email has been sent.', 'info')
+    else:
+        flash('Email address not found.', 'danger')
+    return redirect(url_for('forgot'))
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password_with_token(token):
+    try:
+        email = serializer.loads(token, salt=app.config['SECURITY_PASSWORD_SALT'], max_age=3600)
+    except:
+        flash('The reset link is invalid or has expired.', 'danger')
+        return redirect(url_for('forgot'))
+
+    if request.method == 'POST':
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        if password != confirm_password:
+            flash('Passwords do not match.', 'danger')
+            return redirect(url_for('reset_password_with_token', token=token))
+        user = Users.query.filter_by(email=email).first()
+        if user:
+            user.set_password(password)
+            db.session.commit()
+            flash('Your password has been updated!', 'success')
+            return redirect(url_for('login'))
+        else:
+            flash('User not found.', 'danger')
+            return redirect(url_for('forgot'))
+    return render_template('reset_password_form.html', token=token)
+
+def send_reset_email(email, reset_link):
+    msg = Message('Password Reset',
+                  recipients=[email],
+                  body=f'We have received a request to reset your password.\n\n'
+                       f'To reset your password, click on the following link: {reset_link}\n\n'
+                       '---Eb_Comment Team---',)
+    mail.send(msg)
+
+@app.route('/reset_form', methods=['POST'])
+def reset_form():
+    password = request.form['password']
+    confirm_password = request.form['confirm_password']
+
+    error= {} 
+
+    if not (len(password) >= 8 and sum(c.isdigit() for c in password) >= 4) or password != confirm_password:
+        error['password'] = "Password does not match or does not meet requirements"
+        return render_template('reset_password_form.html',error=error )
+    else:
+        success_message = "Password has been updated"
+        return render_template('reset_password_form.html', success=success_message)
+   
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    if request.method == 'POST':
+        nickname = request.form.get('nickname')
+        
+        success_message = 'Profile updated successfully'
+        return render_template('profile.html', success=success_message)
+    
+    return render_template('profile.html')
+
 
 @app.route('/front')
 @login_required
@@ -202,90 +295,9 @@ def comment():
     return render_template("comment.html")
 
 
-@app.route('/logout', methods=['POST'])
-def logout():
-    session.clear()
-    return redirect(url_for('home'))
-
-
-
-
-
-@app.route('/reset_password', methods=['GET', 'POST'])
-def reset_password():
-    if request.method == 'POST':
-        email = request.form['email']
-        
-        token = generate_reset_token(email)
-        
-        
-        send_reset_email(email, token)
-        
-
-        success_message = 'Password reset email had sent successfully. Kindly check your email inbox.'
-        return render_template('forgot.html', success=success_message)
-    
-    return render_template('forgot.html')
-
-@app.route('/reset_password/<token>', methods=['GET', 'POST'])
-def reset_password_with_token(token):
-    email = confirm_reset_token(token)
-    if email:
-        if request.method == 'POST':
-       
-            return redirect(url_for('login'))
-        return render_template('reset_password_form.html')
-    else:
-        
-        return render_template('invalid.html')
-
-
-
-def generate_reset_token(email):
-    return serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
-
-def confirm_reset_token(token, expiration=120):
-    try:
-        email = serializer.loads(token, salt=app.config['SECURITY_PASSWORD_SALT'], max_age=expiration)
-        return email
-    except:
-        return None
-
-def send_reset_email(email, token):
-    reset_link = url_for('reset_password_with_token', token=token, _external=True)
-    msg = Message(
-        'Password Reset',
-        recipients=[email],
-        body=f'We have received a request to reset your password.\n\n'
-             f'To reset your password, click on the following link: {reset_link}\n\n'
-             '---Eb_Comment Team---',
-        sender=app.config['MAIL_DEFAULT_SENDER']
-    )
-    mail.send(msg)
-
-
-@app.route('/reset_form', methods=['POST'])
-def reset_form():
-    if request.method == 'POST':
-        password = request.form['password']
-        confirm_password = request.form['confirm_password']
-
-        error= {} 
-
-
-        if not (len(password) >= 8 and sum(c.isdigit() for c in password) >= 4) or password != confirm_password:
-            error['password'] = "Password does not match or does not meet requirements"
-            return render_template('reset_password_form.html',error=error )
-        else:
-            
-            success_message = "Password has been updated"
-            return render_template('reset_password_form.html', success=success_message)
-
-   
-    return render_template('reset_password_form.html')
-
-
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+    logging.basicConfig(level=logging.INFO)
     app.run(debug=True)
+
