@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session
+from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Users, Lecturer, Faculty, LecturerTemp
 from flask_mail import Message ,Mail
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import URLSafeTimedSerializer
@@ -40,13 +40,11 @@ db.init_app(app)
 
 @app.errorhandler(404)
 def page_not_found(error):
-    # Render the error.html template with a custom message
     return render_template('error.html', message="Page not found"), 404
 
 
 @app.errorhandler(500)
 def internal_server_error(error):
-    # Render the error.html template with a custom message
     return render_template('error.html', message="Internal server error"), 500
 
 
@@ -71,6 +69,7 @@ def forgot():
 
 
 
+@app.route('/profile', methods=['GET', 'POST'])
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
     if request.method == 'POST':
@@ -101,7 +100,7 @@ def process_signin():
         password = request.form['password']
         confirm_password = request.form['confirm_password']
 
-        error= {}
+        error = {}
 
         if email.endswith('@student.mmu.edu.my') and len(email.split('@')[0]) == 10:
             pass
@@ -127,30 +126,23 @@ def process_signin():
 
     return render_template('signin.html')
 
-
 @app.route('/process_login', methods=['GET', 'POST'])
 def process_login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
 
-     
-        student_email = email.endswith('@student.mmu.edu.my')and len(email.split('@')[0]) == 10
+        student_email = email.endswith('@student.mmu.edu.my') and len(email.split('@')[0]) == 10
 
         if student_email:
             return redirect('/front') 
-        
-
         elif email.endswith('@mmu.edu.my'):
             return redirect('/index')
-
         else:
             error_message = "Email invalid or does not meet requirements"
             return render_template('login.html', error=error_message)
 
-
     return render_template('login.html')
-
 
 @app.route('/front')
 def studentfront():
@@ -162,16 +154,12 @@ def studentmain():
 
 @app.route('/faculty/<faculty_name>')
 def faculty_page(faculty_name):
-    # Query the database to retrieve the faculty information
     faculty = Faculty.query.filter_by(name=faculty_name).first()
 
     if faculty:
-        # If the faculty is found, fetch information about the lecturers associated with that faculty
         lecturers = faculty.lecturers
-        # Render the faculty page template with the fetched data
         return render_template('faculty_page.html', faculty=faculty, lecturers=lecturers)
     else:
-        # If the faculty is not found, render an error page
         return render_template('error.html', message="Faculty not found")
     
 @app.route('/keyin')
@@ -197,6 +185,37 @@ def upload():
     db.session.commit()
 
     return redirect(url_for('keyinsuccess'))
+
+@app.route('/lecturer/<int:lecturer_id>')
+def lecturer_details(lecturer_id):
+    lecturer = Lecturer.query.get(lecturer_id)
+    if not lecturer:
+        return render_template('error.html', message="Lecturer not found")
+
+    comments = Comment.query.filter_by(lecturer=lecturer.name).all()
+    return render_template('lecturer_page.html', lecturer=lecturer, comments=comments)
+
+@app.route('/add_comment', methods=['POST'])
+def add_comment():
+    lecturer_id = request.form['lecturer_id']
+    username = request.form['username']
+    comment_text = request.form['comment_text']
+    
+    lecturer = Lecturer.query.get(lecturer_id)
+    if not lecturer:
+        return render_template('error.html', message="Lecturer not found")
+
+    new_comment = Comment(
+        lecturer=lecturer.name,
+        faculty_id=lecturer.faculty_id,
+        username=username,
+        comment_text=comment_text
+    )
+
+    db.session.add(new_comment)
+    db.session.commit()
+
+    return redirect(url_for('lecturer_details', lecturer_id=lecturer_id))
 
 @app.route('/keyinsuccess')
 def keyinsuccess():
@@ -300,5 +319,5 @@ def reset_form():
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all() 
+        db.create_all()
     app.run(debug=True)
