@@ -71,9 +71,16 @@ def forgot():
 
 
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 def profile():
-    return render_template ('profile.html')
+    if request.method == 'POST':
+        username = request.form.get('username')
+        
+        success_message = 'Profile updated successfully'
+        return render_template('profile.html', success=success_message)
+    
+    return render_template('profile.html')
+
 
 
 @app.route('/reset_password_form')
