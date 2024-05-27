@@ -6,6 +6,7 @@
     <title>User Profile</title>
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 
@@ -22,7 +23,7 @@
 <body>
     
     <div class="bar-text-wel"> Settings </div>
-    <div class="bar-text-back"><a href="{{ url_for('studentmain') }}">Back</a> </div>
+    <div class="bar-text-back"><a href="{{ url_for('home') }}">Back</a> </div>
     <div class="rectangle-bar-profile"></div>
     <body class="profile-background"></body>
 
@@ -37,11 +38,13 @@
                         <div class="row">
                             <div class="col-12 col-sm-auto mb-3">
                                 <div class="mx-auto" style="width: 140px;">
-                                    <!-- Profile picture -->
+                                 
+
                                     <div id="profile-picture" class="d-flex justify-content-center align-items-center rounded" style="height: 140px; background-color: rgb(233, 236, 239);">
                                         <span style="color: rgb(166, 168, 170); font: bold 8pt Arial;">140x140</span>
                                     </div>
-                                    <!-- Button to trigger file input -->
+                                   
+
                                     <div class="mt-2">
                                         <input type="file" id="upload-photo" style="display: none;">
                                         <button class="btn btn-primary photo-button" type="button" onclick="document.getElementById('upload-photo').click();">
@@ -52,32 +55,42 @@
                                 </div>
                             </div>
                             <div class="col d-flex flex-column mb-3">
-                                <!-- Username input -->
-                                <div class="form-group">
-                                    <label for="username">Username</label>
-                                    <input id="username" class="form-control" type="text" name="username" placeholder="johnny.s" value="johnny.s">
-                                </div>
+                                <form id="profile-form" action="/profile" method="post">
+                                 
 
-                                    <!-- Email input (fixed) -->
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input id="email" class="form-control fixed-input" type="email" name="email" value="0123456789@student.mmu.edu.my" readonly>
-                                </div>
+                                    <div class="form-group">
+                                        <label for="username">Username</label>
+                                        <input id="username" class="form-control" type="text" name="username" placeholder="johnny.s" value="johnny.s">
+                                    </div>
 
+                                    
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input id="email" class="form-control fixed-input" type="email" name="email" value="0123456789@student.mmu.edu.my" readonly>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col d-flex justify-content-end">
+                                         
+
+                                            <button id="save-changes-btn" class="btn btn-primary" type="submit">Save Changes</button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col d-flex justify-content-end">
-                                <!-- Save Changes button -->
-                                <button id="save-changes-btn" class="btn btn-primary" type="button">Save Changes</button>
+                        {% if success %}
+                            <div class="alert alert-success mt-3" role="alert">
+                                {{ success }}
                             </div>
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <!-- Logout box -->
+            
+
             <div class="card mb-3">
                 <div class="card-body">
                     <form action="/logout" method="post">
@@ -88,7 +101,8 @@
                     </form>
                 </div>
             </div>
-            <!-- Support box -->
+         
+
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-title font-weight-bold">Forgot Password?</h6>
@@ -109,15 +123,13 @@
             reader.onload = function(e) {
                 var profilePicture = document.getElementById('profile-picture');
                 profilePicture.style.backgroundImage = "url('" + e.target.result + "')";
-                profilePicture.innerHTML = ''; // Clear placeholder text
+                profilePicture.innerHTML = ''; 
             };
             reader.readAsDataURL(file);
         }
     });
 
-    document.getElementById('save-changes-btn').addEventListener('click', function() {
-        this.innerText = 'Changes Saved';
-    });
+  
 </script>
 
 </body>
