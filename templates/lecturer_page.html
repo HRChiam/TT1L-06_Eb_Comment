@@ -43,6 +43,11 @@
                     <a href="/faculty/FET">FET</a>
                 </div>
                 <a href="/keyin">Upload Lecturer Information</a>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                {% endif %}
             </nav>
         </div>
     </header>
@@ -65,40 +70,54 @@
         });
     </script>
 
-<div class="lecturer_details_container">
-    <div class="lecturer_info">
-        <h2>{{ lecturer.name }} - Details</h2>
-        <img src="{{ url_for('static', filename='uploads/' + lecturer.photo) }}" alt="{{ lecturer.name }}">
-        <p><strong>Name:</strong> {{ lecturer.name }}</p>
-        <p><strong>Phone:</strong> {{ lecturer.phone }}</p>
-        <p><strong>Email:</strong> {{ lecturer.email }}</p>
-        <p><strong>Campus:</strong> {{ lecturer.campus }}</p>
-        <p><strong>Bio:</strong> {{ lecturer.bio }}</p>
-    </div>
-    <div class="comments_section">
-        <h3>Comments</h3>
-        <form action="{{ url_for('add_comment') }}" method="POST">
-            <input type="hidden" name="lecturer_id" value="{{ lecturer.id }}">
-            <div>
-                <label for="username">Username:</label>
-                <input type="text" name="username" required>
+    <div class="lecturer_details_container">
+        <div class="lecturer_info">
+            <h2>{{ lecturer.name }} - Details</h2>
+            <img src="{{ url_for('static', filename='uploads/' + lecturer.photo) }}" alt="{{ lecturer.name }}">
+            <p><strong>Name:</strong> {{ lecturer.name }}</p>
+            <p><strong>Phone:</strong> {{ lecturer.phone }}</p>
+            <p><strong>Email:</strong> {{ lecturer.email }}</p>
+            <p><strong>Campus:</strong> {{ lecturer.campus }}</p>
+            <p><strong>Bio:</strong> {{ lecturer.bio }}</p>
+        </div>
+
+        <div class="comments_section">
+            <h3>Comments</h3>
+            <form id="comment_form" action="{{ url_for('add_comment') }}" method="POST">
+                <input type="hidden" name="lecturer_id" value="{{ lecturer.id }}">
+                <input type="hidden" name="nickname" id="nickname_input" required>
+
+                <div>
+                    <label for="comment_text">Comment:</label>
+                    <textarea id="comment_textarea" name="comment_text" required></textarea>
+                </div>
+                <button type="submit">Add Comment</button>
+            </form>
+            
+            <div class="comments_list">
+                {% for comment in comments %}
+                <div class="comment">
+                    <p><strong>{{ comment.nickname }}</strong> ({{ comment.date }} {{ comment.time }}):</p>
+                    <p>{{ comment.comment_text }}</p>
+                </div>
+                {% endfor %}
             </div>
-            <div>
-                <label for="comment_text">Comment:</label>
-                <textarea name="comment_text" required></textarea>
-            </div>
-            <button type="submit">Add Comment</button>
-        </form>
-        <div class="comments_list">
-            {% for comment in comments %}
-            <div class="comment">
-                <p><strong>{{ comment.username }}</strong> ({{ comment.date }} {{ comment.time }}):</p>
-                <p>{{ comment.comment_text }}</p>
-            </div>
-            {% endfor %}
         </div>
     </div>
-</div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var commentTextarea = document.getElementById("comment_textarea");
+            var nicknameInput = document.getElementById("nickname_input");
+
+            commentTextarea.addEventListener("focus", showNicknameField);
+            commentTextarea.addEventListener("input", showNicknameField);
+
+            function showNicknameField() {
+                nicknameInput.style.display = "block";
+            }
+        });
+    </script>
+
 </body>
 
 </html>
