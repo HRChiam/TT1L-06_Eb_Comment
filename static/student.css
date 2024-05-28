@@ -471,6 +471,58 @@ header {
     border-radius: 8px;
 }
 
+.comment {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.comment_text {
+    flex: 1;
+}
+
+.comment p {
+    margin: 0;
+    padding: 5px 0;
+    font-size: 16px;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+}
+
+.like,
+.dislike {
+    font-size: 6px;
+    margin-left: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.grow.like.active {
+    color: #0A509E;
+}
+
+.grow.dislike.active {
+    color: #ED2429; /* Red */
+}
+
+.like:hover,
+.dislike:hover {
+    transition: all .2s ease-in-out;
+    transform: scale(1.1);
+}
+
+.like:hover{
+    color: #0A509E;
+}
+
+.dislike:hover {
+    color: #ED2429; /* Red */
+}
+
+
 .keyin_background {
     background-image: url("background.webp");
     background-size: cover;
