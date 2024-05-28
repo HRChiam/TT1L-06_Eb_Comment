@@ -7,7 +7,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
 db = SQLAlchemy()
-logger = logging.getLogger(__name__)
 
 class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
