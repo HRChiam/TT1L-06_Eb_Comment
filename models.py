@@ -1,6 +1,5 @@
-import bcrypt
 import logging
-from datetime import datetime
+from datetime import datetime, date, time
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
@@ -15,7 +14,6 @@ class Users(db.Model, UserMixin):
     nickname = db.Column(db.String(150), unique=True, nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
-    salt = db.Column(db.String(29), nullable=False)  # Add a new column for salt
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -25,6 +23,7 @@ class Users(db.Model, UserMixin):
 
     def __repr__(self):
         return '<Name %r>' % self.nickname
+
 
 class Faculty(db.Model):
     __tablename__ = 'faculty'
@@ -63,10 +62,13 @@ class Comment(db.Model):
     __tablename__ = 'comment'
 
     id = db.Column(db.Integer, primary_key=True)
-    lecturer = db.Column(db.String(100), nullable=False)
+    lecturer_id = db.Column(db.Integer, ForeignKey('lecturer.id'), nullable=False)
     faculty_id = db.Column(db.Integer, ForeignKey('faculty.id'), nullable=False)
     nickname = db.Column(db.String(100), nullable=False)
     comment_text = db.Column(db.Text, nullable=False)
-    date = db.Column(db.Date, nullable=False, default=datetime.now().date())
-    time = db.Column(db.Time, nullable=False, default=datetime.now().time())
+    thumbs_up = db.Column(db.Integer, default=0)
+    thumbs_down = db.Column(db.Integer, default=0)
+    date = db.Column(db.Date, nullable=False, default=date.today)
+    time = db.Column(db.Time, nullable=False, default=datetime.now().time)
+    lecturer = relationship("Lecturer")
     faculty = relationship("Faculty")

@@ -3,6 +3,7 @@ import logging
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment
+from datetime import datetime, date, time
 from flask_mail import Message, Mail
 from itsdangerous import URLSafeTimedSerializer
 from dotenv import load_dotenv
@@ -216,6 +217,76 @@ def faculty_page(faculty_name):
     else:
         return render_template('error.html', message="Faculty not found")
 
+@app.route('/lecturer/<int:lecturer_id>')
+@login_required
+def lecturer_details(lecturer_id):
+    # Fetch the lecturer using the lecturer_id
+    lecturer = Lecturer.query.get(lecturer_id)
+    
+    # If the lecturer does not exist, render an error page
+    if not lecturer:
+        return render_template('error.html', message="Lecturer not found")
+
+    # Filter comments based on the lecturer_id
+    comments = Comment.query.filter_by(lecturer_id=lecturer_id).all()
+    
+    # Render the lecturer details page with the fetched lecturer and comments
+    return render_template('lecturer_page.html', lecturer=lecturer, comments=comments)
+
+@app.route('/add_comment', methods=['POST'])
+@login_required
+def add_comment():
+    lecturer_id = request.form['lecturer_id']
+    comment_text = request.form['comment_text']
+    
+    lecturer = Lecturer.query.get(lecturer_id)
+    if not lecturer:
+        return render_template('error.html', message="Lecturer not found")
+
+    new_comment = Comment(
+        lecturer_id=lecturer.id,
+        faculty_id=lecturer.faculty_id,
+        nickname=current_user.nickname,
+        comment_text=comment_text,
+        date=date.today(),
+        time=datetime.now().time()
+    )
+
+    db.session.add(new_comment)
+    db.session.commit()
+
+    return redirect(url_for('lecturer_details', lecturer_id=lecturer_id))
+
+
+@app.route('/upvote_comment/<int:comment_id>', methods=['POST'])
+@login_required
+def upvote_comment(comment_id):
+    comment = Comment.query.get(comment_id)
+    if comment and comment.nickname != current_user.nickname:  
+        comment.thumbs_up += 1
+        calculate_percentage(comment)
+        db.session.commit()
+    return redirect(url_for('lecturer_details', lecturer_id=comment.lecturer_id))
+
+@app.route('/downvote_comment/<int:comment_id>', methods=['POST'])
+@login_required
+def downvote_comment(comment_id):
+    comment = Comment.query.get(comment_id)
+    if comment and comment.nickname != current_user.nickname:  
+        comment.thumbs_down += 1
+        calculate_percentage(comment)
+        db.session.commit()
+    return redirect(url_for('lecturer_details', lecturer_id=comment.lecturer_id))
+
+def calculate_percentage(comment):
+    total_votes = comment.thumbs_up + comment.thumbs_down
+    if total_votes > 0:
+        comment.agree_percentage = round((comment.thumbs_up / total_votes) * 100, 2)
+        comment.disagree_percentage = round((comment.thumbs_down / total_votes) * 100, 2)
+    else:
+        comment.agree_percentage = 0
+        comment.disagree_percentage = 0
+
 @app.route('/keyin')
 @login_required
 def keyin():
@@ -241,38 +312,6 @@ def upload():
     db.session.commit()
 
     return redirect(url_for('keyinsuccess'))
-
-@app.route('/lecturer/<int:lecturer_id>')
-@login_required
-def lecturer_details(lecturer_id):
-    lecturer = Lecturer.query.get(lecturer_id)
-    if not lecturer:
-        return render_template('error.html', message="Lecturer not found")
-
-    comments = Comment.query.filter_by(lecturer=lecturer.name).all()
-    return render_template('lecturer_page.html', lecturer=lecturer, comments=comments)
-
-@app.route('/add_comment', methods=['POST'])
-@login_required
-def add_comment():
-    lecturer_id = request.form['lecturer_id']
-    comment_text = request.form['comment_text']
-    
-    lecturer = Lecturer.query.get(lecturer_id)
-    if not lecturer:
-        return render_template('error.html', message="Lecturer not found")
-
-    new_comment = Comment(
-        lecturer=lecturer.name,
-        faculty_id=lecturer.faculty_id,
-        nickname=current_user.nickname,
-        comment_text=comment_text
-    )
-
-    db.session.add(new_comment)
-    db.session.commit()
-
-    return redirect(url_for('lecturer_details', lecturer_id=lecturer_id))
 
 @app.route('/keyinsuccess')
 @login_required
