@@ -13,11 +13,13 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'huairen'
+DATABASE_NAME = "database.db"
+
 
 db.init_app(app)
 
 def get_db_connection():
-    con = sqlite3.connect("/database.db")
+    con = sqlite3.connect("database.db")
     con.row_factory = sqlite3.Row
     return con
 
@@ -267,10 +269,6 @@ def lecturer():
     return render_template('admin_teacher_profile.html', faculties=faculty)
 
 
-
-from flask import request
-import os
-
 @app.route('/uploadlecturer', methods=["GET", "POST"])
 def uploadlecturer():
     if request.method == "POST":
@@ -304,13 +302,56 @@ def uploadlecturer():
             con.close()
             return redirect('/lecturer')
         
-    return redirect('lecturer')
+    return redirect('/lecturer')
+
+
+@app.route("/lecturerlist")
+def lecturerlist():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM lecturer")
+    lecturer_data = cursor.fetchall()
+    conn.close()
+
+    return render_template("lecturerlist.html", lecturers=lecturer_data)
+
+@app.route("/edit_user/<int:id>", methods=["GET"])
+def edit_user(id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM lecturer WHERE id = ?", (id,))
+    lecturer = cursor.fetchone()
+    conn.close()
+    
+    if lecturer:
+        return render_template("editlecturer.html", lecturer=lecturer)
+    else:
+        return "Lecturer not found", 404
+    
+@app.route("/update_user/<int:id>", methods=["POST"])
+def update_user(id):
+    name = request.form['name']
+    email = request.form['email']
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE lecturer SET name = ?, email = ? WHERE id = ?", (name, email, id))
+    conn.commit()
+    conn.close()
+
+    con = get_db_connection()
+    cursor = con.cursor()
+
+    # Fetch faculties from the database
+    cursor.execute("SELECT * FROM faculty")
+    faculty = cursor.fetchall()
+    
+    return redirect(url_for('lecturerlist'))
+
 
 
    
 
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all() 
     app.run(debug=True)
