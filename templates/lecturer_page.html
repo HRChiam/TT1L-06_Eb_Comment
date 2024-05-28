@@ -3,9 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width = device-width, initial-scale = 1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Lecturer Details</title>
-    <link href="../static/student.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='student.css') }}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -86,7 +88,6 @@
             <form id="comment_form" action="{{ url_for('add_comment') }}" method="POST">
                 <input type="hidden" name="lecturer_id" value="{{ lecturer.id }}">
                 <input type="hidden" name="nickname" id="nickname_input" required>
-
                 <div>
                     <label for="comment_text">Comment:</label>
                     <textarea id="comment_textarea" name="comment_text" required></textarea>
@@ -99,22 +100,55 @@
                 <div class="comment">
                     <p><strong>{{ comment.nickname }}</strong> ({{ comment.date }} {{ comment.time }}):</p>
                     <p>{{ comment.comment_text }}</p>
-                    <div>
-                        <form action="{{ url_for('upvote_comment', comment_id=comment.id) }}" method="post">
-                            <button type="submit">Thumbs Up</button>
-                        </form>
-                        <form action="{{ url_for('downvote_comment', comment_id=comment.id) }}" method="post">
-                            <button type="submit">Thumbs Down</button>
-                        </form>
-                        <p>Agree: {{ comment.thumbs_up }} ({{ comment.agree_percentage }}%)</p>
-                        <p>Disagree: {{ comment.thumbs_down }} ({{ comment.disagree_percentage }}%)</p>
+                    <div class="rating">
+                        <div class="like grow {{ 'active' if current_user in comment.likes else '' }}"
+                            data-comment-id="{{ comment.id }}" data-action="upvote">
+                            <i class="fa fa-thumbs-up fa-3x" aria-hidden="true">{{ comment.likes_count() }}</i>
+                        </div>
+                        <div class="dislike grow {{ 'active' if current_user in comment.dislikes else '' }}"
+                            data-comment-id="{{ comment.id }}" data-action="downvote">
+                            <i class="fa fa-thumbs-down fa-3x" aria-hidden="true">{{ comment.dislikes_count() }}</i>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
-
             </div>
         </div>
     </div>
+
+    <script>
+        $('.like, .dislike').on('click', function (event) {
+            event.preventDefault();
+
+            const $this = $(this);
+            const commentId = $this.data('comment-id');
+            const action = $this.data('action');
+            const oppositeAction = action === 'upvote' ? 'downvote' : 'upvote';
+
+            $.ajax({
+                url: `/${action}_comment/${commentId}`,
+                method: 'POST',
+                success: function (response) {
+                    const currentUserId = '{{ current_user.id if current_user.is_authenticated else None }}';
+
+                    // Update like/dislike counts
+                    $(`[data-comment-id="${commentId}"] .fa-thumbs-up`).text(response.likes.length);
+                    $(`[data-comment-id="${commentId}"] .fa-thumbs-down`).text(response.dislikes.length);
+
+                    // Toggle active state
+                    $this.toggleClass('active');
+
+                    // Remove active state from opposite action button
+                    $(`[data-comment-id="${commentId}"][data-action="${oppositeAction}"]`).removeClass('active');
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        });
+    </script>
+
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             var commentTextarea = document.getElementById("comment_textarea");

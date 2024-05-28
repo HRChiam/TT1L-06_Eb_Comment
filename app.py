@@ -1,6 +1,6 @@
 import os
 import logging
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment
 from datetime import datetime, date, time
@@ -9,7 +9,6 @@ from itsdangerous import URLSafeTimedSerializer
 from dotenv import load_dotenv
 
 load_dotenv()
-
 
 DATABASE_NAME = "database.db"
 app = Flask(__name__)
@@ -35,35 +34,43 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 logger = logging.getLogger(__name__)
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return Users.query.get(user_id)
+
 
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('error.html', message="Page not found"), 404
 
+
 @app.errorhandler(500)
 def internal_server_error(error):
     return render_template('error.html', message="Internal server error"), 500
+
 
 @app.route('/')
 def home():
     return render_template('home.html')
 
+
 @app.route('/login')
 def login():
     return render_template('login.html')
 
+
 @app.route('/signin') 
 def signin():
     return render_template('signin.html')
+
 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
 
 @app.route('/process_signin', methods=['POST'])
 def process_signin():
@@ -96,6 +103,7 @@ def process_signin():
 
     return render_template('signin.html', error=error)
 
+
 @app.route('/process_login', methods=['POST'])
 def process_login():
     email = request.form['email']
@@ -113,17 +121,21 @@ def process_login():
         flash('Invalid email or password', 'danger')
     return render_template('login.html')
 
+
 @app.route('/forgot')
 def forgot():
     return render_template('forgot.html')
+
 
 @app.route('/reset_password_form')
 def reset_password_form():
     return render_template('reset_password_form.html')
 
+
 @app.route('/invalid')
 def invalid():
     return render_template('invalid.html')
+
 
 @app.route('/reset_password', methods=['POST'])
 def reset_password():
@@ -137,6 +149,7 @@ def reset_password():
     else:
         flash('Email address not found.', 'danger')
     return redirect(url_for('forgot'))
+
 
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password_with_token(token):
@@ -171,6 +184,7 @@ def send_reset_email(email, reset_link):
                        '---Eb_Comment Team---',)
     mail.send(msg)
 
+
 @app.route('/reset_form', methods=['POST'])
 def reset_form():
     password = request.form['password']
@@ -184,7 +198,8 @@ def reset_form():
     else:
         success_message = "Password has been updated"
         return render_template('reset_password_form.html', success=success_message)
-   
+
+
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
     if request.method == 'POST':
@@ -201,10 +216,12 @@ def profile():
 def studentfront():
     return render_template('studentfront.html')
 
+
 @app.route('/main')
 @login_required
 def studentmain():
     return render_template('studentmain.html')
+
 
 @app.route('/faculty/<faculty_name>')
 @login_required
@@ -216,6 +233,7 @@ def faculty_page(faculty_name):
         return render_template('faculty_page.html', faculty=faculty, lecturers=lecturers)
     else:
         return render_template('error.html', message="Faculty not found")
+
 
 @app.route('/lecturer/<int:lecturer_id>')
 @login_required
@@ -232,6 +250,7 @@ def lecturer_details(lecturer_id):
     
     # Render the lecturer details page with the fetched lecturer and comments
     return render_template('lecturer_page.html', lecturer=lecturer, comments=comments)
+
 
 @app.route('/add_comment', methods=['POST'])
 @login_required
@@ -262,35 +281,37 @@ def add_comment():
 @login_required
 def upvote_comment(comment_id):
     comment = Comment.query.get(comment_id)
-    if comment and comment.nickname != current_user.nickname:  
-        comment.thumbs_up += 1
-        calculate_percentage(comment)
+    if comment:
+        if current_user in comment.likes:
+            comment.likes.remove(current_user)
+        else:
+            comment.likes.append(current_user)
+            if current_user in comment.dislikes:
+                comment.dislikes.remove(current_user)
         db.session.commit()
-    return redirect(url_for('lecturer_details', lecturer_id=comment.lecturer_id))
+    return jsonify({'likes': [user.id for user in comment.likes], 'dislikes': [user.id for user in comment.dislikes]})
+
 
 @app.route('/downvote_comment/<int:comment_id>', methods=['POST'])
 @login_required
 def downvote_comment(comment_id):
     comment = Comment.query.get(comment_id)
-    if comment and comment.nickname != current_user.nickname:  
-        comment.thumbs_down += 1
-        calculate_percentage(comment)
+    if comment:
+        if current_user in comment.dislikes:
+            comment.dislikes.remove(current_user)
+        else:
+            comment.dislikes.append(current_user)
+            if current_user in comment.likes:
+                comment.likes.remove(current_user)
         db.session.commit()
-    return redirect(url_for('lecturer_details', lecturer_id=comment.lecturer_id))
+    return jsonify({'likes': [user.id for user in comment.likes], 'dislikes': [user.id for user in comment.dislikes]})
 
-def calculate_percentage(comment):
-    total_votes = comment.thumbs_up + comment.thumbs_down
-    if total_votes > 0:
-        comment.agree_percentage = round((comment.thumbs_up / total_votes) * 100, 2)
-        comment.disagree_percentage = round((comment.thumbs_down / total_votes) * 100, 2)
-    else:
-        comment.agree_percentage = 0
-        comment.disagree_percentage = 0
 
 @app.route('/keyin')
 @login_required
 def keyin():
     return render_template('keyin.html')
+
 
 @app.route('/upload', methods=['POST'])
 @login_required
@@ -313,20 +334,24 @@ def upload():
 
     return redirect(url_for('keyinsuccess'))
 
+
 @app.route('/keyinsuccess')
 @login_required
 def keyinsuccess():
     return render_template('keyinsuccess.html')
+
 
 @app.route("/index")
 @login_required
 def index():
     return render_template("index.html")
 
+
 @app.route("/user")
 @login_required
 def user():
     return render_template("user.html")
+
 
 @app.route("/comment")
 @login_required
@@ -335,8 +360,6 @@ def comment():
 
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     logging.basicConfig(level=logging.INFO)
     app.run(debug=True)
 

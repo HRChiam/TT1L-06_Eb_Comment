@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, date, time
+from datetime import datetime, date
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
@@ -66,9 +66,23 @@ class Comment(db.Model):
     faculty_id = db.Column(db.Integer, ForeignKey('faculty.id'), nullable=False)
     nickname = db.Column(db.String(100), nullable=False)
     comment_text = db.Column(db.Text, nullable=False)
-    thumbs_up = db.Column(db.Integer, default=0)
-    thumbs_down = db.Column(db.Integer, default=0)
     date = db.Column(db.Date, nullable=False, default=date.today)
     time = db.Column(db.Time, nullable=False, default=datetime.now().time)
-    lecturer = relationship("Lecturer")
-    faculty = relationship("Faculty")
+    likes = db.relationship('Users', secondary='comment_likes', backref=db.backref('liked_comments', lazy='dynamic'))
+    dislikes = db.relationship('Users', secondary='comment_dislikes', backref=db.backref('disliked_comments', lazy='dynamic'))
+
+    def likes_count(self):
+        return len(self.likes)
+
+    def dislikes_count(self):
+        return len(self.dislikes)
+
+comment_likes = db.Table('comment_likes',
+    db.Column('comment_id', db.Integer, db.ForeignKey('comment.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'))
+)
+
+comment_dislikes = db.Table('comment_dislikes',
+    db.Column('comment_id', db.Integer, db.ForeignKey('comment.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'))
+)
