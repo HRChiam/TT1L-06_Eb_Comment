@@ -315,6 +315,7 @@ def lecturerlist():
 
     return render_template("lecturerlist.html", lecturers=lecturer_data)
 
+
 @app.route("/edit_user/<int:id>", methods=["GET"])
 def edit_user(id):
     conn = get_db_connection()
@@ -325,11 +326,16 @@ def edit_user(id):
     
     if lecturer:
         return render_template("editlecturer.html", lecturer=lecturer)
-    else:
-        return "Lecturer not found", 404
+
+
     
 @app.route("/update_user/<int:id>", methods=["POST"])
 def update_user(id):
+    con = get_db_connection()
+    cursor = con.cursor()
+    cursor.execute("SELECT * FROM faculty")
+    faculty = cursor.fetchall()
+
     name = request.form['name']
     email = request.form['email']
     
@@ -339,14 +345,10 @@ def update_user(id):
     conn.commit()
     conn.close()
 
-    con = get_db_connection()
-    cursor = con.cursor()
-
-    # Fetch faculties from the database
-    cursor.execute("SELECT * FROM faculty")
-    faculty = cursor.fetchall()
     
-    return redirect(url_for('lecturerlist'))
+    
+    
+    return redirect("/lecturerlist", faculties=faculty)
 
 
 
