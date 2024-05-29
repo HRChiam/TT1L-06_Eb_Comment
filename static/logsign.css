@@ -386,3 +386,8 @@ input[type = "submit"]:hover {
     border-radius: 8px;
     box-shadow: 0 0 5px 5px rgba(100, 7, 7, 0.4);
 }
+
+.otp-word {
+   font-size: 20px;
+   padding-top: 30px;
+}
