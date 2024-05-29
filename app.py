@@ -10,8 +10,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# DATABASE_NAME = "database.db"
-# app = Flask(__name__)
 app = Flask(__name__, instance_relative_config=True)
 
 if not os.path.exists(app.instance_path):
