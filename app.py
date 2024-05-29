@@ -1,14 +1,19 @@
 import os
 import logging
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment
+from datetime import datetime, date
 from datetime import datetime, date
 from flask_mail import Message, Mail
 from itsdangerous import URLSafeTimedSerializer
 from dotenv import load_dotenv
 import random
+import random
 
+otp_storage = {}
 otp_storage = {}
 load_dotenv()
 
@@ -19,9 +24,16 @@ app = Flask(__name__, instance_relative_config=True)
 if not os.path.exists(app.instance_path):
     os.makedirs(app.instance_path)
 
+app = Flask(__name__, instance_relative_config=True)
+
+if not os.path.exists(app.instance_path):
+    os.makedirs(app.instance_path)
+
 DATABASE_NAME = "database.db"
 DATABASE_PATH = os.path.join(app.instance_path, DATABASE_NAME)
+DATABASE_PATH = os.path.join(app.instance_path, DATABASE_NAME)
 
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_PATH}"
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_PATH}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_secret_key')
@@ -184,6 +196,11 @@ def reset_password_form():
 @app.route('/invalid')
 def invalid():
     return render_template('invalid.html')
+
+
+@app.route('/otp')
+def otp():
+    return render_template ('otp.html')
 
 
 @app.route('/otp')

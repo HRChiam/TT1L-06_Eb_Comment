@@ -74,15 +74,6 @@ from datetime import date
 
 db = SQLAlchemy()
 
-
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
-
-app = Flask(__name__)
-
-
-
 class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nickname = db.Column(db.String(150), unique=True, nullable=False)
