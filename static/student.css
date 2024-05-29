@@ -1,0 +1,660 @@
+@import url('https://fonts.googleapis.com/css2?family=Harlow+Solid&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cooper+Black&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.error-container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+header {
+    background-color: #0094d4;
+    color: black;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.4);
+}
+
+.header_container {
+    display: flex;
+    align-items: center;
+}
+
+.text-container {
+    display: flex;
+    align-items: center;
+}
+
+#MM {
+    margin-left: 10px;
+    font-size: 40px;
+    color: #0A509E;
+    font-family: 'Cooper Black', sans-serif;
+    font-weight: bold;
+    text-shadow:
+        -0.4px -0.4px 0 #052142,
+        0.4px -0.4px 0 #052142,
+        -0.4px 0.4px 0 #052142,
+        0.4px 0.4px 0 #052142;
+}
+
+#U {
+    font-size: 40px;
+    color: #ED2429;
+    font-family: 'Cooper Black', sans-serif;
+    font-weight: bold;
+    text-shadow:
+        -0.4px -0.4px 0 #a11a1c,
+        0.4px -0.4px 0 #a11a1c,
+        -0.4px 0.4px 0 #a11a1c,
+        0.4px 0.4px 0 #a11a1c;
+}
+
+#header_webname {
+    font-weight: bold;
+    font-size: 30px;
+    font-family: 'Harlow Solid', serif;
+    margin-left: 20px;
+}
+
+.bar-container {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.blue-bar2,
+.red-bar2 {
+    height: 40px;
+    width: 5px;
+    margin: 0 2px;
+}
+
+
+.blue-bar2 {
+    background-color: #0A509E;
+    box-shadow: 0 0 0.5px 0.3px #1683ff;
+    left: calc(18% - -18px);
+}
+
+.red-bar2 {
+    background-color: #ED2429;
+    box-shadow: 0 0 0.5px 0.3px #a11a1c;
+    right: calc(82% - 33px);
+}
+
+.hamburger {
+    display: block;
+    cursor: pointer;
+    z-index: 999;
+    margin-left: 20px;
+}
+
+.hamburger .line {
+    width: 30px;
+    height: 3px;
+    background-color: #333;
+    margin: 6px 0;
+    transition: 0.4s;
+}
+
+.hamburger.active .line:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.hamburger.active .line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active .line:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+}
+
+.menu_container {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background-color: #f9f9f9;
+    padding: 10px 0;
+    text-align: left;
+    display: none;
+    transition: width 0.3s ease;
+}
+
+.menu_container.active {
+    display: block;
+    width: 300px;
+    height: auto;
+    background-color: #0094d4;
+    border-radius: 10px;
+    box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.4)
+}
+
+.menu_container a {
+    display: block;
+    padding: 10px 20px;
+    color: black;
+    text-decoration: none;
+    position: relative;
+}
+
+.menu_container a::before {
+    content: ">";
+    position: absolute;
+    left: 10px;
+    transition: transform 0.3s ease;
+}
+
+.menu_container a.rotate::before {
+    transform: rotate(90deg);
+}
+
+.submenu {
+    display: none;
+}
+
+.submenu.active {
+    display: block;
+}
+
+.frontpage_background {
+    display: flex;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.frontpage_background::before {
+    content: '';
+    width: 5px;
+    background-color: white;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.cyberjaya_background {
+    flex: 1;
+    background-image: url('MMU\ Cyberjaya\ campus.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.melaka_background {
+    flex: 1;
+    background-image: url('MMU\ Melaka\ campus.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.cyberjaya_background::before,
+.melaka_background::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.cyberjaya_background:hover::before,
+.melaka_background:hover::before {
+    opacity: 1;
+}
+
+.cyberjaya_box,
+.melaka_box {
+    width: 300px;
+    height: 60px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 32px;
+    text-align: center;
+    line-height: 60px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 3px;
+    text-decoration: none;
+    z-index: 2;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    color: black;
+    display: none;
+}
+
+.cyberjaya_box:hover {
+    background-color: #052142;
+    color: white;
+    border-color: white;
+}
+
+.melaka_box:hover {
+    background-color: #a11a1c;
+    color: white;
+    border-color: white;
+}
+
+.cyberjaya_background:hover .cyberjaya_box {
+    display: block;
+}
+
+.melaka_background:hover .melaka_box {
+    display: block;
+}
+
+.faculty_container {
+    padding-top: 90px;
+}
+
+.column {
+    float: left;
+    width: 25%;
+    height: auto;
+    padding: 0 10px;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+@media screen and (max-width: 600px) {
+    .column {
+        width: 100%;
+        display: block;
+        margin-bottom: 20px;
+    }
+}
+
+.lecturer_card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 16px;
+    text-align: center;
+    background-color: #f1f1f1;
+}
+
+.faculty_image {
+    margin-top: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1000px;
+    height: 600px;
+    background: #f2f2f2;
+    box-shadow: 0 30px 50px #dbdbdb;
+    overflow: hidden;
+}
+
+.slide .item {
+    width: 200px;
+    height: 300px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 20px;
+    box-shadow: 0 30px 50px #505050;
+    background-position: 50% 50%;
+    background-size: cover;
+    display: inline-block;
+    transition: 0.5s;
+}
+
+.slide .item:nth-child(1),
+.slide .item:nth-child(2) {
+    top: 0;
+    left: 0;
+    transform: translate(0, 0);
+    border-radius: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.slide .item:nth-child(3) {
+    left: 50%;
+}
+
+.slide .item:nth-child(4) {
+    left: calc(50% + 220px);
+}
+
+.slide .item:nth-child(5) {
+    left: calc(50% + 440px);
+}
+
+.slide .item:nth-child(n+6) {
+    left: calc(50% + 660px);
+    opacity: 0;
+}
+
+.item .content {
+    position: absolute;
+    top: 50%;
+    left: 100px;
+    width: 300px;
+    text-align: left;
+    color: #eee;
+    transform: translateY(-50%);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    display: none;
+}
+
+.slide .item:nth-child(2) .content {
+    display: block;
+}
+
+.faculty_name {
+    font-size: 40px;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-shadow:
+        -0.4px -0.4px 0 black,
+        0.4px -0.4px 0 black,
+        -0.4px 0.4px 0 black,
+        0.4px 0.4px 0 black;
+    opacity: 0;
+    animation: animate 1s ease-in-out 1 forwards;
+}
+
+.campus_name {
+    margin-top: 50px;
+    margin-bottom: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    text-shadow:
+        -0.4px -0.4px 0 black,
+        0.4px -0.4px 0 black,
+        -0.4px 0.4px 0 black,
+        0.4px 0.4px 0 black;
+    opacity: 0;
+    animation: animate 1s ease-in-out 0.3s 1 forwards;
+}
+
+.content button {
+    margin-top: 50px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+    animation: animate 1s ease-in-out 0.6s 1 forwards;
+}
+
+@keyframes animate {
+    from {
+        opacity: 0;
+        transform: translateY(100px);
+        filter: blur(33px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+.button {
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    bottom: 20px;
+}
+
+.button button {
+    width: 40px;
+    height: 35px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin: 0 5px;
+    border: 1px solid black;
+    transition: 0.3s;
+}
+
+.button button:hover {
+    background: #ababab;
+    color: white;
+}
+
+.lecturer_details_container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    margin-top: 80px;
+}
+
+.lecturer_info {
+    width: 48%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 80px;
+}
+
+.lecturer_info img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.comments_section {
+    width: 48%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.comment {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.comment_text {
+    flex: 1;
+}
+
+.comment p {
+    margin: 0;
+    padding: 5px 0;
+    font-size: 16px;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+}
+
+.like,
+.dislike {
+    font-size: 6px;
+    margin-left: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.grow.like.active {
+    color: #0A509E;
+}
+
+.grow.dislike.active {
+    color: #ED2429; /* Red */
+}
+
+.like:hover,
+.dislike:hover {
+    transition: all .2s ease-in-out;
+    transform: scale(1.1);
+}
+
+.like:hover{
+    color: #0A509E;
+}
+
+.dislike:hover {
+    color: #ED2429; /* Red */
+}
+
+
+.keyin_background {
+    background-image: url("background.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: 'Times New Roman', Times, serif;
+    height: 100vh;
+}
+
+.keyinform {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.4);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.header_design {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-top: 20px;
+}
+
+#logo {
+    width: 260px;
+    padding-left: 40px;
+    height: auto;
+}
+
+.blue-bar,
+.red-bar {
+    height: 60px;
+    width: 5px;
+    position: absolute;
+    margin-top: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: black;
+}
+
+.blue-bar {
+    background-color: #0A509E;
+    left: calc(45% - -13px);
+}
+
+.red-bar {
+    background-color: #ED2429;
+    right: calc(55% - 27px);
+}
+
+#webname {
+    margin-left: 40px;
+    margin-bottom: 10px;
+    padding-right: 40px;
+    font-size: 40px;
+    font-weight: bold;
+    font-family: 'Harlow Solid', serif;
+    font-style: italic;
+}
+
+h1 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bolder;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="file"],
+select {
+    width: 100%;
+    padding: 10px 0px 10px 0px;
+    margin-bottom: 10px;
+    border: 1px solid #63C5DA;
+    border-radius: 3px;
+    font-size: 15px;
+}
+
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #0492C2;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 18px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+input[type="submit"]:hover {
+    background-color: #1520A6;
+    color: white;
+    font-size: 18px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.success_box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.upload_another_lecturer,
+.back_to_main {
+    width: 250px;
+    padding: 10px;
+    background-color: #0492C2;
+    color: white;
+    border-radius: 3px;
+    text-decoration: none;
+    cursor: pointer;
+    text-align: center;
+    font-size: 18px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.upload_another_lecturer:hover,
+.back_to_main:hover {
+    background-color: #1520A6;
+}

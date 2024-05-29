@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width = device-width, initial-scale = 1">
+    <title>
+        Faculty Page
+    </title>
+    <link href="../static/student.css" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div class="header_container">
+            <div class="text-container">
+                <div class="hamburger" onclick="toggleMenu()">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </div>
+                <span id="MM">MM</span>
+                <span id="U">U</span>
+            </div>
+            <div class="bar-container">
+                <div class="blue-bar2"></div>
+                <div class="red-bar2"></div>
+            </div>
+            <span id="header_webname">Eb_Comment</span>
+            <nav class="menu_container" id="menuContainer">
+                <a href="#">Cyberjaya</a>
+                <div class="submenu">
+                    <a href="/faculty/FCI">FCI</a>
+                    <a href="/faculty/FOM">FOM</a>
+                    <a href="/faculty/FOE">FOE</a>
+                    <a href="/faculty/FCM">FCM</a>
+                    <a href="/faculty/FCA">FCA</a>
+                    <a href="/faculty/FAC">FAC</a>
+                </div>
+                <a href="#">Melaka</a>
+                <div class="submenu">
+                    <a href="/faculty/FIST">FIST</a>
+                    <a href="/faculty/FOB">FOB</a>
+                    <a href="/faculty/FOL">FOL</a>
+                    <a href="/faculty/FET">FET</a>
+                </div>
+                <a href="/keyin">Upload Lecturer Information</a>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <script>
+        function toggleMenu() {
+            var menuContainer = document.getElementById('menuContainer');
+            menuContainer.classList.toggle('active');
+        }
+
+        var menuItems = document.querySelectorAll('.menu_container a');
+        menuItems.forEach(function (menuItem) {
+            menuItem.addEventListener('click', function () {
+                var submenu = menuItem.nextElementSibling;
+                if (submenu && submenu.classList.contains('submenu')) {
+                    submenu.classList.toggle('active');
+                    menuItem.classList.toggle('rotate');
+                }
+            });
+        });
+    </script>
+
+    <div class="faculty_container">
+        <h2>{{ faculty.name }} Lecturers</h2>
+        <div class="lecturers">
+            {% for lecturer in lecturers %}
+            <div class="row">
+                <div class="column">
+                    <div class="lecturer_card">
+                        <a href="{{ url_for('lecturer_details', lecturer_id=lecturer.id) }}">
+                            <img src="{{ url_for('static', filename='uploads/' + lecturer.photo) }}"
+                                alt="{{ lecturer.name }}">
+                            <p>{{ lecturer.name }}</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+
+</html>
