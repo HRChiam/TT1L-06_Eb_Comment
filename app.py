@@ -10,10 +10,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_NAME = "database.db"
-app = Flask(__name__)
+# DATABASE_NAME = "database.db"
+# app = Flask(__name__)
+app = Flask(__name__, instance_relative_config=True)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_NAME}"
+if not os.path.exists(app.instance_path):
+    os.makedirs(app.instance_path)
+
+DATABASE_NAME = "database.db"
+DATABASE_PATH = os.path.join(app.instance_path, DATABASE_NAME)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_PATH}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_secret_key')
 app.config['MAIL_SERVER'] = 'smtp-mail.outlook.com'
