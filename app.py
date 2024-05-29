@@ -8,7 +8,9 @@ from datetime import datetime, date
 from flask_mail import Message, Mail
 from itsdangerous import URLSafeTimedSerializer
 from dotenv import load_dotenv
+import random
 
+otp_storage = {}
 load_dotenv()
 
 DATABASE_NAME = "database.db"
@@ -100,9 +102,54 @@ def process_signin():
         db.session.add(new_user)
         db.session.commit()
 
+    if not error and email.endswith('@student.mmu.edu.my'): 
+            otp = random.randint(100000, 999999)
+            session['otp'] = otp
+            session['email'] = email
+            send_otp_email(email, otp)
+            return redirect(url_for('otp'))
+        
+
+        if not error and email.endswith('@mmu.edu.my'): 
+            otp = random.randint(100000, 999999)
+            session['otp'] = otp
+            session['email'] = email
+            send_otp_email(email, otp)
+            return redirect(url_for('otp'))
+
         return redirect('/login')
 
     return render_template('signin.html', error=error)
+
+
+def send_otp_email(email, otp):
+    msg = Message(
+        'OTP for EbComment Account Verification',
+        recipients=[email],
+        body=f'Welcome to EbComment , verify your account with the OTP given.\n\n'
+             f'Your OTP:{otp} \n\n'
+             '---Eb_Comment Team---',
+        sender=app.config['MAIL_DEFAULT_SENDER']
+    )
+    mail.send(msg)
+
+
+
+@app.route('/verify_otp', methods=['GET', 'POST'])
+def verify_otp():
+    error = {} 
+    if request.method == 'POST':
+        input_otp = request.form['otp']
+        if 'otp' in session and str(session['otp']) == input_otp:
+            email = session.pop('email', None)
+            session.pop('otp', None)
+            return redirect(url_for('studentfrontwy'))  
+        else:
+            error['otp'] = "Invalid OTP, please try again"
+            return render_template('otp.html', error=error)
+
+    return render_template('otp.html')
+
 
 
 @app.route('/process_login', methods=['POST'])
@@ -136,6 +183,11 @@ def reset_password_form():
 @app.route('/invalid')
 def invalid():
     return render_template('invalid.html')
+
+
+@app.route('/otp')
+def otp():
+    return render_template ('otp.html')
 
 
 @app.route('/reset_password', methods=['POST'])
