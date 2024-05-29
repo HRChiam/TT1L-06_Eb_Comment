@@ -7,19 +7,27 @@ from flask_sqlalchemy import SQLAlchemy
 from models import db, Users, Lecturer
 import sqlite3
 from datetime import datetime
+from dotenv import load_dotenv
 
-app = Flask(__name__)
+load_dotenv()
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'huairen'
+app = Flask(__name__, instance_relative_config=True)
+
+# Ensure the instance folder exists
+if not os.path.exists(app.instance_path):
+    os.makedirs(app.instance_path)
+
 DATABASE_NAME = "database.db"
+DATABASE_PATH = os.path.join(app.instance_path, DATABASE_NAME)
 
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_PATH}"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_secret_key')
 
 db.init_app(app)
 
 def get_db_connection():
-    con = sqlite3.connect("database.db")
+    con = sqlite3.connect(DATABASE_PATH)
     con.row_factory = sqlite3.Row
     return con
 
@@ -331,11 +339,6 @@ def edit_user(id):
     
 @app.route("/update_user/<int:id>", methods=["POST"])
 def update_user(id):
-    con = get_db_connection()
-    cursor = con.cursor()
-    cursor.execute("SELECT * FROM faculty")
-    faculty = cursor.fetchall()
-
     name = request.form['name']
     email = request.form['email']
     
@@ -345,10 +348,7 @@ def update_user(id):
     conn.commit()
     conn.close()
 
-    
-    
-    
-    return redirect("/lecturerlist", faculties=faculty)
+    return redirect("/lecturerlist")
 
 
 
