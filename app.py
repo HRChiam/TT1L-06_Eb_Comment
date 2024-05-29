@@ -465,13 +465,13 @@ def process_signin():
     if not (len(password) >= 8 and sum(c.isdigit() for c in password) >= 4) or password != confirm_password:
         error['password'] = "Password does not match or does not meet requirements"
 
-    # if not error:
-    #     new_user = Users(nickname=nickname, email=email)
-    #     new_user.set_password(password)  # Set hashed password
-    #     db.session.add(new_user)
-    #     db.session.commit()
+    if not error:
+        new_user = Users(nickname=nickname, email=email)
+        new_user.set_password(password)  # Set hashed password
+        db.session.add(new_user)
+        db.session.commit()
 
-    if not error and email.endswith('@student.mmu.edu.my'): 
+        if not error and email.endswith('@student.mmu.edu.my'): 
             otp = random.randint(100000, 999999)
             session['otp'] = otp
             session['email'] = email
