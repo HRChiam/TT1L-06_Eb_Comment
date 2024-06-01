@@ -46,11 +46,7 @@
                     <a href="/faculty/FET">FET</a>
                 </div>
                 <a href="/keyin">Upload Lecturer Information</a>
-                {% if current_user.is_authenticated %}
-                <a href="{{ url_for('logout') }}">Logout</a>
-                {% else %}
-                <a href="{{ url_for('login') }}">Login</a>
-                {% endif %}
+                <a href="/profile">Setting</a>
             </nav>
         </div>
     </header>

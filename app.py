@@ -1,20 +1,27 @@
 import os
 import logging
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment
 from datetime import datetime, date
 from flask_mail import Message, Mail
 from itsdangerous import URLSafeTimedSerializer
 from dotenv import load_dotenv
+import random
 
+otp_storage = {}
 load_dotenv()
 
-DATABASE_NAME = "database.db"
-app = Flask(__name__)
+app = Flask(__name__, instance_relative_config=True)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_NAME}"
+if not os.path.exists(app.instance_path):
+    os.makedirs(app.instance_path)
+
+DATABASE_NAME = "database.db"
+DATABASE_PATH = os.path.join(app.instance_path, DATABASE_NAME)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_PATH}"
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_PATH}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_secret_key')
 app.config['MAIL_SERVER'] = 'smtp-mail.outlook.com'
@@ -94,15 +101,55 @@ def process_signin():
     if not (len(password) >= 8 and sum(c.isdigit() for c in password) >= 4) or password != confirm_password:
         error['password'] = "Password does not match or does not meet requirements"
 
+    
     if not error:
+    # Create and add new user to the database
         new_user = Users(nickname=nickname, email=email)
         new_user.set_password(password)  # Set hashed password
         db.session.add(new_user)
         db.session.commit()
 
+        # Check email domain and send OTP if applicable
+        if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
+            otp = random.randint(100000, 999999)
+            session['otp'] = otp
+            session['email'] = email
+            send_otp_email(email, otp)
+            return redirect(url_for('otp'))
+    
+
         return redirect('/login')
 
     return render_template('signin.html', error=error)
+
+
+def send_otp_email(email, otp):
+    msg = Message(
+        'OTP for EbComment Account Verification',
+        recipients=[email],
+        body=f'Welcome to EbComment , verify your account with the OTP given.\n\n'
+             f'Your OTP:{otp} \n\n'
+             '---Eb_Comment Team---',
+        sender=app.config['MAIL_DEFAULT_SENDER']
+    )
+    mail.send(msg)
+
+
+
+@app.route('/verify_otp', methods=['GET', 'POST'])
+def verify_otp():
+    error = {} 
+    if request.method == 'POST':
+        input_otp = request.form['otp']
+        if 'otp' in session and str(session['otp']) == input_otp:
+            email = session.pop('email', None)
+            session.pop('otp', None)
+            return redirect(url_for('login'))  
+        else:
+            error['otp'] = "Invalid OTP, please try again"
+            return render_template('otp.html', error=error)
+
+    return render_template('otp.html')
 
 
 @app.route('/process_login', methods=['POST'])
@@ -136,6 +183,11 @@ def reset_password_form():
 @app.route('/invalid')
 def invalid():
     return render_template('invalid.html')
+
+
+@app.route('/otp')
+def otp():
+    return render_template ('otp.html')
 
 
 @app.route('/reset_password', methods=['POST'])
@@ -363,4 +415,7 @@ def comment():
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     app.run(debug=True)
+
+
+
 
