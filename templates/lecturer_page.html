@@ -101,18 +101,18 @@
                     <p><strong>{{ comment.nickname }}</strong> ({{ comment.date }} {{ comment.time }}):</p>
                     <p>{{ comment.comment_text }}</p>
                     <div class="rating">
-                        <div class="like grow {{ 'active' if current_user in comment.likes else '' }}"
+                        <div class="like grow {{ 'active' if current_user.is_authenticated and comment.has_reaction(current_user, True) else '' }}"
                             data-comment-id="{{ comment.id }}" data-action="upvote">
                             <i class="fa fa-thumbs-up fa-3x" aria-hidden="true">{{ comment.likes_count() }}</i>
                         </div>
-                        <div class="dislike grow {{ 'active' if current_user in comment.dislikes else '' }}"
+                        <div class="dislike grow {{ 'active' if current_user.is_authenticated and comment.has_reaction(current_user, False) else '' }}"
                             data-comment-id="{{ comment.id }}" data-action="downvote">
                             <i class="fa fa-thumbs-down fa-3x" aria-hidden="true">{{ comment.dislikes_count() }}</i>
                         </div>
                     </div>
                 </div>
                 {% endfor %}
-            </div>
+            </div>            
         </div>
     </div>
 
@@ -129,11 +129,9 @@
                 url: `/${action}_comment/${commentId}`,
                 method: 'POST',
                 success: function (response) {
-                    const currentUserId = '{{ current_user.id if current_user.is_authenticated else None }}';
-
                     // Update like/dislike counts
-                    $(`[data-comment-id="${commentId}"] .fa-thumbs-up`).text(response.likes.length);
-                    $(`[data-comment-id="${commentId}"] .fa-thumbs-down`).text(response.dislikes.length);
+                    $(`[data-comment-id="${commentId}"] .fa-thumbs-up`).text(response.likes);
+                    $(`[data-comment-id="${commentId}"] .fa-thumbs-down`).text(response.dislikes);
 
                     // Toggle active state
                     $this.toggleClass('active');

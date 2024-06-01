@@ -2,7 +2,7 @@ import os
 import logging
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment
+from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment, CommentReaction
 from datetime import datetime, date
 from flask_mail import Message, Mail
 from itsdangerous import URLSafeTimedSerializer
@@ -335,14 +335,17 @@ def add_comment():
 def upvote_comment(comment_id):
     comment = Comment.query.get(comment_id)
     if comment:
-        if current_user in comment.likes:
-            comment.likes.remove(current_user)
+        reaction = CommentReaction.query.filter_by(comment_id=comment_id, user_id=current_user.id).first()
+        if reaction:
+            if not reaction.reaction:  #if it's a dislike, toggle to like
+                reaction.reaction = True
+            else:  #if it's a like, toggle to no reaction
+                db.session.delete(reaction)
         else:
-            comment.likes.append(current_user)
-            if current_user in comment.dislikes:
-                comment.dislikes.remove(current_user)
+            reaction = CommentReaction(comment_id=comment_id, user_id=current_user.id, reaction=True)
+            db.session.add(reaction)
         db.session.commit()
-    return jsonify({'likes': [user.id for user in comment.likes], 'dislikes': [user.id for user in comment.dislikes]})
+    return jsonify({'likes': comment.likes_count(), 'dislikes': comment.dislikes_count()})
 
 
 @app.route('/downvote_comment/<int:comment_id>', methods=['POST'])
@@ -350,14 +353,17 @@ def upvote_comment(comment_id):
 def downvote_comment(comment_id):
     comment = Comment.query.get(comment_id)
     if comment:
-        if current_user in comment.dislikes:
-            comment.dislikes.remove(current_user)
+        reaction = CommentReaction.query.filter_by(comment_id=comment_id, user_id=current_user.id).first()
+        if reaction:
+            if reaction.reaction:  #if it's a like, toggle to dislike
+                reaction.reaction = False
+            else:  #if it's a dislike, toggle to no reaction
+                db.session.delete(reaction)
         else:
-            comment.dislikes.append(current_user)
-            if current_user in comment.likes:
-                comment.likes.remove(current_user)
+            reaction = CommentReaction(comment_id=comment_id, user_id=current_user.id, reaction=False)
+            db.session.add(reaction)
         db.session.commit()
-    return jsonify({'likes': [user.id for user in comment.likes], 'dislikes': [user.id for user in comment.dislikes]})
+    return jsonify({'likes': comment.likes_count(), 'dislikes': comment.dislikes_count()})
 
 
 @app.route('/keyin')
@@ -413,9 +419,7 @@ def comment():
 
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     logging.basicConfig(level=logging.INFO)
     app.run(debug=True)
-
-
-
-
