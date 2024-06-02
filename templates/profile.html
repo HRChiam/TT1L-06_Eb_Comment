@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,9 +15,11 @@
             width: 140px;
             height: 140px;
             object-fit: cover;
+            border-radius: 50%;
         }
     </style>
 </head>
+
 <body class="profile-background">
     <div class="bar-text-wel">Settings</div>
     <div class="bar-text-back"><a href="/main">Back</a></div>
@@ -32,37 +35,52 @@
                                 <div class="mx-auto" style="width: 140px;">
                                     <div id="profile-picture">
                                         {% if user.profile_picture != 'default_profile_photo.jpg' %}
-                                        <img src="{{ url_for('static', filename='uploads/' + user.profile_picture) }}" alt="User Profile Picture">
+                                        <img src="{{ url_for('static', filename='uploads/' + user.profile_picture) }}"
+                                            alt="User Profile Picture">
                                         {% else %}
-                                        <img src="{{ url_for('static', filename='default_profile_photo.jpg') }}" alt="Default Profile Pic">
+                                        <img src="{{ url_for('static', filename='default_profile_photo.jpg') }}"
+                                            alt="Default Profile Pic">
                                         {% endif %}
                                     </div>
-                                </div>
-                                <div class="col d-flex flex-column mb-3">
-                                    <form id="profile-form" action="/profile" method="post" enctype="multipart/form-data">
+                                    <form id="profile-form" action="/profile" method="post"
+                                        enctype="multipart/form-data">
                                         <div class="mt-2">
-                                            <div class="input-group mb-3">
-                                                <input type="file" class="form-control" accept=".jpg, .png" name="profile_picture" />
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-auto mb-3">
-                                            <div class="form-group">
-                                                <label for="nickname">Nickname</label>
-                                                <input id="nickname" class="form-control" type="text" name="nickname" value="{{ user.nickname }}">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="email">Email</label>
-                                                <input id="email" class="form-control fixed-input" type="email" name="email" value="{{ user.email }}" readonly>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col d-flex justify-content-end">
-                                                    <button id="save-changes-btn" class="btn btn-primary" type="submit">Save Changes</button>
-                                                </div>
-                                            </div>
+                                            <label for="profile-picture-button" class="btn btn-primary btn-block">Change
+                                                Profile Picture</label>
+                                            <input type="file" id="profile-picture-button" class="form-control"
+                                                accept=".jpg, .png" name="profile_picture" style="display: none;" />
+                                            <button class="btn btn-primary btn-block mt-2" type="submit">Save
+                                                Changes</button>
                                         </div>
                                     </form>
                                 </div>
+                                <div class="col d-flex flex-column mb-3">
+                                    <form id="profile-form" action="/profile" method="post"
+                                        enctype="multipart/form-data">
+
+                                        <div class="form-group">
+                                            <label for="nickname">Nickname</label>
+                                            <input id="nickname" class="form-control" type="text" name="nickname"
+                                                value="{{ user.nickname }}">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="email">Email</label>
+                                            <input id="email" class="form-control fixed-input" type="email" name="email"
+                                                value="{{ user.email }}" readonly>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col d-flex justify-content-end">
+                                                <button id="save-changes-btn" class="btn btn-primary" type="submit">Save
+                                                    Changes</button>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
                             </div>
+
                             {% if success %}
                             <div class="alert alert-success mt-3" role="alert">
                                 {{ success }}
@@ -95,12 +113,15 @@
                 <div class="card">
                     <div class="card-body">
                         <h6 class="card-title font-weight-bold">Forgot Password?</h6>
-                        <p class="card-text">Your security is our priority. Click now to start password reset process and regain access to your account hassle-free.</p>
-                        <button type="button" class="btn btn-primary reset-password-btn" onclick="window.location.href='/forgot'">Reset Password</button>
+                        <p class="card-text">Your security is our priority. Click now to start password reset process
+                            and regain access to your account hassle-free.</p>
+                        <button type="button" class="btn btn-primary reset-password-btn"
+                            onclick="window.location.href='/forgot'">Reset Password</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </body>
+
 </html>

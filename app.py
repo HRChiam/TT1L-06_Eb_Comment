@@ -269,6 +269,7 @@ def profile():
 
         if nickname:
             current_user.nickname = nickname
+            db.session.commit()
 
         if 'profile_picture' in request.files:
             profile_picture = request.files['profile_picture']
