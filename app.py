@@ -348,7 +348,19 @@ def update_user(id):
     
     return redirect(url_for('lecturerlist'))
 
+@app.route("/history", methods=["GET"])
+def history():
+    id = session.get("id")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM comment where id = ?", (id,))
+    conn.commit()
+    comments = cursor.fetchall()
+    conn.close()
 
+    return render_template("admin_teacher_history.html",comments = comments)
+
+    
 
    
 
