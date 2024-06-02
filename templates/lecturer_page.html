@@ -1,112 +1,166 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="../static/logsign.css" rel="stylesheet">
-    <style>
-        #profile-picture img {
-            width: 140px;
-            height: 140px;
-            object-fit: cover;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lecturer Details</title>
+    <link href="{{ url_for('static', filename='student.css') }}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body class="profile-background">
-    <div class="bar-text-wel">Settings</div>
-    <div class="bar-text-back"><a href="{{ url_for('home') }}">Back</a></div>
-    <div class="rectangle-bar-profile"></div>
-    <div class='edit'>User Profile</div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-9">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="e-profile">
-                            <div class="row">
-                                <div class="mx-auto" style="width: 140px;">
-                                    <div id="profile-picture">
-                                        {% if user.profile_picture != 'default_pfp.png' %}
-                                        <img src="{{ url_for('static', filename='uploads/' + user.profile_picture) }}" alt="User Profile Picture">
-                                        {% else %}
-                                        <img src="{{ url_for('static', filename='default_profile_photo.jpg') }}" alt="Default Profile Pic">
-                                        {% endif %}
-                                    </div>
-                                    <div class="mt-2">
-                                        <input type="file" id="upload-photo" name="profile_picture" style="display: none;">
-                                        <button class="btn btn-primary photo-button" type="button" onclick="document.getElementById('upload-photo').click();">
-                                            <span>Change Profile Picture</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="col d-flex flex-column mb-3">
-                                    <form id="profile-form" action="/profile" method="post" enctype="multipart/form-data">
-                                        <div class="mt-2">
-                                            <div class="input-group mb-3">
-                                                <input type="file" class="form-control" accept=".jpg, .png" name="profile_picture" style="display:none;" id="upload-photo">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-auto mb-3">
-                                            <div class="form-group">
-                                                <label for="nickname">Nickname</label>
-                                                <input id="nickname" class="form-control" type="text" name="nickname" value="{{ user.nickname }}">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="email">Email</label>
-                                                <input id="email" class="form-control fixed-input" type="email" name="email" value="{{ user.email }}" readonly>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col d-flex justify-content-end">
-                                                    <button id="save-changes-btn" class="btn btn-primary" type="submit">Save Changes</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            {% if success %}
-                            <div class="alert alert-success mt-3" role="alert">
-                                {{ success }}
-                            </div>
-                            {% endif %}
-                            {% if error %}
-                            <div class="alert alert-danger mt-3" role="alert">
-                                {{ error }}
-                            </div>
-                            {% endif %}
+
+<body>
+    <header>
+        <div class="header_container">
+            <div class="text-container">
+                <div class="hamburger" onclick="toggleMenu()">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </div>
+                <span id="MM">MM</span>
+                <span id="U">U</span>
+            </div>
+            <div class="bar-container">
+                <div class="blue-bar2"></div>
+                <div class="red-bar2"></div>
+            </div>
+            <span id="header_webname">Eb_Comment</span>
+            <nav class="menu_container" id="menuContainer">
+                <a href="#">Cyberjaya</a>
+                <div class="submenu">
+                    <a href="/faculty/FCI">FCI</a>
+                    <a href="/faculty/FOM">FOM</a>
+                    <a href="/faculty/FOE">FOE</a>
+                    <a href="/faculty/FCM">FCM</a>
+                    <a href="/faculty/FCA">FCA</a>
+                    <a href="/faculty/FAC">FAC</a>
+                </div>
+                <a href="#">Melaka</a>
+                <div class="submenu">
+                    <a href="/faculty/FIST">FIST</a>
+                    <a href="/faculty/FOB">FOB</a>
+                    <a href="/faculty/FOL">FOL</a>
+                    <a href="/faculty/FET">FET</a>
+                </div>
+                <a href="/keyin">Upload Lecturer Information</a>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('profile') }}">Profile</a>
+                {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <script>
+        function toggleMenu() {
+            var menuContainer = document.getElementById('menuContainer');
+            menuContainer.classList.toggle('active');
+        }
+
+        var menuItems = document.querySelectorAll('.menu_container a');
+        menuItems.forEach(function (menuItem) {
+            menuItem.addEventListener('click', function () {
+                var submenu = menuItem.nextElementSibling;
+                if (submenu && submenu.classList.contains('submenu')) {
+                    submenu.classList.toggle('active');
+                    menuItem.classList.toggle('rotate');
+                }
+            });
+        });
+    </script>
+
+    <div class="lecturer_details_container">
+        <div class="lecturer_info">
+            <h2>{{ lecturer.name }} - Details</h2>
+            <img src="{{ url_for('static', filename='uploads/' + lecturer.photo) }}" alt="{{ lecturer.name }}">
+            <p><strong>Name:</strong> {{ lecturer.name }}</p>
+            <p><strong>Phone:</strong> {{ lecturer.phone }}</p>
+            <p><strong>Email:</strong> {{ lecturer.email }}</p>
+            <p><strong>Campus:</strong> {{ lecturer.campus }}</p>
+            <p><strong>Bio:</strong> {{ lecturer.bio }}</p>
+        </div>
+
+        <div class="comments_section">
+            <h3>Leave your comment here:</h3>
+            <form id="comment_form" action="{{ url_for('add_comment') }}" method="POST">
+                <input type="hidden" name="lecturer_id" value="{{ lecturer.id }}">
+                <input type="hidden" name="nickname" id="nickname_input" required>
+                <div>
+                    <label for="comment_text">Comment:</label>
+                    <textarea id="comment_textarea" name="comment_text" required></textarea>
+                </div>
+                <button type="submit">Add Comment</button>
+            </form>
+
+            <div class="comments_list">
+                {% for comment in comments %}
+                <div class="comment">
+                    <p><strong>{{ comment.nickname }}</strong> ({{ comment.date }} {{ comment.time }}):</p>
+                    <p>{{ comment.comment_text }}</p>
+                    <div class="rating">
+                        <div class="like grow {{ 'active' if current_user.is_authenticated and comment.has_reaction(current_user, True) else '' }}"
+                            data-comment-id="{{ comment.id }}" data-action="upvote">
+                            <i class="fa fa-thumbs-up fa-3x" aria-hidden="true">{{ comment.likes_count() }}</i>
+                        </div>
+                        <div class="dislike grow {{ 'active' if current_user.is_authenticated and comment.has_reaction(current_user, False) else '' }}"
+                            data-comment-id="{{ comment.id }}" data-action="downvote">
+                            <i class="fa fa-thumbs-down fa-3x" aria-hidden="true">{{ comment.dislikes_count() }}</i>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <form action="/logout" method="get">
-                            <button class="btn btn-block btn-secondary" type="submit">
-                                <i class="fa fa-sign-out"></i>
-                                {% if current_user.is_authenticated %}
-                                <span><a href="{{ url_for('logout') }}">Logout</a></span>
-                                {% else %}
-                                <a href="{{ url_for('login') }}">Login</a>
-                                {% endif %}
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-title font-weight-bold">Forgot Password?</h6>
-                        <p class="card-text">Your security is our priority. Click now to start password reset process and regain access to your account hassle-free.</p>
-                        <button type="button" class="btn btn-primary reset-password-btn" onclick="window.location.href='/forgot'">Reset Password</button>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
+
+    <script>
+        $('.like, .dislike').on('click', function (event) {
+            event.preventDefault();
+
+            const $this = $(this);
+            const commentId = $this.data('comment-id');
+            const action = $this.data('action');
+            const oppositeAction = action === 'upvote' ? 'downvote' : 'upvote';
+
+            $.ajax({
+                url: `/${action}_comment/${commentId}`,
+                method: 'POST',
+                success: function (response) {
+                    // Update like/dislike counts
+                    $(`[data-comment-id="${commentId}"] .fa-thumbs-up`).text(response.likes);
+                    $(`[data-comment-id="${commentId}"] .fa-thumbs-down`).text(response.dislikes);
+
+                    // Toggle active state
+                    $this.toggleClass('active');
+
+                    // Remove active state from opposite action button
+                    $(`[data-comment-id="${commentId}"][data-action="${oppositeAction}"]`).removeClass('active');
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        });
+    </script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var commentTextarea = document.getElementById("comment_textarea");
+            var nicknameInput = document.getElementById("nickname_input");
+
+            commentTextarea.addEventListener("focus", showNicknameField);
+            commentTextarea.addEventListener("input", showNicknameField);
+
+            function showNicknameField() {
+                nicknameInput.style.display = "block";
+            }
+        });
+    </script>
+
 </body>
+
 </html>
