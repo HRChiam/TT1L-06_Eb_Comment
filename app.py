@@ -6,8 +6,11 @@ from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment, CommentR
 from datetime import datetime, date
 from flask_mail import Message, Mail
 from itsdangerous import URLSafeTimedSerializer
+from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
+from PIL import Image
 import random
+from app import db
 
 otp_storage = {}
 load_dotenv()
@@ -32,6 +35,8 @@ app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME', 'ebcomment123@outlook.m
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD', 'hjszkqeytfsdnldp')
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER', 'ebcomment123@outlook.my')
 app.config['SECURITY_PASSWORD_SALT'] = os.getenv('SECURITY_PASSWORD_SALT', 'your_security_password_salt')
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
 db.init_app(app)
 mail = Mail(app)
@@ -253,15 +258,47 @@ def reset_form():
         return render_template('reset_password_form.html', success=success_message)
 
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
 @app.route('/profile', methods=['GET', 'POST'])
+@login_required
 def profile():
     if request.method == 'POST':
         nickname = request.form.get('nickname')
-        
-        success_message = 'Profile updated successfully'
-        return render_template('profile.html', success=success_message)
-    
-    return render_template('profile.html')
+
+        if nickname:
+            current_user.nickname = nickname
+            db.session.commit()
+
+        if 'profile_picture' in request.files:
+            profile_picture = request.files['profile_picture']
+
+            if profile_picture and allowed_file(profile_picture.filename):
+                filename = secure_filename(profile_picture.filename)
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+                # Remove previous profile picture if it's not the default
+                previous_profile_picture = current_user.profile_picture
+                if previous_profile_picture != "default_pfp.png":
+                    previous_file_path = os.path.join(app.config['UPLOAD_FOLDER'], previous_profile_picture)
+                    if os.path.exists(previous_file_path):
+                        os.remove(previous_file_path)
+
+                # Process and save the new profile picture
+                try:
+                    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                    img_size = (140, 140)
+                    img = Image.open(profile_picture)
+                    img.thumbnail(img_size)
+                    img.save(file_path)
+                    current_user.profile_picture = filename
+                    db.session.commit()
+                    flash("Profile Picture Successfully Updated!", category='success')
+                except Exception as e:
+                    flash(f"Error updating profile picture: {e}", category='error')
+
+    return render_template('profile.html', user=current_user)
 
 
 @app.route('/front')
@@ -419,7 +456,7 @@ def comment():
 
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
+    # with app.app_context():
+    #     db.create_all()
     logging.basicConfig(level=logging.INFO)
     app.run(debug=True)

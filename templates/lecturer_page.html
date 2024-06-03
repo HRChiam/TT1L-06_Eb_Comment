@@ -13,44 +13,64 @@
 <body>
     <header>
         <div class="header_container">
-            <div class="text-container">
-                <div class="hamburger" onclick="toggleMenu()">
-                    <div class="line"></div>
-                    <div class="line"></div>
-                    <div class="line"></div>
+            <div class="left_section">
+
+                <div class="text_container">
+                    <div class="hamburger" onclick="toggleMenu()">
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line"></div>
+                    </div>
+                    <span id="MM">MM</span>
+                    <span id="U">U</span>
                 </div>
-                <span id="MM">MM</span>
-                <span id="U">U</span>
+
+                <div class="bar_container">
+                    <div class="blue-bar2"></div>
+                    <div class="red-bar2"></div>
+                </div>
+
+                <span id="header_webname">Eb_Comment</span>
+
+                <nav class="menu_container" id="menuContainer">
+                    <a href="#">Cyberjaya</a>
+                    <div class="submenu">
+                        <a href="/faculty/FCI">FCI</a>
+                        <a href="/faculty/FOM">FOM</a>
+                        <a href="/faculty/FOE">FOE</a>
+                        <a href="/faculty/FCM">FCM</a>
+                        <a href="/faculty/FCA">FCA</a>
+                        <a href="/faculty/FAC">FAC</a>
+                    </div>
+                    <a href="#">Melaka</a>
+                    <div class="submenu">
+                        <a href="/faculty/FIST">FIST</a>
+                        <a href="/faculty/FOB">FOB</a>
+                        <a href="/faculty/FOL">FOL</a>
+                        <a href="/faculty/FET">FET</a>
+                    </div>
+                    <a href="/keyin">Upload Lecturer Information</a>
+                    <a href="/profile">Setting</a>
+                </nav>
+
             </div>
-            <div class="bar-container">
-                <div class="blue-bar2"></div>
-                <div class="red-bar2"></div>
+
+            <div class="profile_dropdown">
+                <div class="profile_avatar" onclick="toggleDropdown()">
+                    {% if current_user.profile_picture != 'default_profile_photo.jpg' %}
+                    <img src="{{ url_for('static', filename='uploads/' + current_user.profile_picture) }}"
+                        alt="User Profile Picture" class="rounded-circle">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='default_profile_photo.jpg') }}"
+                        alt="Default Profile Pic" class="rounded-circle">
+                    {% endif %}
+                </div>
+                <div class="dropdown_menu" id="dropdownMenu">
+                    <a href="/profile">Profile</a>
+                    <a href="/logout">Logout</a>
+                </div>
             </div>
-            <span id="header_webname">Eb_Comment</span>
-            <nav class="menu_container" id="menuContainer">
-                <a href="#">Cyberjaya</a>
-                <div class="submenu">
-                    <a href="/faculty/FCI">FCI</a>
-                    <a href="/faculty/FOM">FOM</a>
-                    <a href="/faculty/FOE">FOE</a>
-                    <a href="/faculty/FCM">FCM</a>
-                    <a href="/faculty/FCA">FCA</a>
-                    <a href="/faculty/FAC">FAC</a>
-                </div>
-                <a href="#">Melaka</a>
-                <div class="submenu">
-                    <a href="/faculty/FIST">FIST</a>
-                    <a href="/faculty/FOB">FOB</a>
-                    <a href="/faculty/FOL">FOL</a>
-                    <a href="/faculty/FET">FET</a>
-                </div>
-                <a href="/keyin">Upload Lecturer Information</a>
-                {% if current_user.is_authenticated %}
-                <a href="{{ url_for('logout') }}">Logout</a>
-                {% else %}
-                <a href="{{ url_for('login') }}">Login</a>
-                {% endif %}
-            </nav>
+            
         </div>
     </header>
 
@@ -70,6 +90,25 @@
                 }
             });
         });
+    </script>
+
+    <script>
+        function toggleDropdown() {
+            document.getElementById('dropdownMenu').classList.toggle('show');
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches('.profile_avatar img')) {
+                var dropdowns = document.getElementsByClassName("dropdown_menu");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
     </script>
 
     <div class="lecturer_details_container">
@@ -112,7 +151,7 @@
                     </div>
                 </div>
                 {% endfor %}
-            </div>            
+            </div>
         </div>
     </div>
 
