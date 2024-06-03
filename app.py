@@ -412,6 +412,12 @@ def comment():
     return render_template("comment.html")
 
 
+@app.route('/search_form', methods=['GET', 'POST'])
+def search_form():
+ 
+    return render_template('faculty_page.html')
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     app.run(debug=True)
