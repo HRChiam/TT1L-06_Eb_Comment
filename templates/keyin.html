@@ -31,8 +31,8 @@
                 <input type="email" name="email" id="email" required><br>
                 <label for="campus">Campus:</label>
                 <select name="campus" id="campus" required onchange="updateFacultyOptions()">
-                    <option value="cyberjaya">Cyberjaya</option>
-                    <option value="melaka">Melaka</option>
+                    <option value="Cyberjaya">Cyberjaya</option>
+                    <option value="Melaka">Melaka</option>
                 </select><br>
                 <label for="faculty">Faculty:</label>
                 <select name="faculty" id="faculty" required>
@@ -49,18 +49,31 @@
                     facultySelect.innerHTML = '';
 
                     var faculties = {};
-                    faculties['cyberjaya'] = ['FCI', 'FOM', 'FCA', 'FCM', 'FOE', 'FAC'];
-                    faculties['melaka'] = ['FIST', 'FOB', 'FOL', 'FET'];
+                    faculties['Cyberjaya'] = [
+                        { id: 1, name: 'FCI' },
+                        { id: 2, name: 'FOM' },
+                        { id: 3, name: 'FOE' },
+                        { id: 4, name: 'FCM' },
+                        { id: 5, name: 'FCA' },
+                        { id: 6, name: 'FAC' }
+                    ];
+                    faculties['Melaka'] = [
+                        { id: 7, name: 'FIST' },
+                        { id: 8, name: 'FOB' },
+                        { id: 9, name: 'FOL' },
+                        { id: 10, name: 'FET' }
+                    ];
 
                     faculties[selectedCampus].forEach(function (faculty) {
                         var option = document.createElement("option");
-                        option.text = faculty;
-                        option.value = faculty;
+                        option.text = faculty.name;
+                        option.value = faculty.id;
                         facultySelect.add(option);
                     });
                 }
 
                 updateFacultyOptions();
+
             </script>
         </div>
     </div>
