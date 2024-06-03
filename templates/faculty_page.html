@@ -8,6 +8,7 @@
         Faculty Page
     </title>
     <link href="../static/student.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
 
 <body>
@@ -54,6 +55,13 @@
 
             </div>
 
+            <form>
+                <div class="search">
+                    <span class="search-icon material-symbols-outlined">search</span>
+                    <input id="searchInput" class='search-input' type="search" placeholder="Search" oninput="filterLecturers(this.value)">
+                </div>
+            </form>
+
             <div class="profile_dropdown">
                 <div class="profile_avatar" onclick="toggleDropdown()">
                     {% if current_user.profile_picture != 'default_profile_photo.jpg' %}
@@ -89,6 +97,18 @@
                 }
             });
         });
+
+        function filterLecturers(searchTerm) {
+            var cards = document.querySelectorAll('.lecturer_card');
+            cards.forEach(function (card) {
+                var lecturerName = card.querySelector('p').innerText.toLowerCase();
+                if (lecturerName.includes(searchTerm.toLowerCase())) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
     </script>
 
     <script>

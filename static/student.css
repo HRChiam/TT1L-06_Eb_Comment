@@ -214,6 +214,38 @@ header {
     box-shadow: 0 0 0.5px 0.3px #a11a1c;
 }
 
+form {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+}
+
+.search {
+    --padding: 10px; 
+    --margin-left: 10px; 
+    display: flex;
+    align-items: center;
+    padding: var(--padding);
+    margin-left: var(--margin-left);
+    border-radius: 20px; 
+    background: #f6f6f6;
+}
+
+.search-input {
+    font-size: 14px; 
+    font-family: 'Lexend', sans-serif;
+    color: #333333;
+    border: none;
+    background: transparent;
+    width: 200px; 
+    outline: none;
+}
+
+.search-input::placeholder,
+.search-icon {
+    color: rgba(0, 0, 0, 0.5);
+}
+
 .profile_dropdown {
     position: relative;
     display: inline-block;
