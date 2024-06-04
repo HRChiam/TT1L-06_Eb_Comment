@@ -13,12 +13,23 @@
     
     <div class="sidebar">
         <ul>
+            {% if session['nickname'] == 'admin' %}
+            <!-- Regular User Sidebar -->
             <li><a href="/admin"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
             <li><a href="/user"><i class='bx bxs-grid-alt'></i>User Control</a></li>
             <li><a href="/admin_comment"><i class='bx bxs-grid-alt'></i>Comment Control</a></li>
             <li><a href="/uploadlecturer"><i class='bx bxs-grid-alt'></i>Upload Lecturer</a></li>
-            <li><a href="/lecturerlist"><i class='bx bxs-grid-alt'></i>Lecturer</a></li>
+            <li><a href="/lecturerlist"><i class='bx bxs-grid-alt'></i>Lecturer List</a></li>
+            <li><a href="/login"><i class='bx bxs-grid-alt'></i>Sign out</a></li>
+            {% else %}
+            <!-- Admin Sidebar -->
+            <li><a href="/admin"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
+            <li><a href="/history"><i class='bx bxs-grid-alt'></i>History Comment</a></li>
+            <li><a href="/a_edit"><i class='bx bxs-grid-alt'></i>Edit Profile</a></li>
+            <li><a href="/login"><i class='bx bxs-grid-alt'></i>Sign out</a></li>
+            {% endif %}
         </ul>
+          
     </div>
     <div class="table">
         <div class="table_header">
@@ -32,6 +43,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Edit</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,6 +56,12 @@
                             <td> 
                                 <form action="/edit_user/{{ lecturer[0] }}" method="GET"> 
                                     <button type="submit">Edit</button>
+                                </form>
+                            </td>
+                            <td> 
+                                <form action="/delete_lecturer" method="POST">
+                                    <input type="hidden" name="id" value="{{ lecturer[0] }}">
+                                    <button type="submit"><i class='bx bx-user-minus'></i></button>
                                 </form>
                             </td>
                         </tr>
