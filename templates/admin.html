@@ -14,12 +14,23 @@
     
     <div class="sidebar">
         <ul>
+            {% if session['nickname'] == 'admin' %}
+            <!-- Regular User Sidebar -->
             <li><a href="/admin"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
             <li><a href="/user"><i class='bx bxs-grid-alt'></i>User Control</a></li>
             <li><a href="/admin_comment"><i class='bx bxs-grid-alt'></i>Comment Control</a></li>
             <li><a href="/uploadlecturer"><i class='bx bxs-grid-alt'></i>Upload Lecturer</a></li>
-            <li><a href="#"><i class='bx bxs-grid-alt'></i>Sign out</a></li>
+            <li><a href="/lecturerlist"><i class='bx bxs-grid-alt'></i>Lecturer List</a></li>
+            <li><a href="/login"><i class='bx bxs-grid-alt'></i>Sign out</a></li>
+            {% else %}
+            <!-- Admin Sidebar -->
+            <li><a href="/admin"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
+            <li><a href="/history"><i class='bx bxs-grid-alt'></i>History Comment</a></li>
+            <li><a href="/a_edit"><i class='bx bxs-grid-alt'></i>Edit Profile</a></li>
+            <li><a href="/login"><i class='bx bxs-grid-alt'></i>Sign out</a></li>
+            {% endif %}
         </ul>
+          
     </div>
      
     
