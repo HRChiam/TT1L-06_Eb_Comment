@@ -1,6 +1,6 @@
 import os
 import logging
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment, CommentReaction
 from datetime import datetime, date
@@ -9,6 +9,7 @@ from itsdangerous import URLSafeTimedSerializer
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 from PIL import Image
+from functools import wraps
 import random
 from app import db
 
@@ -52,6 +53,15 @@ logger = logging.getLogger(__name__)
 def load_user(user_id):
     return Users.query.get(user_id)
 
+def roles_required(*roles):
+    def wrapper(f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
+            if current_user.role not in roles:
+                abort(403)  # Forbidden
+            return f(*args, **kwargs)
+        return wrapped
+    return wrapper
 
 @app.errorhandler(404)
 def page_not_found(error):
@@ -96,9 +106,9 @@ def process_signin():
 
     # Email validation
     if email.endswith('@student.mmu.edu.my') and len(email.split('@')[0]) == 10:
-        pass
+        role = 'student'
     elif email.endswith('@mmu.edu.my'):
-        pass
+        role = 'lecturer'
     else:
         error['email'] = "Email invalid or does not meet requirements"
 
@@ -109,18 +119,18 @@ def process_signin():
     
     if not error:
     # Create and add new user to the database
-        new_user = Users(nickname=nickname, email=email)
+        new_user = Users(nickname=nickname, email=email, role = role)
         new_user.set_password(password)  # Set hashed password
         db.session.add(new_user)
         db.session.commit()
 
         # Check email domain and send OTP if applicable
-        if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
-            otp = random.randint(100000, 999999)
-            session['otp'] = otp
-            session['email'] = email
-            send_otp_email(email, otp)
-            return redirect(url_for('otp'))
+        # if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
+        #     otp = random.randint(100000, 999999)
+        #     session['otp'] = otp
+        #     session['email'] = email
+        #     send_otp_email(email, otp)
+        #     return redirect(url_for('otp'))
     
 
         return redirect('/login')
@@ -128,33 +138,33 @@ def process_signin():
     return render_template('signin.html', error=error)
 
 
-def send_otp_email(email, otp):
-    msg = Message(
-        'OTP for EbComment Account Verification',
-        recipients=[email],
-        body=f'Welcome to EbComment , verify your account with the OTP given.\n\n'
-             f'Your OTP:{otp} \n\n'
-             '---Eb_Comment Team---',
-        sender=app.config['MAIL_DEFAULT_SENDER']
-    )
-    mail.send(msg)
+# def send_otp_email(email, otp):
+#     msg = Message(
+#         'OTP for EbComment Account Verification',
+#         recipients=[email],
+#         body=f'Welcome to EbComment , verify your account with the OTP given.\n\n'
+#              f'Your OTP:{otp} \n\n'
+#              '---Eb_Comment Team---',
+#         sender=app.config['MAIL_DEFAULT_SENDER']
+#     )
+#     mail.send(msg)
 
 
 
-@app.route('/verify_otp', methods=['GET', 'POST'])
-def verify_otp():
-    error = {} 
-    if request.method == 'POST':
-        input_otp = request.form['otp']
-        if 'otp' in session and str(session['otp']) == input_otp:
-            email = session.pop('email', None)
-            session.pop('otp', None)
-            return redirect(url_for('login'))  
-        else:
-            error['otp'] = "Invalid OTP, please try again"
-            return render_template('otp.html', error=error)
+# @app.route('/verify_otp', methods=['GET', 'POST'])
+# def verify_otp():
+#     error = {} 
+#     if request.method == 'POST':
+#         input_otp = request.form['otp']
+#         if 'otp' in session and str(session['otp']) == input_otp:
+#             email = session.pop('email', None)
+#             session.pop('otp', None)
+#             return redirect(url_for('login'))  
+#         else:
+#             error['otp'] = "Invalid OTP, please try again"
+#             return render_template('otp.html', error=error)
 
-    return render_template('otp.html')
+#     return render_template('otp.html')
 
 
 @app.route('/process_login', methods=['POST'])
@@ -319,7 +329,7 @@ def faculty_page(faculty_name):
     faculty = Faculty.query.filter_by(name=faculty_name).first()
 
     if faculty:
-        lecturers = faculty.lecturers
+        lecturers = Lecturer.query.filter_by(faculty_id=faculty.id).all()  # Fetch lecturers for the specific faculty
         return render_template('faculty_page.html', faculty=faculty, lecturers=lecturers)
     else:
         return render_template('error.html', message="Faculty not found")
@@ -417,12 +427,10 @@ def upload():
     phone = request.form['phone']
     email = request.form['email']
     campus = request.form['campus']
-    faculty_id = request.form['faculty']
-
-    if not os.path.exists('uploads'):
-        os.makedirs('uploads')
-
-    photo.save(os.path.join('uploads/' + photo.filename))
+    faculty_id = request.form['faculty']  # Include the faculty ID
+    
+    photo_filename = secure_filename(photo.filename)
+    photo.save(os.path.join(app.config['UPLOAD_FOLDER'], photo_filename))
 
     lecturer_temp = LecturerTemp(name=name, photo=photo.filename, phone=phone, email=email, campus=campus, faculty_id=faculty_id)
     db.session.add(lecturer_temp)
@@ -449,6 +457,46 @@ def user():
     return render_template("user.html")
 
 
+@app.route('/admin/view_lecturers_temp')
+@login_required
+@roles_required('admin', 'lecturer')
+def view_lecturers_temp():
+    lecturers_temp = LecturerTemp.query.all()
+    return render_template('view_lecturers_temp.html', lecturers_temp=lecturers_temp)
+
+@app.route('/admin/approve_lecturer/<int:lecturer_id>', methods=['POST'])
+@login_required
+@roles_required('admin', 'lecturer')  # Assuming you have a role-based access control
+def approve_lecturer(lecturer_id):
+    lecturer_temp = LecturerTemp.query.get_or_404(lecturer_id)
+    
+    lecturer = Lecturer(
+        name=lecturer_temp.name,
+        photo=lecturer_temp.photo,
+        phone=lecturer_temp.phone,
+        email=lecturer_temp.email,
+        campus=lecturer_temp.campus,
+        faculty_id=lecturer_temp.faculty_id,  # Ensure faculty ID is transferred
+    )
+
+    db.session.add(lecturer)
+    db.session.delete(lecturer_temp)
+    db.session.commit()
+
+    return redirect(url_for('view_lecturers_temp'))
+
+
+@app.route('/admin/reject_lecturer/<int:lecturer_id>', methods=['POST'])
+@login_required
+@roles_required('admin', 'lecturer')  # Assuming you have a role-based access control
+def reject_lecturer(lecturer_id):
+    lecturer_temp = LecturerTemp.query.get_or_404(lecturer_id)
+    db.session.delete(lecturer_temp)
+    db.session.commit()
+    
+    return redirect(url_for('view_lecturers_temp'))
+
+
 @app.route("/comment")
 @login_required
 def comment():
@@ -456,7 +504,7 @@ def comment():
 
 
 if __name__ == '__main__':
-    # with app.app_context():
-    #     db.create_all()
+    with app.app_context():
+        db.create_all()
     logging.basicConfig(level=logging.INFO)
     app.run(debug=True)

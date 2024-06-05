@@ -15,6 +15,7 @@ class Users(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     profile_picture = db.Column(db.String(256), nullable=False, default = 'default_profile_photo.jpg')
+    role = db.Column(db.String(50), nullable=False)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -30,9 +31,10 @@ class Faculty(db.Model):
     __tablename__ = 'faculty'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=False, unique = True)
     campus = db.Column(db.String(100), nullable=False)
-    lecturers = relationship("Lecturer", back_populates="faculty")
+    lecturers = db.relationship("Lecturer", back_populates="faculty", lazy = True)
+    lecturers_temp = db.relationship("LecturerTemp", back_populates="faculty", lazy = True)
 
 class LecturerTemp(db.Model):
     __tablename__ = 'lecturer_temp'
@@ -43,8 +45,9 @@ class LecturerTemp(db.Model):
     phone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(200), nullable=False)
     campus = db.Column(db.String(100), nullable=False)
-    faculty_id = db.Column(db.Integer, ForeignKey('faculty.id'), nullable=False)
-    faculty = relationship("Faculty")
+    faculty_id = db.Column(db.Integer, db.ForeignKey('faculty.id'), nullable=False)
+    faculty = db.relationship("Faculty", back_populates="lecturers_temp")
+    status = db.Column(db.String(20), nullable=False, default='pending')
 
 class Lecturer(db.Model):
     __tablename__ = 'lecturer'
@@ -57,7 +60,7 @@ class Lecturer(db.Model):
     campus = db.Column(db.String(100), nullable=False)
     bio = db.Column(db.Text, nullable=True) 
     faculty_id = db.Column(db.Integer, ForeignKey('faculty.id'), nullable=False)
-    faculty = relationship("Faculty", back_populates="lecturers")
+    faculty = db.relationship("Faculty", back_populates="lecturers")
 
 class Comment(db.Model):
     __tablename__ = 'comment'
