@@ -16,7 +16,7 @@
     font-size: 20px;
 }
 
-.box {
+.box-wy {
     width: 600px;
     margin-top: 150px;
     margin-left: 300px;
@@ -28,7 +28,7 @@
 
 }
 
-label {
+#wy label {
     display: block;
     margin-bottom: 1px;
     padding-right: 10px;
