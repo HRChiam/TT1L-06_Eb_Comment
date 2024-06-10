@@ -2,7 +2,7 @@ import os
 import logging
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from .models import db, Users, Lecturer, Faculty, LecturerTemp, Comment, CommentReaction
+from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment, CommentReaction
 from datetime import datetime, date
 from flask_mail import Message, Mail
 from itsdangerous import URLSafeTimedSerializer
