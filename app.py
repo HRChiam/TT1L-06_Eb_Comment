@@ -1,15 +1,74 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
-from models import db, Users, Lecturer, Faculty, LecturerTemp
+import logging
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session,abort
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment, CommentReaction
+from datetime import datetime, date
+from flask_mail import Message, Mail
+from itsdangerous import URLSafeTimedSerializer
+from dotenv import load_dotenv
+import random
+import sqlite3
+from werkzeug.utils import secure_filename
+from functools import wraps
+from PIL import Image
 
-app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+otp_storage = {}
+load_dotenv()
+
+app = Flask(__name__, instance_relative_config=True)
+
+if not os.path.exists(app.instance_path):
+    os.makedirs(app.instance_path)
+
+def get_db_connection():
+    con = sqlite3.connect("instance/database.db")
+    con.row_factory = sqlite3.Row
+    return con
+
+DATABASE_NAME = "database.db"
+DATABASE_PATH = os.path.join(app.instance_path, DATABASE_NAME)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_PATH}"
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_PATH}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_secret_key')
+app.config['MAIL_SERVER'] = 'smtp-mail.outlook.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME', 'ebcomment123@outlook.my')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD', 'hjszkqeytfsdnldp')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER', 'ebcomment123@outlook.my')
+app.config['SECURITY_PASSWORD_SALT'] = os.getenv('SECURITY_PASSWORD_SALT', 'your_security_password_salt')
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
 db.init_app(app)
+mail = Mail(app)
+serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+logger = logging.getLogger(__name__)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Users.query.get(user_id)
+
+def roles_required(*roles):
+    def wrapper(f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
+            if current_user.role not in roles:
+                abort(403)  # Forbidden
+            return f(*args, **kwargs)
+        return wrapped
+    return wrapper
 
 @app.errorhandler(404)
 def page_not_found(error):
@@ -41,37 +100,58 @@ def forgot():
 
 @app.route('/process_signin', methods=['POST'])
 def process_signin():
-    if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
-        confirm_password = request.form['confirm_password']
+    email = request.form['email']
+    nickname = request.form['username']
+    password = request.form['password']
+    confirm_password = request.form['confirm_password']
 
     error = {}
 
-        if email.endswith('@student.mmu.edu.my') and len(email.split('@')[0]) == 10:
-            pass
-        elif email.endswith('@mmu.edu.my'):
-            pass
-        else:
-            error['email'] = "Email invalid or does not meet requirements"
+    # Email validation
+    if email.endswith('@student.mmu.edu.my') and len(email.split('@')[0]) == 10:
+        pass
+    elif email.endswith('@mmu.edu.my'):
+        pass
+    else:
+        error['email'] = "Email invalid or does not meet requirements"
 
-        if not (len(password) >= 8 and sum(c.isdigit() for c in password) >= 4) or password != confirm_password:
-            error['password'] = "Password does not match or does not meet requirements"
+    # Password validation
+    if not (len(password) >= 8 and sum(c.isdigit() for c in password) >= 4) or password != confirm_password:
+        error['password'] = "Password does not match or does not meet requirements"
 
-        if not error:
-            new_user = Users(name=username, email=email, password=password)
-            db.session.add(new_user)
-            db.session.commit()
+    
+    if not error:
+    # Create and add new user to the database
+        if email.endswith('@mmu.edu.my'):
+            if email.endswith('@mmu.edu.my'):
+                new_user = Users(nickname=nickname, email=email)
+                new_user.set_password(password)  # Set hashed password
+                db.session.add(new_user)
 
-            if email.endswith('@student.mmu.edu.my'):
-                return redirect('/front')
-            elif email.endswith('@mmu.edu.my'):
-                return redirect('/index')
+                # Create a new lecturer using Lecturer class
+                new_lecturer = Lecturer(
+                    name=nickname,
+                    email=email,
+                    photo="default_photo.jpg",  # Provide a default value for the photo attribute
+                    phone="123456789",  # Provide a value for the phone attribute
+                    campus="Cyberjaya",  # Provide a value for the campus attribute
+                    bio="None",     # Provide a value for the bio attribute, if applicable
+                    faculty_id="0",  # Provide a value for the faculty_id attribute
+                )
+                db.session.add(new_lecturer)
+
+                db.session.commit()
+            else:
+                new_user = Users(nickname=nickname, email=email)
+                new_user.set_password(password)  # Set hashed password
+                db.session.add(new_user)
+
+                db.session.commit()
+
+            return redirect('/login')
 
     return render_template('signin.html', error=error)
 
-    return render_template('signin.html')
 
 
 @app.route('/process_login', methods=['GET', 'POST'])
@@ -80,18 +160,18 @@ def process_login():
     password = request.form['password']
 
      
-        student_email = email.endswith('@student.mmu.edu.my')and len(email.split('@')[0]) == 10
+    student_email = email.endswith('@student.mmu.edu.my')and len(email.split('@')[0]) == 10
 
-        if student_email:
-            return redirect('/front') 
+    if student_email:
+        return redirect('/front') 
         
 
-        elif email.endswith('@mmu.edu.my'):
-            return redirect('/index')
+    elif email.endswith('@mmu.edu.my'):
+        return redirect('/index')
 
-        else:
-            error_message = "Email invalid or does not meet requirements"
-            return render_template('login.html', error=error_message)
+    else:
+        error_message = "Email invalid or does not meet requirements"
+        return render_template('login.html', error=error_message)
 
 
     return render_template('login.html')
