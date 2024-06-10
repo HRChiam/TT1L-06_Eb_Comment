@@ -185,7 +185,7 @@ def process_login():
         if email.endswith('@student.mmu.edu.my'):
             return redirect('/front')
         elif email.endswith('@mmu.edu.my'):
-            return redirect('/index')
+            return redirect('/admin')
     else:
         flash('Invalid email or password', 'danger')
     return render_template('login.html')
@@ -451,25 +451,6 @@ def keyinsuccess():
     return render_template('keyinsuccess.html')
 
 
-@app.route("/index")
-@login_required
-def index():
-    return render_template("index.html")
-
-
-@app.route("/user")
-@login_required
-def user():
-    return render_template("user.html")
-
-
-@app.route('/admin/view_lecturers_temp')
-@login_required
-@roles_required('admin', 'lecturer')
-def view_lecturers_temp():
-    lecturers_temp = LecturerTemp.query.all()
-    return render_template('view_lecturers_temp.html', lecturers_temp=lecturers_temp)
-
 @app.route("/admin")
 def admin():
     con = get_db_connection()
@@ -484,6 +465,20 @@ def admin():
 
     return render_template("admin.html", num_lecturers=num_lecturers, num_users=num_users, num_comment=num_comment)
 
+
+
+@app.route("/user")
+@login_required
+def user():
+    return render_template("user.html")
+
+
+@app.route('/admin/view_lecturers_temp')
+@login_required
+@roles_required('admin', 'lecturer')
+def view_lecturers_temp():
+    lecturers_temp = LecturerTemp.query.all()
+    return render_template('view_lecturers_temp.html', lecturers_temp=lecturers_temp)
 
 @app.route('/admin/approve_lecturer/<int:lecturer_id>', methods=['POST'])
 @login_required
