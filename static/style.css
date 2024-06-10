@@ -1,4 +1,3 @@
-/*import字体进来*/
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 /*基础网页预设*/
 *{
@@ -56,6 +55,7 @@ body{
     height: 1100px;
     width: 300px;
     background-color: lightgrey;
+    z-index: 10;
  
 }
  
