@@ -23,7 +23,7 @@ if not os.path.exists(app.instance_path):
     os.makedirs(app.instance_path)
 
 def get_db_connection():
-    con = sqlite3.connect("instance/database.db")
+    con = sqlite3.connect(f"sqlite:///{DATABASE_PATH}")
     con.row_factory = sqlite3.Row
     return con
 
