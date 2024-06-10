@@ -21,6 +21,11 @@ app = Flask(__name__, instance_relative_config=True)
 if not os.path.exists(app.instance_path):
     os.makedirs(app.instance_path)
 
+def get_db_connection():
+    con = sqlite3.connect("instance/database.db")
+    con.row_factory = sqlite3.Row
+    return con
+
 DATABASE_NAME = "database.db"
 DATABASE_PATH = os.path.join(app.instance_path, DATABASE_NAME)
 
