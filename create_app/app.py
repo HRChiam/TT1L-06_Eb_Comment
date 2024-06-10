@@ -31,7 +31,6 @@ DATABASE_NAME = "database.db"
 DATABASE_PATH = os.path.join(app.instance_path, DATABASE_NAME)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_PATH}"
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_PATH}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_secret_key')
 app.config['MAIL_SERVER'] = 'smtp-mail.outlook.com'
