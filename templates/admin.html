@@ -13,17 +13,31 @@
 <body>
 
     <div class="Try">
-        <h2>Eb-comment</h2><input type="research"><i class='bx bx-search-alt-2'></i><a href="#">KEE HUI YEE</a>
-        <a href="/admin/view_lecturers_temp">Lecturer Info Upload by Student</a>
+        <h2>Eb-comment</h2><input type="research"><i class='bx bx-search-alt-2'></i><a href="#">Admin</a>
     </div>
+
+
 
     <div class="sidebar">
         <ul>
-            <li><a href="/"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
+            {% if session['nickname'] == 'admin' %}
+            <!-- Regular User Sidebar -->
+            <li><a href="/admin"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
             <li><a href="/user"><i class='bx bxs-grid-alt'></i>User Control</a></li>
-            <li><a href="/comment"><i class='bx bxs-grid-alt'></i>Comment Control</a></li>
-            <li><a href="#"><i class='bx bxs-grid-alt'></i>Sign out</a></li>
+            <li><a href="/admin_comment"><i class='bx bxs-grid-alt'></i>Comment Control</a></li>
+            <li><a href="/uploadlecturer"><i class='bx bxs-grid-alt'></i>Upload Lecturer</a></li>
+            <li><a href="/lecturerlist"><i class='bx bxs-grid-alt'></i>Lecturer List</a></li>
+            <li><a href="/login"><i class='bx bxs-grid-alt'></i>Sign out</a></li>
+            {% else %}
+            <!-- Admin Sidebar -->
+            <li><a href="/admin"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
+            <li><a href="/history"><i class='bx bxs-grid-alt'></i>History Comment</a></li>
+            <li><a href="/a_edit"><i class='bx bxs-grid-alt'></i>Edit Profile</a></li>
+            <li><a href="/admin/view_lecturers_temp"><i class='bx bxs-grid-alt'></i>Lecturer Info Upload by Student</a></li>
+            <li><a href="/logout"><i class='bx bxs-grid-alt'></i>Log out</a></li>
+            {% endif %}
         </ul>
+
     </div>
 
 
@@ -31,7 +45,7 @@
         <div class="fciwrapper">
             <div class="fcisubcontain">
                 <div class="subcontaindes">
-                    <h2>54</h2>
+                    <h2>{{ num_lecturers }}</h2>
                     <h3>Lecture</h3>
                 </div>
                 <div class="subcontainpic">
@@ -40,7 +54,7 @@
             </div>
             <div class="fcisubcontain">
                 <div class="subcontaindes">
-                    <h2>24</h2>
+                    <h2>{{ num_users }}</h2>
                     <h3>Student</h3>
                 </div>
                 <div class="subcontainpic">
@@ -49,7 +63,7 @@
             </div>
             <div class="fcisubcontain">
                 <div class="subcontaindes">
-                    <h2>90</h2>
+                    <h2>{{ num_comment }}</h2>
                     <h3>Comment</h3>
                 </div>
                 <div class="subcontainpic">
