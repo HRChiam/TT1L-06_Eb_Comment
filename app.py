@@ -185,7 +185,7 @@ def process_login():
         if email.endswith('@student.mmu.edu.my'):
             return redirect('/front')
         elif email.endswith('@mmu.edu.my'):
-            return redirect('/index')
+            return redirect('/admin')
     else:
         flash('Invalid email or password', 'danger')
     return render_template('login.html')
