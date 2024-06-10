@@ -9,6 +9,7 @@ from itsdangerous import URLSafeTimedSerializer
 from dotenv import load_dotenv
 import random
 import sqlite3
+from werkzeug.utils import secure_filename
 
 otp_storage = {}
 load_dotenv()
@@ -111,78 +112,126 @@ def process_signin():
     
     if not error:
     # Create and add new user to the database
-        new_user = Users(nickname= nickname, email=email)
-        new_user.set_password(password)  # Set hashed password
-        db.session.add(new_user)
-        db.session.commit()
+        if email.endswith('@mmu.edu.my'):
+            if email.endswith('@mmu.edu.my'):
+                new_user = Users(nickname=nickname, email=email)
+                new_user.set_password(password)  # Set hashed password
+                db.session.add(new_user)
 
-        # Check email domain and send OTP if applicable
-        if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
-            otp = random.randint(100000, 999999)
-            session['otp'] = otp
-            session['email'] = email
-            send_otp_email(email, otp)
-            return redirect(url_for('otp'))
-    
+                # Create a new lecturer using Lecturer class
+                new_lecturer = Lecturer(
+                    name=nickname,
+                    email=email,
+                    photo="default_photo.jpg",  # Provide a default value for the photo attribute
+                    phone="123456789",  # Provide a value for the phone attribute
+                    campus="Cyberjaya",  # Provide a value for the campus attribute
+                    bio="None",     # Provide a value for the bio attribute, if applicable
+                    faculty_id="0",  # Provide a value for the faculty_id attribute
+                )
+                db.session.add(new_lecturer)
 
-        return redirect('/login')
+                db.session.commit()
+            else:
+                new_user = Users(nickname=nickname, email=email)
+                new_user.set_password(password)  # Set hashed password
+                db.session.add(new_user)
+
+                db.session.commit()
+
+            return redirect('/login')
+
 
     return render_template('signin.html', error=error)
 
 
-def send_otp_email(email, otp):
-    msg = Message(
-        'OTP for EbComment Account Verification',
-        recipients=[email],
-        body=f'Welcome to EbComment , verify your account with the OTP given.\n\n'
-             f'Your OTP:{otp} \n\n'
-             '---Eb_Comment Team---',
-        sender=app.config['MAIL_DEFAULT_SENDER']
-    )
-    mail.send(msg)
+# def send_otp_email(email, otp):
+#     msg = Message(
+#         'OTP for EbComment Account Verification',
+#         recipients=[email],
+#         body=f'Welcome to EbComment , verify your account with the OTP given.\n\n'
+#              f'Your OTP:{otp} \n\n'
+#              '---Eb_Comment Team---',
+#         sender=app.config['MAIL_DEFAULT_SENDER']
+#     )
+#     mail.send(msg)
 
 
 
-@app.route('/verify_otp', methods=['GET', 'POST'])
-def verify_otp():
-    error = {} 
-    if request.method == 'POST':
-        input_otp = request.form['otp']
-        if 'otp' in session and str(session['otp']) == input_otp:
-            email = session.pop('email', None)
-            session.pop('otp', None)
-            return redirect(url_for('login'))  
-        else:
-            error['otp'] = "Invalid OTP, please try again"
-            return render_template('otp.html', error=error)
+# @app.route('/verify_otp', methods=['GET', 'POST'])
+# def verify_otp():
+#     error = {} 
+#     if request.method == 'POST':
+#         input_otp = request.form['otp']
+#         if 'otp' in session and str(session['otp']) == input_otp:
+#             email = session.pop('email', None)
+#             session.pop('otp', None)
+#             return redirect(url_for('login'))  
+#         else:
+#             error['otp'] = "Invalid OTP, please try again"
+#             return render_template('otp.html', error=error)
 
-    return render_template('otp.html')
+#     return render_template('otp.html')
 
+
+# @app.route('/process_login', methods=['POST'])
+# def process_login():
+#     email = request.form['email']
+#     password = request.form['password']
+#     nickname = request.form['username']
+
+#     if email == 'admin@gmail.com' and password == 'abc' and nickname == 'admin':
+#         session['nickname'] = 'admin'
+#         return redirect('/admin')
+
+#     user = Users.query.filter_by(email=email).first()
+    
+#     if user and user.check_password(password):
+#         login_user(user)
+#         if email.endswith('@student.mmu.edu.my'):
+#             return redirect('/front')
+        
+#         elif email.endswith('@mmu.edu.my'):
+#             # Assuming nickname is unique
+#             session['nickname'] = user.nickname  # Storing user's nickname in session
+#             return redirect('/admin')
+
+#     flash('Invalid email or password', 'danger')
+#     return render_template('login.html')
 
 @app.route('/process_login', methods=['POST'])
 def process_login():
     email = request.form['email']
     password = request.form['password']
-    nickname = request.form['username']
-
-    if email == 'admin@gmail.com' and password == 'abc' and nickname == 'admin':
-        session['nickname'] = 'admin'
-        return redirect('/admin')
 
     user = Users.query.filter_by(email=email).first()
-    
-    if user and user.check_password(password):
-        login_user(user)
-        if email.endswith('@student.mmu.edu.my'):
-            return redirect('/front')
-        
-        elif email.endswith('@mmu.edu.my'):
-            # Assuming nickname is unique
-            session['nickname'] = user.nickname  # Storing user's nickname in session
-            return redirect('/admin')
 
-    flash('Invalid email or password', 'danger')
-    return render_template('login.html')
+
+    if email == 'admin@gmail.com':
+        session['email'] = 'admin@gmail.com'
+        return redirect('/admin')
+
+    elif user and user.check_password(password):
+        login_user(user)
+        session['id'] = user.id  # Store user's ID in session
+        session['email'] = user.email
+        # Check if the email ends with the student domain
+        if email.endswith('@student.mmu.edu.my'):
+            session['id'] = user.id  # Store user's ID in session
+            session['email'] = user.email
+            return redirect('/front')
+        # Check if the email ends with the MMU domain
+        elif email.endswith('@mmu.edu.my'):
+            session['id'] = user.id  # Store user's ID in session
+            session['email'] = user.email   
+            return redirect('/admin')
+        
+        
+
+        return redirect('/front' if email.endswith('@student.mmu.edu.my') else '/admin')
+    else:
+        flash('Invalid email or password', 'danger')
+        return render_template('login.html')
+
 
 
 
@@ -466,8 +515,10 @@ def FOB():
     return render_template('Melaka_FOB_lecturer.html')
 
 
-@app.route("/admin")
+@app.route("/admin" ,methods=['GET'])
 def admin():
+    email = session.get('email')
+    print(email)
     con = get_db_connection()
     cursor = con.cursor()
 
@@ -568,7 +619,8 @@ def uploadlecturer():
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute("INSERT INTO lecturer (name, email, phone, faculty, photo, campus, faculty_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                           (name, email, phone, faculty, photo_path, campus, faculty_id))
+               (name, email, phone, faculty, photo_path, campus, faculty_id))
+
             conn.commit()
             conn.close()
             return redirect('/lecturer')
@@ -602,13 +654,28 @@ def delete_lecturer_route():
     delete_lecturer(id)
     return redirect('/lecturerlist')
 
-@app.route("/edit_user/<int:id>", methods=["GET"])
+@app.route("/edit_user/<int:id>", methods=["GET", "POST"])
 def edit_user(id):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM lecturer WHERE id = ?", (id,))
     lecturer = cursor.fetchone()
     conn.close()
+
+    if request.method == "POST":
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        faculty = request.form.get('faculty')
+        campus = request.form.get('campus')
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE lecturer SET name=?, email=?, phone=?, faculty=?, campus=?,  WHERE id=?",
+                       (name, email, phone, faculty, campus, id))
+        conn.commit()
+        conn.close()
+        return redirect('/lecturer')
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -618,23 +685,32 @@ def edit_user(id):
     
     if lecturer:
         return render_template("editlecturer.html", lecturer=lecturer, faculties=faculty)
+
     
 @app.route("/update_user/<int:id>", methods=["POST"])
 def update_user(id):
-    name = request.form['name']
-    email = request.form['email']
-    
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("UPDATE lecturer SET name = ?, email = ? WHERE id = ?", (name, email, id))
-    conn.commit()
-    conn.close()
+
+    if request.method == "POST":
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        faculty = request.form.get('faculty')
+        campus = request.form.get('campus')
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE lecturer SET name=?, email=?, phone=?, faculty=?, campus=? WHERE id=?",
+               (name, email, phone, faculty, campus, id))
+
+        conn.commit()
+        conn.close()
+        return redirect('/lecturerlist')
     
     return redirect(url_for('lecturerlist'))
 
 @app.route("/history", methods=["GET"])
 def history():
-    nickname = session.get("nickname")
+    nickname = session.get("email")
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM comment WHERE nickname = ?", (nickname,))
@@ -645,35 +721,56 @@ def history():
 
 @app.route('/admin_edit_lecturer', methods=['GET', 'POST'])
 def admin_edit_lecturer():
-    nickname = session.get('nickname')  # Using get() to avoid KeyError if 'nickname' is not in session
+    user_id = session.get('id')  # Using get() to avoid KeyError if 'nickname' is not in session
 
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE nickname = ?", (nickname,))
-    user = cursor.fetchone()
+    cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+    users = cursor.fetchone()
     conn.close()
 
-    print(user)
-    print(nickname)
-
-    return render_template("admin_edit_lecturer.html", user=user)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM faculty")
+    faculty = cursor.fetchall()
+    conn.close()
+    
+    return render_template("admin_edit_lecturer.html", users = users,  faculties=faculty)
     
 
-@app.route("/a_edit", methods=["POST","GET"])
+@app.route("/a_edit", methods=["POST", "GET"])
 def edit_teacher():
-    original_nickname = session['nickname']
+    user_id = session.get('id')
+    user_email = session.get('email')
     if request.method == "POST":
-        new_nickname = request.form['name']
         email = request.form['email']
+        campus = request.form['campus']
+        bio = request.form['bio']
+        phone = request.form['phone']
+        faculty =request.form['faculty']
+
+
 
         conn = get_db_connection()
-        conn.execute('UPDATE users SET email = ?, nickname = ? WHERE nickname = ?', (email, new_nickname, original_nickname))
+        cursor = conn.cursor()
+        cursor.execute("UPDATE lecturer SET email=?, campus=?, bio=?, phone=?, faculty=?WHERE email=?",
+               ( email, campus, bio, phone,faculty, user_email))
+
         conn.commit()
         conn.close()
 
-    return redirect("/admin_edit_lecturer")
-    
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE users SET email=?, campus=?, bio=?, phone=?, faculty=?WHERE id=?",
+               ( email, campus, bio, phone,faculty, user_id))
 
+        conn.commit()
+        conn.close()
+
+
+        
+
+    return redirect("/admin_edit_lecturer")
 
 
 

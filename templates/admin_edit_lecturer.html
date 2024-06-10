@@ -18,7 +18,7 @@
     
     <div class="sidebar">
         <ul>
-            {% if session['nickname'] == 'admin' %}
+            {% if session['email'] == 'admin@gmail.com' %}
             <!-- Admin Sidebar -->
             <li><a href="/admin"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
             <li><a href="/user"><i class='bx bxs-grid-alt'></i>User Control</a></li>
@@ -37,15 +37,31 @@
     </div>
 
     <div class="profile">
-        <h3 style="margin-bottom: 20px;">Edit Lecturer</h3>
+        <h2 style="margin-bottom: 20px;">EDIT</h2>
         <form action="/a_edit" method="POST">
             <div class="label-name">
-                <label for="name">NAME:</label>
-                <input type="text" name="name" id="name" placeholder="{{ user[1] }}">
+                <label for="email">EMAIL </label>
+                <input type="email" name="email" id="email" placeholder="{{ users[2] }}">
             </div>
             <div class="label-name">
-                <label for="email">EMAIL:</label>
-                <input type="email" name="email" id="email" placeholder="{{ user[2] }}">
+                <label for="faculty">FACULTY</label>
+                <select name="faculty" id="faculty">
+                    {% for faculty in faculties %}
+                    <option value="{{ faculty[1] }}">{{ faculty[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="label-name">
+                <label for="campus">CAMPUS</label>
+                <input type="text" name="campus" id="campus" placeholder="{{ users[7] }}">
+            </div>
+            <div class="label-name">
+                <label for="phone">PHONE</label>
+                <input type="text" name="phone" id="phone" placeholder="{{ users[5] }}">
+            </div>
+            <div class="label-name">
+                <label for="bio">BIO</label>
+                <input type="text" name="bio" id="bio" placeholder="{{ users[8] }}">
             </div>
             <button type="submit" class="Submit">Submit</button>
             <button type="reset" class="Cancel">Cancel</button>

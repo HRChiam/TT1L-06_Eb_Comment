@@ -13,7 +13,7 @@
     
     <div class="sidebar">
         <ul>
-            {% if session['nickname'] == 'admin' %}
+            {% if session['email'] == 'admin@gmail.com' %}
             <!-- Regular User Sidebar -->
             <li><a href="/admin"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
             <li><a href="/user"><i class='bx bxs-grid-alt'></i>User Control</a></li>
@@ -32,42 +32,54 @@
           
     </div>
     <div class="profile">
-        <h3>Profile</h3>
+        <h2>UPLOAD LECTURER</h2>
         <form action="/uploadlecturer" method="POST" >
-            <div class="label-name">
-                <label for="name">NAME:</label>
-                <input type="text" name="name" id="name">
+            <div class="profilecontainer" style="display: flex; flex-direction: row; margin-left: 40px;">
+                <div class="left" style="display: flex; flex-direction: column; flex: 1; padding-right: 20px;">
+                    <div class="label-name">
+                        <label for="name">NAME</label>
+                        <input type="text" name="name" id="name">
+                    </div>
+                    <div class="label-name">
+                        <label for="phone">PHONE</label>
+                        <input type="text" name="phone" id="phone">
+                    </div>
+                    <div class="label-name">
+                        <label for="campus">CAMPUS</label>
+                        <input type="text" name="campus" id="campus">
+                    </div>
+                    <div class="label-name">
+                        <label for="faculty">FACULTY</label>
+                        <select name="faculty" id="faculty">
+                            {% for faculty in faculties %}
+                            <option value="{{ faculty[1] }}">{{ faculty[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="right" style="display: flex; flex-direction: column; flex: 1; padding-left: 20px;">
+                    <div class="label-name">
+                        <label for="email">EMAIL</label>
+                        <input type="text" name="email" id="email">
+                    </div>
+                    <div class="label-name">
+                        <label for="faculty_id">FACULTY ID</label>
+                        <input type="text" name="faculty_id" id="faculty_id">
+                    </div>
+                    <div class="label-name">
+                        <label for="photo">PHOTO</label>
+                        <input type="file" name="photo" id="photo">
+                    </div>
+                    <div class="label-name">
+                        <label for="bio">BIO</label>
+                        <input type="text" name="bio" id="bio">
+                    </div>
+                </div>
             </div>
-            <div class="label-name">
-                <label for="email">EMAIL:</label>
-                <input type="text" name="email" id="email">
+            <div class="buttoncontainer" style="display: flex; flex-direction: row; justify-content: center; margin-right: 100px; margin-top: 40px;">
+                <button type="submit" class="Submit">Submit</button>
+                <button type="reset" class="Cancel"><a href="/admin" style=" text-decoration: none; color: white;">Cancel</a></button>
             </div>
-            <div class="label-name">
-                <label for="phone">PHONE:</label>
-                <input type="text" name="phone" id="phone">
-            </div>
-            <div class="label-name">
-                <label for="faculty">FACULTY:</label>
-                <select name="faculty" id="faculty">
-                    {% for faculty in faculties %}
-                    <option value="{{ faculty[1] }}">{{ faculty[1] }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="label-name">
-                <label for="photo">photo:</label>
-                <input type="file" name="photo" id="photo">
-            </div>
-            <div class="label-name">
-                <label for="photo">campus:</label>
-                <input type="text" name="campus" id="photo">
-            </div>
-            <div class="label-name">
-                <label for="photo">photo:</label>
-                <input type="text" name="faculty_id" id="photo">
-            </div>
-            <button type="submit" class="Submit">Submit</button>
-            <button type="reset" class="Cancel">Cancel</button>
         </form>
     </div>
     
