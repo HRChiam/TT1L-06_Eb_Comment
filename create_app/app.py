@@ -2,7 +2,7 @@ import os
 import logging
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from create_app.models import db, Users, Lecturer, Faculty, LecturerTemp, Comment, CommentReaction
+from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment, CommentReaction
 from datetime import datetime, date
 from flask_mail import Message, Mail
 from itsdangerous import URLSafeTimedSerializer
@@ -23,7 +23,7 @@ if not os.path.exists(app.instance_path):
     os.makedirs(app.instance_path)
 
 def get_db_connection():
-    con = sqlite3.connect(f"sqlite:///{DATABASE_PATH}")
+    con = sqlite3.connect("instance/database.db")
     con.row_factory = sqlite3.Row
     return con
 
