@@ -13,6 +13,13 @@ from functools import wraps
 import random
 import sqlite3
 
+def create_app():
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///instance/database.db')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.init_app(app)
+    return app
+
 otp_storage = {}
 load_dotenv()
 
