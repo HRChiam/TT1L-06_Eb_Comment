@@ -1,4 +1,4 @@
-from .app import app as _app
+from app import app as _app
 
 def create_app(config_name):
     #Create the app instance
