@@ -26,10 +26,9 @@ def get_db_connection():
     con.row_factory = sqlite3.Row
     return con
 
-DATABASE_NAME = "database.db"
-DATABASE_PATH = os.path.join(app.instance_path, DATABASE_NAME)
+DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///instance/database.db')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', f"sqlite:///{DATABASE_PATH}")
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_secret_key')
 app.config['MAIL_SERVER'] = 'smtp-mail.outlook.com'
