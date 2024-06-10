@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from PIL import Image
 from functools import wraps
 import random
-from app import db
+# from app import db
 import sqlite3
 
 otp_storage = {}
