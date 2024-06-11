@@ -11,7 +11,7 @@ db = SQLAlchemy()
 
 class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    nickname = db.Column(db.String(150), unique=True, nullable=False)
+    name = db.Column(db.String(150), unique=True, nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     profile_picture = db.Column(db.String(256), nullable=False, default = 'default_profile_photo.jpg')
@@ -24,7 +24,7 @@ class Users(db.Model, UserMixin):
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
-        return '<Name %r>' % self.nickname
+        return '<Name %r>' % self.name
 
 
 class Faculty(db.Model):
@@ -68,7 +68,7 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     lecturer_id = db.Column(db.Integer, ForeignKey('lecturer.id'), nullable=False)
     faculty_id = db.Column(db.Integer, ForeignKey('faculty.id'), nullable=False)
-    nickname = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
     comment_text = db.Column(db.Text, nullable=False)
     date = db.Column(db.Date, nullable=False, default=date.today)
     time = db.Column(db.Time, nullable=False, default=datetime.now().time)
