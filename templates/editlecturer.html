@@ -49,7 +49,7 @@
                 <label for="faculty">FACULTY:</label>
                 <select name="faculty" id="faculty">
                     {% for faculty in faculties %}
-                    <option value="{{ faculty[1] }}">{{ faculty[1] }}</option>
+                    <option value="{{ faculty[0] }}">{{ faculty[1] }}</option>
                     {% endfor %}
                 </select>
             </div>
