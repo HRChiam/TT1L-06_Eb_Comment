@@ -2,7 +2,7 @@ import os
 import logging
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment, CommentReaction
+from app.models import db, Users, Lecturer, Faculty, LecturerTemp, Comment, CommentReaction
 from datetime import datetime, date
 from flask_mail import Message, Mail
 from itsdangerous import URLSafeTimedSerializer
@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from PIL import Image
 from functools import wraps
 import random
-from app import db
+from app.main import db
 import sqlite3
 
 otp_storage = {}
@@ -519,8 +519,8 @@ def comment():
     return render_template("comment.html")
 
 
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    logging.basicConfig(level=logging.INFO)
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     with app.app_context():
+#         db.create_all()
+#     logging.basicConfig(level=logging.INFO)
+#     app.run(debug=True)
