@@ -125,18 +125,18 @@ def process_signin():
     
     if not error:
     # Create and add new user to the database
-        new_user = Users(nickname=nickname, email=email, role = role)
+        new_user = Users(name=nickname, email=email, role = role)
         new_user.set_password(password)  # Set hashed password
         db.session.add(new_user)
         db.session.commit()
 
         # Check email domain and send OTP if applicable
-        # if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
-        #     otp = random.randint(100000, 999999)
-        #     session['otp'] = otp
-        #     session['email'] = email
-        #     send_otp_email(email, otp)
-        #     return redirect(url_for('otp'))
+        if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
+            otp = random.randint(100000, 999999)
+            session['otp'] = otp
+            session['email'] = email
+            send_otp_email(email, otp)
+            return redirect(url_for('otp'))
     
 
         return redirect('/login')
@@ -144,33 +144,33 @@ def process_signin():
     return render_template('signin.html', error=error)
 
 
-# def send_otp_email(email, otp):
-#     msg = Message(
-#         'OTP for EbComment Account Verification',
-#         recipients=[email],
-#         body=f'Welcome to EbComment , verify your account with the OTP given.\n\n'
-#              f'Your OTP:{otp} \n\n'
-#              '---Eb_Comment Team---',
-#         sender=app.config['MAIL_DEFAULT_SENDER']
-#     )
-#     mail.send(msg)
+def send_otp_email(email, otp):
+    msg = Message(
+        'OTP for EbComment Account Verification',
+        recipients=[email],
+        body=f'Welcome to EbComment , verify your account with the OTP given.\n\n'
+             f'Your OTP:{otp} \n\n'
+             '---Eb_Comment Team---',
+        sender=app.config['MAIL_DEFAULT_SENDER']
+    )
+    mail.send(msg)
 
 
 
-# @app.route('/verify_otp', methods=['GET', 'POST'])
-# def verify_otp():
-#     error = {} 
-#     if request.method == 'POST':
-#         input_otp = request.form['otp']
-#         if 'otp' in session and str(session['otp']) == input_otp:
-#             email = session.pop('email', None)
-#             session.pop('otp', None)
-#             return redirect(url_for('login'))  
-#         else:
-#             error['otp'] = "Invalid OTP, please try again"
-#             return render_template('otp.html', error=error)
+@app.route('/verify_otp', methods=['GET', 'POST'])
+def verify_otp():
+    error = {} 
+    if request.method == 'POST':
+        input_otp = request.form['otp']
+        if 'otp' in session and str(session['otp']) == input_otp:
+            email = session.pop('email', None)
+            session.pop('otp', None)
+            return redirect(url_for('login'))  
+        else:
+            error['otp'] = "Invalid OTP, please try again"
+            return render_template('otp.html', error=error)
 
-#     return render_template('otp.html')
+    return render_template('otp.html')
 
 
 @app.route('/process_login', methods=['POST'])
@@ -284,7 +284,7 @@ def profile():
         nickname = request.form.get('nickname')
 
         if nickname:
-            current_user.nickname = nickname
+            current_user.name = nickname
             db.session.commit()
 
         if 'profile_picture' in request.files:
@@ -371,7 +371,7 @@ def add_comment():
     new_comment = Comment(
         lecturer_id=lecturer.id,
         faculty_id=lecturer.faculty_id,
-        nickname=current_user.nickname,
+        name=current_user.name,
         comment_text=comment_text,
         date=date.today(),
         time=datetime.now().time()

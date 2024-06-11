@@ -20,7 +20,7 @@
 
     <div class="sidebar">
         <ul>
-            {% if session['nickname'] == 'admin' %}
+            {% if session['name'] == 'admin' %}
             <!-- Regular User Sidebar -->
             <li><a href="/admin"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
             <li><a href="/user"><i class='bx bxs-grid-alt'></i>User Control</a></li>

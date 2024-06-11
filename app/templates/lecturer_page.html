@@ -125,7 +125,7 @@
             <h3>Leave your comment here:</h3>
             <form id="comment_form" action="{{ url_for('add_comment') }}" method="POST">
                 <input type="hidden" name="lecturer_id" value="{{ lecturer.id }}">
-                <input type="hidden" name="nickname" id="nickname_input" required>
+                <input type="hidden" name="name" id="name_input" required>
                 <div>
                     <label for="comment_text">Comment:</label>
                     <textarea id="comment_textarea" name="comment_text" required></textarea>
@@ -136,7 +136,7 @@
             <div class="comments_list">
                 {% for comment in comments %}
                 <div class="comment">
-                    <p><strong>{{ comment.nickname }}</strong> ({{ comment.date }} {{ comment.time }}):</p>
+                    <p><strong>{{ comment.name }}</strong> ({{ comment.date }} {{ comment.time }}):</p>
                     <p>{{ comment.comment_text }}</p>
                     <div class="rating">
                         <div class="like grow {{ 'active' if current_user.is_authenticated and comment.has_reaction(current_user, True) else '' }}"
@@ -188,13 +188,13 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             var commentTextarea = document.getElementById("comment_textarea");
-            var nicknameInput = document.getElementById("nickname_input");
+            var nameInput = document.getElementById("name_input");
 
-            commentTextarea.addEventListener("focus", showNicknameField);
-            commentTextarea.addEventListener("input", showNicknameField);
+            commentTextarea.addEventListener("focus", showNameField);
+            commentTextarea.addEventListener("input", showNameField);
 
-            function showNicknameField() {
-                nicknameInput.style.display = "block";
+            function showNameField() {
+                nameInput.style.display = "block";
             }
         });
     </script>
