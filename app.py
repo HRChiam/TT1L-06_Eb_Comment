@@ -1,19 +1,17 @@
 import os
 import logging
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session,abort
+import random
+import sqlite3
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment, CommentReaction
 from datetime import datetime, date
 from flask_mail import Message, Mail
 from itsdangerous import URLSafeTimedSerializer
-from dotenv import load_dotenv
-import random
-import sqlite3
 from werkzeug.utils import secure_filename
-from functools import wraps
+from dotenv import load_dotenv
 from PIL import Image
-
-
+from functools import wraps
 
 otp_storage = {}
 load_dotenv()
@@ -31,7 +29,6 @@ def get_db_connection():
 DATABASE_NAME = "database.db"
 DATABASE_PATH = os.path.join(app.instance_path, DATABASE_NAME)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_PATH}"
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_PATH}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_secret_key')
@@ -94,14 +91,18 @@ def login():
 def signin():
     return render_template('signin.html')
 
-@app.route('/forgot')
-def forgot():
-    return render_template('forgot.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
+
 
 @app.route('/process_signin', methods=['POST'])
 def process_signin():
     email = request.form['email']
-    nickname = request.form['username']
+    nickname = request.form['nickname']
     password = request.form['password']
     confirm_password = request.form['confirm_password']
 
@@ -109,9 +110,9 @@ def process_signin():
 
     # Email validation
     if email.endswith('@student.mmu.edu.my') and len(email.split('@')[0]) == 10:
-        pass
+        role = 'student'
     elif email.endswith('@mmu.edu.my'):
-        pass
+        role = 'lecturer'
     else:
         error['email'] = "Email invalid or does not meet requirements"
 
@@ -123,57 +124,92 @@ def process_signin():
     if not error:
     # Create and add new user to the database
         if email.endswith('@mmu.edu.my'):
-            if email.endswith('@mmu.edu.my'):
-                new_user = Users(nickname=nickname, email=email)
-                new_user.set_password(password)  # Set hashed password
-                db.session.add(new_user)
+            new_user = Users(name=nickname, email=email, role = role)
+            new_user.set_password(password)  # Set hashed password
+            db.session.add(new_user)
 
-                # Create a new lecturer using Lecturer class
-                new_lecturer = Lecturer(
-                    name=nickname,
-                    email=email,
-                    photo="default_photo.jpg",  # Provide a default value for the photo attribute
-                    phone="123456789",  # Provide a value for the phone attribute
-                    campus="Cyberjaya",  # Provide a value for the campus attribute
-                    bio="None",     # Provide a value for the bio attribute, if applicable
-                    faculty_id="0",  # Provide a value for the faculty_id attribute
-                )
-                db.session.add(new_lecturer)
+            # Create a new lecturer using Lecturer class
+            new_lecturer = Lecturer(
+                name=nickname,
+                email=email,
+                photo="default_photo.jpg",  # Provide a default value for the photo attribute
+                phone="123456789",  # Provide a value for the phone attribute
+                campus="Cyberjaya",  # Provide a value for the campus attribute
+                bio="None",     # Provide a value for the bio attribute, if applicable
+                faculty_id="0",  # Provide a value for the faculty_id attribute
+            )
+            db.session.add(new_lecturer)
 
-                db.session.commit()
-            else:
-                new_user = Users(nickname=nickname, email=email)
-                new_user.set_password(password)  # Set hashed password
-                db.session.add(new_user)
+            db.session.commit()
+        else:
+            new_user = Users(name=nickname, email=email, role = role)
+            new_user.set_password(password)  # Set hashed password
+            db.session.add(new_user)
 
-                db.session.commit()
+            db.session.commit()
 
-            return redirect('/login')
+        # Check email domain and send OTP if applicable
+        if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
+            otp = random.randint(100000, 999999)
+            session['otp'] = otp
+            session['email'] = email
+            send_otp_email(email, otp)
+            return redirect(url_for('otp'))
+    
+
+        return redirect('/login')
 
     return render_template('signin.html', error=error)
 
 
+def send_otp_email(email, otp):
+    msg = Message(
+        'OTP for EbComment Account Verification',
+        recipients=[email],
+        body=f'Welcome to EbComment , verify your account with the OTP given.\n\n'
+             f'Your OTP:{otp} \n\n'
+             '---Eb_Comment Team---',
+        sender=app.config['MAIL_DEFAULT_SENDER']
+    )
+    mail.send(msg)
 
-@app.route('/process_login', methods=['GET', 'POST'])
+
+
+@app.route('/verify_otp', methods=['GET', 'POST'])
+def verify_otp():
+    error = {} 
+    if request.method == 'POST':
+        input_otp = request.form['otp']
+        if 'otp' in session and str(session['otp']) == input_otp:
+            email = session.pop('email', None)
+            session.pop('otp', None)
+            return redirect(url_for('login'))  
+        else:
+            error['otp'] = "Invalid OTP, please try again"
+            return render_template('otp.html', error=error)
+
+    return render_template('otp.html')
+
+
+@app.route('/process_login', methods=['POST'])
 def process_login():
     email = request.form['email']
     password = request.form['password']
 
-     
-    student_email = email.endswith('@student.mmu.edu.my')and len(email.split('@')[0]) == 10
+    if email == 'admin@gmail.com' and password == 'abc':
+        session['nickname'] = 'admin'
+        return redirect('/admin')
 
-    if student_email:
-        return redirect('/front') 
-        
-
-    elif email.endswith('@mmu.edu.my'):
-        return redirect('/index')
-
+    user = Users.query.filter_by(email=email).first()
+    
+    if user and user.check_password(password):
+        login_user(user)
+        if email.endswith('@student.mmu.edu.my'):
+            return redirect('/front')
+        elif email.endswith('@mmu.edu.my'):
+            return redirect('/admin')
     else:
-        error_message = "Email invalid or does not meet requirements"
-        return render_template('login.html', error=error_message)
-
-
+        flash('Invalid email or password', 'danger')
     return render_template('login.html')
 
 
@@ -270,7 +306,7 @@ def profile():
         nickname = request.form.get('nickname')
 
         if nickname:
-            current_user.nickname = nickname
+            current_user.name = nickname
             db.session.commit()
 
         if 'profile_picture' in request.files:
@@ -321,13 +357,90 @@ def faculty_page(faculty_name):
     faculty = Faculty.query.filter_by(name=faculty_name).first()
 
     if faculty:
-        # If the faculty is found, fetch information about the lecturers associated with that faculty
-        lecturers = faculty.lecturers
-        # Render the faculty page template with the fetched data
+        lecturers = Lecturer.query.filter_by(faculty_id=faculty.id).all()  # Fetch lecturers for the specific faculty
         return render_template('faculty_page.html', faculty=faculty, lecturers=lecturers)
     else:
         return render_template('error.html', message="Faculty not found")
+
+
+@app.route('/lecturer/<int:lecturer_id>')
+@login_required
+def lecturer_details(lecturer_id):
+    # Fetch the lecturer using the lecturer_id
+    lecturer = Lecturer.query.get(lecturer_id)
     
+    # If the lecturer does not exist, render an error page
+    if not lecturer:
+        return render_template('error.html', message="Lecturer not found")
+
+    # Filter comments based on the lecturer_id
+    comments = Comment.query.filter_by(lecturer_id=lecturer_id).all()
+    
+    # Render the lecturer details page with the fetched lecturer and comments
+    return render_template('lecturer_page.html', lecturer=lecturer, comments=comments)
+
+
+@app.route('/add_comment', methods=['POST'])
+@login_required
+def add_comment():
+    lecturer_id = request.form['lecturer_id']
+    comment_text = request.form['comment_text']
+    
+    lecturer = Lecturer.query.get(lecturer_id)
+    if not lecturer:
+        return render_template('error.html', message="Lecturer not found")
+
+    new_comment = Comment(
+        lecturer_id=lecturer.id,
+        faculty_id=lecturer.faculty_id,
+        name=current_user.name,
+        comment_text=comment_text,
+        date=date.today(),
+        time=datetime.now().time()
+    )
+
+    db.session.add(new_comment)
+    db.session.commit()
+
+    return redirect(url_for('lecturer_details', lecturer_id=lecturer_id))
+
+
+@app.route('/upvote_comment/<int:comment_id>', methods=['POST'])
+@login_required
+def upvote_comment(comment_id):
+    comment = Comment.query.get(comment_id)
+    if comment:
+        reaction = CommentReaction.query.filter_by(comment_id=comment_id, user_id=current_user.id).first()
+        if reaction:
+            if not reaction.reaction:  #if it's a dislike, toggle to like
+                reaction.reaction = True
+            else:  #if it's a like, toggle to no reaction
+                db.session.delete(reaction)
+        else:
+            reaction = CommentReaction(comment_id=comment_id, user_id=current_user.id, reaction=True)
+            db.session.add(reaction)
+        db.session.commit()
+    return jsonify({'likes': comment.likes_count(), 'dislikes': comment.dislikes_count()})
+
+
+@app.route('/downvote_comment/<int:comment_id>', methods=['POST'])
+@login_required
+def downvote_comment(comment_id):
+    comment = Comment.query.get(comment_id)
+    if comment:
+        reaction = CommentReaction.query.filter_by(comment_id=comment_id, user_id=current_user.id).first()
+        if reaction:
+            if reaction.reaction:  #if it's a like, toggle to dislike
+                reaction.reaction = False
+            else:  #if it's a dislike, toggle to no reaction
+                db.session.delete(reaction)
+        else:
+            reaction = CommentReaction(comment_id=comment_id, user_id=current_user.id, reaction=False)
+            db.session.add(reaction)
+        db.session.commit()
+    return jsonify({'likes': comment.likes_count(), 'dislikes': comment.dislikes_count()})
+
+
 @app.route('/keyin')
 @login_required
 def keyin():
@@ -360,15 +473,6 @@ def keyinsuccess():
     return render_template('keyinsuccess.html')
 
 
-@app.route("/index")
-@login_required
-def index():
-    return render_template("index.html")
-
-@app.route("/user")
-def user():
-    return render_template("user.html")
-
 @app.route("/admin")
 def admin():
     con = get_db_connection()
@@ -383,7 +487,68 @@ def admin():
 
     return render_template("admin.html", num_lecturers=num_lecturers, num_users=num_users, num_comment=num_comment)
 
-@app.route("/comment")
+@app.route("/user")
+def usercontrol():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users")
+    user_data = cursor.fetchall()
+    conn.close()
+
+    return render_template("admin_user.html", users=user_data)
+
+def delete_user(id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM users WHERE id=?", (id,))
+    conn.commit()
+    conn.close()
+
+@app.route('/delete_user', methods=["POST"])
+def delete_user_route():
+    id = request.form['id']
+    delete_user(id)
+    return redirect('/user')
+
+def get_current_time():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+@app.route('/admin/view_lecturers_temp')
+def view_lecturers_temp():
+    lecturers_temp = LecturerTemp.query.all()
+
+    return render_template('view_lecturers_temp.html', lecturers_temp=lecturers_temp)
+
+@app.route('/admin/approve_lecturer/<int:lecturer_id>', methods=['POST'])
+def approve_lecturer(lecturer_id):
+    lecturer_temp = LecturerTemp.query.get_or_404(lecturer_id)
+    
+    lecturer = Lecturer(
+        name=lecturer_temp.name,
+        photo=lecturer_temp.photo,
+        phone=lecturer_temp.phone,
+        email=lecturer_temp.email,
+        campus=lecturer_temp.campus,
+        faculty_id=lecturer_temp.faculty_id,  # Ensure faculty ID is transferred
+    )
+
+    db.session.add(lecturer)
+    db.session.delete(lecturer_temp)
+    db.session.commit()
+
+    return redirect(url_for('view_lecturers_temp'))
+
+
+@app.route('/admin/reject_lecturer/<int:lecturer_id>', methods=['POST'])
+def reject_lecturer(lecturer_id):
+    lecturer_temp = LecturerTemp.query.get_or_404(lecturer_id)
+    db.session.delete(lecturer_temp)
+    db.session.commit()
+    
+    return redirect(url_for('view_lecturers_temp'))
+
+
+@app.route("/admin_comment")
 def comment():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -575,8 +740,6 @@ def edit_teacher():
         phone = request.form['phone']
         faculty =request.form['faculty']
 
-
-
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("UPDATE lecturer SET email=?, campus=?, bio=?, phone=?, faculty=?WHERE email=?",
@@ -593,14 +756,7 @@ def edit_teacher():
         conn.commit()
         conn.close()
 
-
-        
-
     return redirect("/admin_edit_lecturer")
-
-
-
-
 
 if __name__ == '__main__':
     with app.app_context():
