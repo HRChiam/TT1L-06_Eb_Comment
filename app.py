@@ -1,5 +1,7 @@
 import os
 import logging
+import random
+import sqlite3
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from models import db, Users, Lecturer, Faculty, LecturerTemp, Comment, CommentReaction
@@ -10,8 +12,6 @@ from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 from PIL import Image
 from functools import wraps
-import random
-from app import db
 
 otp_storage = {}
 load_dotenv()
@@ -21,10 +21,14 @@ app = Flask(__name__, instance_relative_config=True)
 if not os.path.exists(app.instance_path):
     os.makedirs(app.instance_path)
 
+def get_db_connection():
+    con = sqlite3.connect("instance/database.db")
+    con.row_factory = sqlite3.Row
+    return con
+
 DATABASE_NAME = "database.db"
 DATABASE_PATH = os.path.join(app.instance_path, DATABASE_NAME)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_PATH}"
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DATABASE_PATH}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_secret_key')
@@ -119,18 +123,38 @@ def process_signin():
     
     if not error:
     # Create and add new user to the database
-        new_user = Users(nickname=nickname, email=email, role = role)
-        new_user.set_password(password)  # Set hashed password
-        db.session.add(new_user)
-        db.session.commit()
+        if email.endswith('@mmu.edu.my'):
+            new_user = Users(name=nickname, email=email, role = role)
+            new_user.set_password(password)  # Set hashed password
+            db.session.add(new_user)
+
+            # Create a new lecturer using Lecturer class
+            new_lecturer = Lecturer(
+                name=nickname,
+                email=email,
+                photo="default_photo.jpg",  # Provide a default value for the photo attribute
+                phone="123456789",  # Provide a value for the phone attribute
+                campus="Cyberjaya",  # Provide a value for the campus attribute
+                bio="None",     # Provide a value for the bio attribute, if applicable
+                faculty_id="0",  # Provide a value for the faculty_id attribute
+            )
+            db.session.add(new_lecturer)
+
+            db.session.commit()
+        else:
+            new_user = Users(name=nickname, email=email, role = role)
+            new_user.set_password(password)  # Set hashed password
+            db.session.add(new_user)
+
+            db.session.commit()
 
         # Check email domain and send OTP if applicable
-        # if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
-        #     otp = random.randint(100000, 999999)
-        #     session['otp'] = otp
-        #     session['email'] = email
-        #     send_otp_email(email, otp)
-        #     return redirect(url_for('otp'))
+        if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
+            otp = random.randint(100000, 999999)
+            session['otp'] = otp
+            session['email'] = email
+            send_otp_email(email, otp)
+            return redirect(url_for('otp'))
     
 
         return redirect('/login')
@@ -138,39 +162,43 @@ def process_signin():
     return render_template('signin.html', error=error)
 
 
-# def send_otp_email(email, otp):
-#     msg = Message(
-#         'OTP for EbComment Account Verification',
-#         recipients=[email],
-#         body=f'Welcome to EbComment , verify your account with the OTP given.\n\n'
-#              f'Your OTP:{otp} \n\n'
-#              '---Eb_Comment Team---',
-#         sender=app.config['MAIL_DEFAULT_SENDER']
-#     )
-#     mail.send(msg)
+def send_otp_email(email, otp):
+    msg = Message(
+        'OTP for EbComment Account Verification',
+        recipients=[email],
+        body=f'Welcome to EbComment , verify your account with the OTP given.\n\n'
+             f'Your OTP:{otp} \n\n'
+             '---Eb_Comment Team---',
+        sender=app.config['MAIL_DEFAULT_SENDER']
+    )
+    mail.send(msg)
 
 
 
-# @app.route('/verify_otp', methods=['GET', 'POST'])
-# def verify_otp():
-#     error = {} 
-#     if request.method == 'POST':
-#         input_otp = request.form['otp']
-#         if 'otp' in session and str(session['otp']) == input_otp:
-#             email = session.pop('email', None)
-#             session.pop('otp', None)
-#             return redirect(url_for('login'))  
-#         else:
-#             error['otp'] = "Invalid OTP, please try again"
-#             return render_template('otp.html', error=error)
+@app.route('/verify_otp', methods=['GET', 'POST'])
+def verify_otp():
+    error = {} 
+    if request.method == 'POST':
+        input_otp = request.form['otp']
+        if 'otp' in session and str(session['otp']) == input_otp:
+            email = session.pop('email', None)
+            session.pop('otp', None)
+            return redirect(url_for('login'))  
+        else:
+            error['otp'] = "Invalid OTP, please try again"
+            return render_template('otp.html', error=error)
 
-#     return render_template('otp.html')
+    return render_template('otp.html')
 
 
 @app.route('/process_login', methods=['POST'])
 def process_login():
     email = request.form['email']
     password = request.form['password']
+
+    if email == 'admin@gmail.com' and password == 'abc':
+        session['nickname'] = 'admin'
+        return redirect('/admin')
 
     user = Users.query.filter_by(email=email).first()
     
@@ -179,7 +207,7 @@ def process_login():
         if email.endswith('@student.mmu.edu.my'):
             return redirect('/front')
         elif email.endswith('@mmu.edu.my'):
-            return redirect('/index')
+            return redirect('/admin')
     else:
         flash('Invalid email or password', 'danger')
     return render_template('login.html')
@@ -278,7 +306,7 @@ def profile():
         nickname = request.form.get('nickname')
 
         if nickname:
-            current_user.nickname = nickname
+            current_user.name = nickname
             db.session.commit()
 
         if 'profile_picture' in request.files:
@@ -365,7 +393,7 @@ def add_comment():
     new_comment = Comment(
         lecturer_id=lecturer.id,
         faculty_id=lecturer.faculty_id,
-        nickname=current_user.nickname,
+        name=current_user.name,
         comment_text=comment_text,
         date=date.today(),
         time=datetime.now().time()
@@ -445,28 +473,53 @@ def keyinsuccess():
     return render_template('keyinsuccess.html')
 
 
-@app.route("/index")
-@login_required
-def index():
-    return render_template("index.html")
+@app.route("/admin")
+def admin():
+    con = get_db_connection()
+    cursor = con.cursor()
 
+    cursor.execute("SELECT COUNT(*) FROM lecturer ")
+    num_lecturers = cursor.fetchone()[0]  # Fetch the first result
+    cursor.execute("SELECT COUNT(*) FROM users ")  # Execute a new query
+    num_users = cursor.fetchone()[0]  # Fetch the first result from the new query
+    cursor.execute("SELECT COUNT(*) FROM comment ")  # Execute a new query
+    num_comment = cursor.fetchone()[0]  # Fetch the first result from the new query
+
+    return render_template("admin.html", num_lecturers=num_lecturers, num_users=num_users, num_comment=num_comment)
 
 @app.route("/user")
-@login_required
-def user():
-    return render_template("user.html")
+def usercontrol():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users")
+    user_data = cursor.fetchall()
+    conn.close()
 
+    return render_template("admin_user.html", users=user_data)
+
+def delete_user(id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM users WHERE id=?", (id,))
+    conn.commit()
+    conn.close()
+
+@app.route('/delete_user', methods=["POST"])
+def delete_user_route():
+    id = request.form['id']
+    delete_user(id)
+    return redirect('/user')
+
+def get_current_time():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 @app.route('/admin/view_lecturers_temp')
-@login_required
-@roles_required('admin', 'lecturer')
 def view_lecturers_temp():
     lecturers_temp = LecturerTemp.query.all()
+
     return render_template('view_lecturers_temp.html', lecturers_temp=lecturers_temp)
 
 @app.route('/admin/approve_lecturer/<int:lecturer_id>', methods=['POST'])
-@login_required
-@roles_required('admin', 'lecturer')  # Assuming you have a role-based access control
 def approve_lecturer(lecturer_id):
     lecturer_temp = LecturerTemp.query.get_or_404(lecturer_id)
     
@@ -487,8 +540,6 @@ def approve_lecturer(lecturer_id):
 
 
 @app.route('/admin/reject_lecturer/<int:lecturer_id>', methods=['POST'])
-@login_required
-@roles_required('admin', 'lecturer')  # Assuming you have a role-based access control
 def reject_lecturer(lecturer_id):
     lecturer_temp = LecturerTemp.query.get_or_404(lecturer_id)
     db.session.delete(lecturer_temp)
@@ -497,11 +548,215 @@ def reject_lecturer(lecturer_id):
     return redirect(url_for('view_lecturers_temp'))
 
 
-@app.route("/comment")
-@login_required
+@app.route("/admin_comment")
 def comment():
-    return render_template("comment.html")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM comment")
+    comment = cursor.fetchall()
+    conn.close()
 
+    return render_template("admin_comment.html", comment=comment)
+
+def delete_comment(id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM comment WHERE id=?", (id,))
+    conn.commit()
+    conn.close()
+
+@app.route('/delete_comment', methods=["POST"])
+def delete_comment_route():
+    id = request.form['id']
+    delete_comment(id)
+    return redirect('/admin_comment')
+
+@app.route('/lecturer')
+def lecturer():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM faculty")
+    faculty = cursor.fetchall()
+    conn.close()
+
+    return render_template('admin_teacher_profile.html', faculties=faculty)
+
+
+
+@app.route('/uploadlecturer', methods=["GET", "POST"])
+def uploadlecturer():
+    if request.method == "POST":
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        faculty = request.form.get('faculty')
+        faculty_id = request.form.get('faculty_id')
+        campus = request.form.get('campus')
+        
+        # Handle file upload
+        photo_path = None
+        if 'photo' in request.files:
+            photo = request.files['photo']
+            if photo.filename != '':
+                # Save the file
+                photo_path = os.path.join('uploads', photo.filename)
+                photo.save(photo_path)
+
+        # Set a default value if no photo is uploaded
+        if photo_path is None:
+            photo_path = "default_photo.jpg"  # Provide a default photo path
+        
+        if name and email and phone and faculty:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO lecturer (name, email, phone, faculty, photo, campus, faculty_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+               (name, email, phone, faculty, photo_path, campus, faculty_id))
+
+            conn.commit()
+            conn.close()
+            return redirect('/lecturer')
+        
+    return redirect('/lecturer')
+
+@app.route("/lecturerlist", methods=["POST", "GET"])
+def lecturerlist():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM lecturer")
+    lecturer_data = cursor.fetchall()
+    conn.close()
+
+    return render_template("lecturerlist.html", lecturers=lecturer_data)
+
+def delete_lecturer(id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM lecturer WHERE id=?", (id,))
+    conn.commit()
+    conn.close()
+
+@app.route('/delete_lecturer', methods=["POST", "GET"])
+def delete_lecturer_route():
+    if request.method == 'GET':
+        id = request.args.get('id')  # Access data from query string using request.args
+    else:
+        id = request.form['id']  # Access data from form data for POST requests (optional)
+
+    delete_lecturer(id)
+    return redirect('/lecturerlist')
+
+@app.route("/edit_user/<int:id>", methods=["GET", "POST"])
+def edit_user(id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM lecturer WHERE id = ?", (id,))
+    lecturer = cursor.fetchone()
+    conn.close()
+
+    if request.method == "POST":
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        faculty = request.form.get('faculty')
+        campus = request.form.get('campus')
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE lecturer SET name=?, email=?, phone=?, faculty=?, campus=?,  WHERE id=?",
+                       (name, email, phone, faculty, campus, id))
+        conn.commit()
+        conn.close()
+        return redirect('/lecturer')
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM faculty")
+    faculty = cursor.fetchall()
+    conn.close()
+    
+    if lecturer:
+        return render_template("editlecturer.html", lecturer=lecturer, faculties=faculty)
+
+    
+@app.route("/update_user/<int:id>", methods=["POST"])
+def update_user(id):
+
+    if request.method == "POST":
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        faculty = request.form.get('faculty')
+        campus = request.form.get('campus')
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE lecturer SET name=?, email=?, phone=?, faculty=?, campus=? WHERE id=?",
+               (name, email, phone, faculty, campus, id))
+
+        conn.commit()
+        conn.close()
+        return redirect('/lecturerlist')
+    
+    return redirect(url_for('lecturerlist'))
+
+@app.route("/history", methods=["GET"])
+def history():
+    nickname = session.get("email")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM comment WHERE nickname = ?", (nickname,))
+    comments = cursor.fetchall()
+    conn.close()
+
+    return render_template("admin_teacher_history.html", comments=comments)
+
+@app.route('/admin_edit_lecturer', methods=['GET', 'POST'])
+def admin_edit_lecturer():
+    user_id = session.get('id')  # Using get() to avoid KeyError if 'nickname' is not in session
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+    users = cursor.fetchone()
+    conn.close()
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM faculty")
+    faculty = cursor.fetchall()
+    conn.close()
+    
+    return render_template("admin_edit_lecturer.html", users = users,  faculties=faculty)
+    
+
+@app.route("/a_edit", methods=["POST", "GET"])
+def edit_teacher():
+    user_id = session.get('id')
+    user_email = session.get('email')
+    if request.method == "POST":
+        email = request.form['email']
+        campus = request.form['campus']
+        bio = request.form['bio']
+        phone = request.form['phone']
+        faculty =request.form['faculty']
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE lecturer SET email=?, campus=?, bio=?, phone=?, faculty=?WHERE email=?",
+               ( email, campus, bio, phone,faculty, user_email))
+
+        conn.commit()
+        conn.close()
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE users SET email=?, campus=?, bio=?, phone=?, faculty=?WHERE id=?",
+               ( email, campus, bio, phone,faculty, user_id))
+
+        conn.commit()
+        conn.close()
+
+    return redirect("/admin_edit_lecturer")
 
 if __name__ == '__main__':
     with app.app_context():

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width = device-width, initial-scale = 1" />
 
     <title>Login</title>
-    
+
     <link href="../static/logsign.css" rel="stylesheet">
     <link href="logsign.css" rel="stylesheet" type="text/css">
 
@@ -15,12 +15,13 @@
 </head>
 
 <body>
-    
+
     <div class="bar-text-wel"> Eb_Comment </div>
     <div class="bar-text-back"><a href="{{ url_for('home') }}">Back</a> </div>
     <div class="rectangle-bar"></div>
+
     <body class="logsign-background"></body>
-    
+
 
 
     <div class="box-wy">
@@ -35,14 +36,22 @@
             <label for="email">Email Address:</label>
             <input type="email" name="email" id="email" required><br>
 
-            
-            {% if error %}
-            <p class="error-message">{{ error }}</p>
-            {% endif %}
-            
+
 
             <label for="password">Password:</label>
             <input type="password" name="password" id="password" required><br>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="error-message">
+                <p>{{ message }}</p>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            
             <div class="forgot-pass"><a href="{{ url_for('forgot') }}">Forgot password?</a></div>
             <input class="submit-acc" type="submit" value="Submit">
 
@@ -61,5 +70,4 @@
 
 
 </html>
-
 
