@@ -707,33 +707,45 @@ def update_user(id):
 
 @app.route("/history", methods=["GET"])
 def history():
-    name = session.get("name")
+    email = session.get("email")  # Assuming the email is stored in the session
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM comment WHERE name = ?", (name,))
+    
+    # Retrieve lecturer ID based on email
+    cursor.execute("SELECT id FROM lecturer WHERE email = ?", (email,))
+    lecturer_id = cursor.fetchone()[0]  # Assuming email is unique, fetch the first result
+    
+    # Fetch comments associated with the lecturer's ID
+    cursor.execute("SELECT * FROM comment WHERE lecturer_id = ?", (lecturer_id,))
     comments = cursor.fetchall()
+    
     conn.close()
 
     return render_template("admin_teacher_history.html", comments=comments)
 
+
 @app.route('/admin_edit_lecturer', methods=['GET', 'POST'])
 def admin_edit_lecturer():
-    email = session.get('email')  # Correct key to retrieve user ID from session
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM lecturer WHERE email = ?", (email,))
-    lecturers = cursor.fetchone()
-    conn.close()
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM faculty")
-    faculty = cursor.fetchall()
-    conn.close()
+    email = session.get('email')  # Correct key to retrieve user email from session
     
-    return render_template("admin_edit_lecturer.html", lecturers=lecturers, faculties=faculty)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Retrieve lecturer ID based on email
+    cursor.execute("SELECT id FROM lecturer WHERE email = ?", (email,))
+    lecturer_id = cursor.fetchone()[0]  # Assuming email is unique, fetch the first result
+    
+    # Retrieve lecturer information based on ID
+    cursor.execute("SELECT * FROM lecturer WHERE id = ?", (lecturer_id,))
+    lecturers = cursor.fetchone()
+    
+    # Retrieve faculties
+    cursor.execute("SELECT * FROM faculty")
+    faculties = cursor.fetchall()
+    
+    conn.close()
 
+    return render_template("admin_edit_lecturer.html", lecturers=lecturers, faculties=faculties)
     
 
 @app.route("/a_edit", methods=["POST", "GET"])
