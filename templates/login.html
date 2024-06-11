@@ -35,12 +35,10 @@
         <form action="/process_login" method="post" enctype="multipart/form-data">
             <label for="email">Email Address:</label>
             <input type="email" name="email" id="email" required><br>
-
-
-
+            
             <label for="password">Password:</label>
             <input type="password" name="password" id="password" required><br>
-
+            
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
             {% for category, message in messages %}
@@ -50,17 +48,10 @@
             {% endfor %}
             {% endif %}
             {% endwith %}
-
             
             <div class="forgot-pass"><a href="{{ url_for('forgot') }}">Forgot password?</a></div>
             <input class="submit-acc" type="submit" value="Submit">
-
-
         </form>
-
-
-
-
 
     </div>
 
