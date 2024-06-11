@@ -369,6 +369,20 @@ def index():
 def user():
     return render_template("user.html")
 
+@app.route("/admin")
+def admin():
+    con = get_db_connection()
+    cursor = con.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM lecturer ")
+    num_lecturers = cursor.fetchone()[0]  # Fetch the first result
+    cursor.execute("SELECT COUNT(*) FROM users ")  # Execute a new query
+    num_users = cursor.fetchone()[0]  # Fetch the first result from the new query
+    cursor.execute("SELECT COUNT(*) FROM comment ")  # Execute a new query
+    num_comment = cursor.fetchone()[0]  # Fetch the first result from the new query
+
+    return render_template("admin.html", num_lecturers=num_lecturers, num_users=num_users, num_comment=num_comment)
+
 @app.route("/comment")
 def comment():
     conn = get_db_connection()
