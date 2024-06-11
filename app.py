@@ -12,7 +12,6 @@ from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 from PIL import Image
 from functools import wraps
-from app import db
 
 otp_storage = {}
 load_dotenv()
@@ -125,7 +124,7 @@ def process_signin():
     if not error:
     # Create and add new user to the database
         if email.endswith('@mmu.edu.my'):
-            new_user = Users(name=nickname, email=email)
+            new_user = Users(name=nickname, email=email, role = role)
             new_user.set_password(password)  # Set hashed password
             db.session.add(new_user)
 
@@ -143,7 +142,7 @@ def process_signin():
 
             db.session.commit()
         else:
-            new_user = Users(name=nickname, email=email)
+            new_user = Users(name=nickname, email=email, role = role)
             new_user.set_password(password)  # Set hashed password
             db.session.add(new_user)
 
@@ -198,6 +197,7 @@ def process_login():
     password = request.form['password']
 
     if email == 'admin@gmail.com' and password == 'abc':
+        session['nickname'] = 'admin'
         return redirect('/admin')
 
     user = Users.query.filter_by(email=email).first()
@@ -487,17 +487,39 @@ def admin():
 
     return render_template("admin.html", num_lecturers=num_lecturers, num_users=num_users, num_comment=num_comment)
 
+@app.route("/user")
+def usercontrol():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users")
+    user_data = cursor.fetchall()
+    conn.close()
+
+    return render_template("admin_user.html", users=user_data)
+
+def delete_user(id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM users WHERE id=?", (id,))
+    conn.commit()
+    conn.close()
+
+@app.route('/delete_user', methods=["POST"])
+def delete_user_route():
+    id = request.form['id']
+    delete_user(id)
+    return redirect('/user')
+
+def get_current_time():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 @app.route('/admin/view_lecturers_temp')
-@login_required
-@roles_required('admin', 'lecturer')
 def view_lecturers_temp():
     lecturers_temp = LecturerTemp.query.all()
+
     return render_template('view_lecturers_temp.html', lecturers_temp=lecturers_temp)
 
 @app.route('/admin/approve_lecturer/<int:lecturer_id>', methods=['POST'])
-@login_required
-@roles_required('admin', 'lecturer')  # Assuming you have a role-based access control
 def approve_lecturer(lecturer_id):
     lecturer_temp = LecturerTemp.query.get_or_404(lecturer_id)
     
@@ -518,8 +540,6 @@ def approve_lecturer(lecturer_id):
 
 
 @app.route('/admin/reject_lecturer/<int:lecturer_id>', methods=['POST'])
-@login_required
-@roles_required('admin', 'lecturer')  # Assuming you have a role-based access control
 def reject_lecturer(lecturer_id):
     lecturer_temp = LecturerTemp.query.get_or_404(lecturer_id)
     db.session.delete(lecturer_temp)
@@ -528,7 +548,7 @@ def reject_lecturer(lecturer_id):
     return redirect(url_for('view_lecturers_temp'))
 
 
-@app.route("/comment")
+@app.route("/admin_comment")
 def comment():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -738,10 +758,8 @@ def edit_teacher():
 
     return redirect("/admin_edit_lecturer")
 
-
-
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
+    # with app.app_context():
+    #     db.create_all()
     logging.basicConfig(level=logging.INFO)
     app.run(debug=True)
