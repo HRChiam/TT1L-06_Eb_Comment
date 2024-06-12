@@ -9,7 +9,7 @@
     <link href="../static/style.css" rel="stylesheet">
 </head>
 <body>
-    <div class="Try"><h2>Eb-comment</h2><input type="research"><i class='bx bx-search-alt-2'></i><a href="#">KEE HUI YEE</a></div>
+    <div class="Try"><h2>Eb-comment</h2><input type="research"><i class='bx bx-search-alt-2'></i></div>
     
     <div class="sidebar">
         <ul>
@@ -52,7 +52,7 @@
                         <label for="faculty">FACULTY</label>
                         <select name="faculty" id="faculty">
                             {% for faculty in faculties %}
-                            <option value="{{ faculty[1] }}">{{ faculty[1] }}</option>
+                            <option value="{{ faculty[0] }}">{{ faculty[1] }}</option>
                             {% endfor %}
                         </select>
                     </div>

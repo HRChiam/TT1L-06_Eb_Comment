@@ -197,7 +197,7 @@ def process_login():
     password = request.form['password']
 
     if email == 'admin@gmail.com' and password == 'abc':
-        session['nickname'] = 'admin'
+        session['email'] = 'admin@gmail.com'
         return redirect('/admin')
 
     user = Users.query.filter_by(email=email).first()
@@ -205,8 +205,12 @@ def process_login():
     if user and user.check_password(password):
         login_user(user)
         if email.endswith('@student.mmu.edu.my'):
+            session['email'] = email
+            session['user_id'] = user.id
             return redirect('/front')
         elif email.endswith('@mmu.edu.my'):
+            session['email'] = email
+            session['user_id'] = user.id
             return redirect('/admin')
     else:
         flash('Invalid email or password', 'danger')
@@ -701,10 +705,10 @@ def update_user(id):
 
 @app.route("/history", methods=["GET"])
 def history():
-    nickname = session.get("email")
+    name = session.get("email")
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM comment WHERE nickname = ?", (nickname,))
+    cursor.execute("SELECT * FROM comment WHERE name = ?", (name,))
     comments = cursor.fetchall()
     conn.close()
 
