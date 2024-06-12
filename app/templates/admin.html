@@ -18,26 +18,22 @@
 <body>
 
     <div class="Try">
-<<<<<<< HEAD:app/templates/admin.html
-        <h2>Eb-comment</h2><input type="research"><i class='bx bx-search-alt-2'></i><a href="#">Admin</a>
-=======
         <h2>Eb-comment</h2><input type="research"><i class='bx bx-search-alt-2'></i>
->>>>>>> a8cf372d0d6a48ce6d30b096d616cd1ca155e959:templates/admin.html
     </div>
 
 
 
     <div class="sidebar">
         <ul>
-<<<<<<< HEAD:app/templates/admin.html
-            {% if session['name'] == 'admin' %}
+            {% if session['email'] == 'admin@gmail.com' %}
             <!-- Regular User Sidebar -->
             <li><a href="/admin"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
             <li><a href="/user"><i class='bx bxs-grid-alt'></i>User Control</a></li>
             <li><a href="/admin_comment"><i class='bx bxs-grid-alt'></i>Comment Control</a></li>
             <li><a href="/uploadlecturer"><i class='bx bxs-grid-alt'></i>Upload Lecturer</a></li>
             <li><a href="/lecturerlist"><i class='bx bxs-grid-alt'></i>Lecturer List</a></li>
-            <li><a href="/login"><i class='bx bxs-grid-alt'></i>Sign out</a></li>
+            <li><a href="/admin/view_lecturers_temp"><i class='bx bxs-grid-alt'></i>Lecturer Info Upload by Student</a></li>
+            <li><a href="/login"><i class='bx bxs-grid-alt'></i>Log out</a></li>
             {% else %}
             <!-- Admin Sidebar -->
             <li><a href="/admin"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
@@ -45,20 +41,6 @@
             <li><a href="/a_edit"><i class='bx bxs-grid-alt'></i>Edit Profile</a></li>
             <li><a href="/admin/view_lecturers_temp"><i class='bx bxs-grid-alt'></i>Lecturer Info Upload by Student</a></li>
             <li><a href="/logout"><i class='bx bxs-grid-alt'></i>Log out</a></li>
-=======
-            {% if session['email'] == 'admin@gmail.com' %}
-            <!-- Admin Sidebar -->
-            <li><a href="/admin"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
-            <li><a href="/user"><i class='bx bxs-grid-alt'></i>User Control</a></li>
-            <li><a href="/admin_comment"><i class='bx bxs-grid-alt'></i>Comment Control</a></li>
-            <li><a href="/lecturerlist"><i class='bx bxs-grid-alt'></i>Lecturer List</a></li>
-            <li><a href="/logout"><i class='bx bxs-grid-alt'></i>Sign out</a></li>
-            {% else %}
-            <!-- Regular User Sidebar -->
-            <li><a href="/history"><i class='bx bxs-grid-alt'></i>History Comment</a></li>
-            <li><a href="/a_edit"><i class='bx bxs-grid-alt'></i>Edit Profile</a></li>
-            <li><a href="/logout"><i class='bx bxs-grid-alt'></i>Sign out</a></li>
->>>>>>> a8cf372d0d6a48ce6d30b096d616cd1ca155e959:templates/admin.html
             {% endif %}
         </ul>
 
