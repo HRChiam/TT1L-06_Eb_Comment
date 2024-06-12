@@ -9,16 +9,23 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="../static/style.css" rel="stylesheet">
     <style>
-     body{
-        overflow-x: hidden;
-     }
+        body {
+            overflow-x: hidden;
+        }
     </style>
 </head>
 
 <body>
 
+<<<<<<< HEAD
     <div class="Try"><h2>Eb-comment</h2><input type="research"><i class='bx bx-search-alt-2'></i></div>
     
+=======
+    <div class="Try">
+        <h2>Eb-comment</h2><input type="research"><i class='bx bx-search-alt-2'></i><a href="#">Admin</a>
+    </div>
+
+>>>>>>> 95583eff4959d29f1f7a01e575b2b6ef4c40d9e5
     <div class="sidebar">
         <ul>
             {% if session['email'] == 'admin@gmail.com' %}
@@ -26,20 +33,18 @@
             <li><a href="/admin"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
             <li><a href="/user"><i class='bx bxs-grid-alt'></i>User Control</a></li>
             <li><a href="/admin_comment"><i class='bx bxs-grid-alt'></i>Comment Control</a></li>
-            <li><a href="/uploadlecturer"><i class='bx bxs-grid-alt'></i>Upload Lecturer</a></li>
             <li><a href="/lecturerlist"><i class='bx bxs-grid-alt'></i>Lecturer List</a></li>
             <li><a href="/logout"><i class='bx bxs-grid-alt'></i>Log out</a></li>
             {% else %}
             <!-- Regular User Sidebar -->
-            <li><a href="/admin"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
             <li><a href="/history"><i class='bx bxs-grid-alt'></i>History Comment</a></li>
             <li><a href="/a_edit"><i class='bx bxs-grid-alt'></i>Edit Profile</a></li>
             <li><a href="/logout"><i class='bx bxs-grid-alt'></i>Log out</a></li>
             {% endif %}
         </ul>
     </div>
-    
-    
+
+
     <div class="fcicontainer">
         <div class="fciwrapper">
             <div class="fcisubcontain">
@@ -72,36 +77,34 @@
         </div>
         <div class="graphbox">
             <canvas class="my" id="myChart"></canvas>
-            <canvas class="my1" id="mychart2"></canvas>
-        </div>
-        <div class="graphbox1">
-            <canvas class="line" id="lineChart"></canvas>
+            
         </div>
 
         <script>
-            // JavaScript code to create the chart
+            // JavaScript code to create the bar chart
             // Get the canvas element
             var ctx = document.getElementById('myChart').getContext('2d');
 
+            // Define the numerical values for the datasets
+            var num_lecturers = {{ num_lecturers }};
+            var num_users = {{ num_users }};
+            var num_comment = {{ num_comment }};
+
             // Create the data for the chart
             var data = {
-                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple'],
+                labels: ['Lecturers', 'Users', 'Comments'],
                 datasets: [{
                     label: 'Sample Data',
-                    data: [12, 19, 3, 5, 2],
+                    data: [num_lecturers, num_users, num_comment],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
                         'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)'
                     ],
                     borderColor: [
                         'rgba(255, 99, 132, 1)',
                         'rgba(54, 162, 235, 1)',
                         'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)'
                     ],
                     borderWidth: 1
                 }]
@@ -116,59 +119,16 @@
                 }
             };
 
-            // Create the chart
+            // Create the bar chart
             var myChart = new Chart(ctx, {
                 type: 'bar',
                 data: data,
                 options: options
             });
         </script>
+
         <script>
-            // JavaScript code to create the chart
-            // Get the canvas element
-            var ctx = document.getElementById('mychart2').getContext('2d');
-
-            // Create the data for the chart
-            var data = {
-                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple'],
-                datasets: [{
-                    label: 'Sample Data',
-                    data: [12, 19, 3, 5, 2],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            };
-
-            // Create the options for the chart
-            var options = {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            };
-
-            // Create the chart
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: data,
-                options: options
-            });
-        </script>
-        <script>
+            // JavaScript code to create the line chart
             var ctx = document.getElementById('lineChart').getContext('2d');
             var lineChart = new Chart(ctx, {
                 type: 'line',
@@ -191,31 +151,6 @@
                 }
             });
         </script>
-        <script>
-            var ctx = document.getElementById('lineChart').getContext('2d');
-            var lineChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-                    datasets: [{
-                        label: 'Sales Data',
-                        data: [50, 70, 60, 80, 75, 90],
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-        </script>
-
 
 </body>
 
