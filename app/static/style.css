@@ -411,3 +411,35 @@ label {
 .Cancel:hover {
     color: black;
 }
+
+.profile {
+    border : solid 2px;
+    padding: 40px;
+    position: relative;
+    top: 80px;
+    left: 150px;
+    width: 1000px;
+    margin: 0 auto;
+    background-color: whitesmoke;
+    box-shadow: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    
+
+}
+
+.label-name{
+    margin-top: 40px;
+
+}
+
+.label-name input {
+    margin-left: 40px;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-bottom: 2px solid black; 
+    border-right: 2px solid black;
+    padding: 5px; 
+
+
+}

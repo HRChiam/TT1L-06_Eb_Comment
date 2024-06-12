@@ -16,7 +16,7 @@
     font-size: 20px;
 }
 
-.box {
+.box-wy {
     width: 600px;
     margin-top: 150px;
     margin-left: 300px;
@@ -28,7 +28,7 @@
 
 }
 
-label {
+#wy label {
     display: block;
     margin-bottom: 1px;
     padding-right: 10px;
@@ -405,4 +405,17 @@ input[type = "submit"]:hover {
 .otp-word {
     font-size: 20px;
     padding-top: 30px;
+ }
+
+ .error-message-2{
+    color: red;
+    font-size: 16px;
+    font-weight: bolder;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-left: 75px;
+
+    background-color: #f4d8fa;
+    border: 1px solid #fa8dc0;
  }

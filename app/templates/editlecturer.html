@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="../static/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="Try"><h2>Eb-comment</h2><input type="research"><i class='bx bx-search-alt-2'></i></div>
+    
+    <div class="sidebar">
+        <ul>
+            {% if session['email'] == 'admin@gmail.com' %}
+            <!-- Admin Sidebar -->
+            <li><a href="/admin"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
+            <li><a href="/user"><i class='bx bxs-grid-alt'></i>User Control</a></li>
+            <li><a href="/admin_comment"><i class='bx bxs-grid-alt'></i>Comment Control</a></li>
+            <li><a href="/uploadlecturer"><i class='bx bxs-grid-alt'></i>Upload Lecturer</a></li>
+            <li><a href="/lecturerlist"><i class='bx bxs-grid-alt'></i>Lecturer List</a></li>
+            <li><a href="/logout"><i class='bx bxs-grid-alt'></i>Sign out</a></li>
+            {% else %}
+            <!-- Regular User Sidebar -->
+            <li><a href="/admin"><i class='bx bxs-grid-alt'></i>Dashboard</a></li>
+            <li><a href="/history"><i class='bx bxs-grid-alt'></i>History Comment</a></li>
+            <li><a href="/a_edit"><i class='bx bxs-grid-alt'></i>Edit Profile</a></li>
+            <li><a href="/logout"><i class='bx bxs-grid-alt'></i>Sign out</a></li>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="profile">
+        <h3 style="margin-bottom: 20px;">Edit Lecturer</h3>
+        <form action="/update_user/{{ lecturer[0] }}" method="POST">
+            <div class="label-name">
+                <label for="name">NAME:</label>
+                <input type="text" name="name" id="name" placeholder="{{ lecturer[1] }}">
+            </div>
+            <div class="label-name">
+                <label for="email">EMAIL:</label>
+                <input type="text" name="email" id="email" placeholder="{{ lecturer[4] }}">
+            </div>
+            <div class="label-name">
+                <label for="phone">PHONE:</label>
+                <input type="text" name="phone" id="phone" placeholder="{{ lecturer[3] }}">
+            </div>
+            <div class="label-name">
+                <label for="faculty">FACULTY:</label>
+                <select name="faculty" id="faculty">
+                    {% for faculty in faculties %}
+                    <option value="{{ faculty[0] }}">{{ faculty[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="label-name">
+                <label for="photo">photo:</label>
+                <input type="file" name="photo" id="photo">
+            </div>
+            <div class="label-name">
+                <label for="photo">campus:</label>
+                <input type="text" name="campus" id="photo" placeholder="{{ lecturer[5] }}">
+            </div>
+            <div class="label-name">
+                <label for="Bio">Bio</label>
+                <input type="text" name="bio" id="bio" placeholder="{{ lecturer[6] }}">
+            </div>
+            <button type="submit" class="Submit">Submit</button>
+            <button type="reset" class="Cancel">Cancel</button>
+        </form>
+    </div>
+    
+</body>        
+</html>
