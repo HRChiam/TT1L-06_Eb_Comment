@@ -17,15 +17,10 @@
 
 <body>
 
-<<<<<<< HEAD
-    <div class="Try"><h2>Eb-comment</h2><input type="research"><i class='bx bx-search-alt-2'></i></div>
-    
-=======
     <div class="Try">
         <h2>Eb-comment</h2><input type="research"><i class='bx bx-search-alt-2'></i><a href="#">Admin</a>
     </div>
 
->>>>>>> 95583eff4959d29f1f7a01e575b2b6ef4c40d9e5
     <div class="sidebar">
         <ul>
             {% if session['email'] == 'admin@gmail.com' %}
@@ -34,12 +29,12 @@
             <li><a href="/user"><i class='bx bxs-grid-alt'></i>User Control</a></li>
             <li><a href="/admin_comment"><i class='bx bxs-grid-alt'></i>Comment Control</a></li>
             <li><a href="/lecturerlist"><i class='bx bxs-grid-alt'></i>Lecturer List</a></li>
-            <li><a href="/logout"><i class='bx bxs-grid-alt'></i>Log out</a></li>
+            <li><a href="/logout"><i class='bx bxs-grid-alt'></i>Sign out</a></li>
             {% else %}
             <!-- Regular User Sidebar -->
             <li><a href="/history"><i class='bx bxs-grid-alt'></i>History Comment</a></li>
             <li><a href="/a_edit"><i class='bx bxs-grid-alt'></i>Edit Profile</a></li>
-            <li><a href="/logout"><i class='bx bxs-grid-alt'></i>Log out</a></li>
+            <li><a href="/logout"><i class='bx bxs-grid-alt'></i>Sign out</a></li>
             {% endif %}
         </ul>
     </div>
