@@ -4,15 +4,15 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "==3.0.3"
+flask = "*"
 gunicorn = "==22.0.0"
 flask-login = "*"
 pillow = "*"
 flask-mail = "*"
 python-dotenv = "*"
 flask-sqlalchemy = "*"
-itsdangerous = "==2.2.0"
-werkzeug = "==3.0.3"
+itsdangerous = "*"
+werkzeug = "*"
 sqlalchemy = "*"
 blinker = "==1.8.2"
 certifi = "==2024.6.2"
