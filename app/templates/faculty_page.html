@@ -8,7 +8,8 @@
         Faculty Page
     </title>
     <link href="../static/student.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
 
 <body>
@@ -54,13 +55,16 @@
                 </nav>
 
             </div>
-
-            <form>
-                <div class="search">
-                    <span class="search-icon material-symbols-outlined">search</span>
-                    <input id="searchInput" class='search-input' type="search" placeholder="Search" oninput="filterLecturers(this.value)">
-                </div>
-            </form>
+            
+            <div class="searchbar">
+                <form>
+                    <div class="search">
+                        <span class="search-icon material-symbols-outlined">search</span>
+                        <input id="searchInput" class='search-input' type="search" placeholder="Search"
+                            oninput="filterLecturers(this.value)">
+                    </div>
+                </form>
+            </div>
 
             <div class="profile_dropdown">
                 <div class="profile_avatar" onclick="toggleDropdown()">
