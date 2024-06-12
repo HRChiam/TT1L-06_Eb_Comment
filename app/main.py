@@ -154,16 +154,30 @@ def process_signin():
             db.session.commit()
 
         # Check email domain and send OTP if applicable
+        # if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
+        #     otp = random.randint(100000, 999999)
+        #     session['otp'] = otp
+        #     session['email'] = email
+        #     send_otp_email(email, otp)
+        #     return redirect(url_for('otp'))
+
         if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
             otp = random.randint(100000, 999999)
             session['otp'] = otp
             session['email'] = email
-            send_otp_email(email, otp)
-            return redirect(url_for('otp'))
+            try:
+                send_otp_email(email, otp)
+                logging.info(f"OTP sent to {email}: {otp}")
+            except Exception as e:
+                logging.error(f"Failed to send OTP to {email}: {e}")
+                flash("Failed to send OTP. Please try again later.", "danger")
+                return redirect(url_for('signin'))
+            return redirect(url_for('verify_otp'))
     
 
         return redirect('/login')
-
+    
+    logging.error(f"Signin errors: {error}")
     return render_template('signin.html', error=error)
 
 
