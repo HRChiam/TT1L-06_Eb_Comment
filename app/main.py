@@ -123,10 +123,10 @@ def process_signin():
     
     if not error:
     # Create and add new user to the database
-        new_user = Users(name=nickname, email=email, role = role)
-        new_user.set_password(password)  # Set hashed password
-        db.session.add(new_user)
-        db.session.commit()
+        # new_user = Users(name=nickname, email=email, role = role)
+        # new_user.set_password(password)  # Set hashed password
+        # db.session.add(new_user)
+        # db.session.commit()
 
         if email.endswith('@mmu.edu.my'):
             new_user = Users(name=nickname, email=email, role = role)
@@ -154,25 +154,25 @@ def process_signin():
             db.session.commit()
 
         # Check email domain and send OTP if applicable
-        # if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
-        #     otp = random.randint(100000, 999999)
-        #     session['otp'] = otp
-        #     session['email'] = email
-        #     send_otp_email(email, otp)
-        #     return redirect(url_for('otp'))
-
         if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
             otp = random.randint(100000, 999999)
             session['otp'] = otp
             session['email'] = email
-            try:
-                send_otp_email(email, otp)
-                logging.info(f"OTP sent to {email}: {otp}")
-            except Exception as e:
-                logging.error(f"Failed to send OTP to {email}: {e}")
-                flash("Failed to send OTP. Please try again later.", "danger")
-                return redirect(url_for('signin'))
-            return redirect(url_for('verify_otp'))
+            send_otp_email(email, otp)
+            return redirect(url_for('otp'))
+
+        # if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
+        #     otp = random.randint(100000, 999999)
+        #     session['otp'] = otp
+        #     session['email'] = email
+        #     try:
+        #         send_otp_email(email, otp)
+        #         logging.info(f"OTP sent to {email}: {otp}")
+        #     except Exception as e:
+        #         logging.error(f"Failed to send OTP to {email}: {e}")
+        #         flash("Failed to send OTP. Please try again later.", "danger")
+        #         return redirect(url_for('signin'))
+        #     return redirect(url_for('verify_otp'))
     
 
         return redirect('/login')
