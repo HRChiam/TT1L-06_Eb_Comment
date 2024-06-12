@@ -154,26 +154,13 @@ def process_signin():
             db.session.commit()
 
         # Check email domain and send OTP if applicable
-        # if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
-        #     otp = random.randint(100000, 999999)
-        #     session['otp'] = otp
-        #     session['email'] = email
-        #     send_otp_email(email, otp)
-        #     return redirect(url_for('otp'))
+        if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
+            otp = random.randint(100000, 999999)
+            session['otp'] = otp
+            session['email'] = email
+            send_otp_email(email, otp)
+            return redirect(url_for('otp'))
 
-        # if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
-        #     otp = random.randint(100000, 999999)
-        #     session['otp'] = otp
-        #     session['email'] = email
-        #     try:
-        #         send_otp_email(email, otp)
-        #         logging.info(f"OTP sent to {email}: {otp}")
-        #     except Exception as e:
-        #         logging.error(f"Failed to send OTP to {email}: {e}")
-        #         flash("Failed to send OTP. Please try again later.", "danger")
-        #         return redirect(url_for('signin'))
-        #     return redirect(url_for('verify_otp'))
-    
 
         return redirect('/login')
     
@@ -181,33 +168,33 @@ def process_signin():
     return render_template('signin.html', error=error)
 
 
-# def send_otp_email(email, otp):
-#     msg = Message(
-#         'OTP for EbComment Account Verification',
-#         recipients=[email],
-#         body=f'Welcome to EbComment , verify your account with the OTP given.\n\n'
-#              f'Your OTP:{otp} \n\n'
-#              '---Eb_Comment Team---',
-#         sender=app.config['MAIL_DEFAULT_SENDER']
-#     )
-#     mail.send(msg)
+def send_otp_email(email, otp):
+    msg = Message(
+        'OTP for EbComment Account Verification',
+        recipients=[email],
+        body=f'Welcome to EbComment , verify your account with the OTP given.\n\n'
+             f'Your OTP:{otp} \n\n'
+             '---Eb_Comment Team---',
+        sender=app.config['MAIL_DEFAULT_SENDER']
+    )
+    mail.send(msg)
 
 
 
-# @app.route('/verify_otp', methods=['GET', 'POST'])
-# def verify_otp():
-#     error = {} 
-#     if request.method == 'POST':
-#         input_otp = request.form['otp']
-#         if 'otp' in session and str(session['otp']) == input_otp:
-#             email = session.pop('email', None)
-#             session.pop('otp', None)
-#             return redirect(url_for('login'))  
-#         else:
-#             error['otp'] = "Invalid OTP, please try again"
-#             return render_template('otp.html', error=error)
+@app.route('/verify_otp', methods=['GET', 'POST'])
+def verify_otp():
+    error = {} 
+    if request.method == 'POST':
+        input_otp = request.form['otp']
+        if 'otp' in session and str(session['otp']) == input_otp:
+            email = session.pop('email', None)
+            session.pop('otp', None)
+            return redirect(url_for('login'))  
+        else:
+            error['otp'] = "Invalid OTP, please try again"
+            return render_template('otp.html', error=error)
 
-#     return render_template('otp.html')
+    return render_template('otp.html')
 
 
 @app.route('/process_login', methods=['POST'])
