@@ -7,7 +7,7 @@
 
     <title>Sign in</title>
     <link href="../static/logsign.css" rel="stylesheet">
-    
+
 
 </head>
 
@@ -16,19 +16,19 @@
     <div class="bar-text-wel"> Eb_Comment </div>
     <div class="bar-text-back"><a href="{{ url_for('home') }}">Back</a> </div>
     <div class="rectangle-bar"></div>
+
     <body class="logsign-background"></body>
-    
-   
+
+
     <div class="box-wy">
         <div class="eb-sign">
             <h1>Welcome to Eb_Comment!</h1>
-        </div> 
-    
-     
+        </div>
+
+
         <h2>Create your account</h2>
 
-        <form 
-            action="/process_signin" method="post" enctype="multipart/form-data">
+        <form action="/process_signin" method="post" enctype="multipart/form-data">
             <label for="email">Email Address:</label>
             <input type="email" name="email" id="email" required><br>
 
@@ -38,9 +38,10 @@
 
             <label for="name">Nickname:<div class="grey">(Warning: this will be visible to all users) </div></label>
             <input type="text" name="name" id="name" required><br>
-            
 
-            <label for="password">Password:<div class="grey">(Note: must be at least 8 characters long and contain at least 4 numbers)</div></label>
+
+            <label for="password">Password:<div class="grey">(Note: must be at least 8 characters long and contain at
+                    least 4 numbers)</div></label>
             <input type="password" name="password" id="password" required><br>
             <label for="confirm_password">Confirm Password:</label>
             <input type="password" name="confirm_password" id="confirm_password" required><br>
