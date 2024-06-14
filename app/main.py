@@ -122,11 +122,6 @@ def process_signin():
 
     
     if not error:
-    # Create and add new user to the database
-        # new_user = Users(name=nickname, email=email, role = role)
-        # new_user.set_password(password)  # Set hashed password
-        # db.session.add(new_user)
-        # db.session.commit()
 
         if email.endswith('@mmu.edu.my'):
             new_user = Users(name=nickname, email=email, role = role)
