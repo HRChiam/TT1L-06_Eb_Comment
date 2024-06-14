@@ -116,7 +116,7 @@
     <div class="lecturer_details_container">
         <div class="lecturer_info">
             <h2>{{ lecturer.name }} - Details</h2>
-            <img src="{{ url_for('static', filename='uploads/' + lecturer.photo) }}" alt="{{ lecturer.name }}">
+            <img src="{{ url_for('static', filename='uploads/' + lecturer.photo) }}" alt="{{ lecturer.name }}" style = "width: 200px; height: auto;">
             <p><strong>Name:</strong> {{ lecturer.name }}</p>
             <p><strong>Phone:</strong> {{ lecturer.phone }}</p>
             <p><strong>Email:</strong> {{ lecturer.email }}</p>
