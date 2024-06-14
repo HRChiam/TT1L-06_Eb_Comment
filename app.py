@@ -40,7 +40,8 @@ app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME', 'ebcomment123@outlook.m
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD', 'hjszkqeytfsdnldp')
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER', 'ebcomment123@outlook.my')
 app.config['SECURITY_PASSWORD_SALT'] = os.getenv('SECURITY_PASSWORD_SALT', 'your_security_password_salt')
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
+# app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
 db.init_app(app)
@@ -149,12 +150,12 @@ def process_signin():
             db.session.commit()
 
         # # Check email domain and send OTP if applicable
-        # if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
-        #     otp = random.randint(100000, 999999)
-        #     session['otp'] = otp
-        #     session['email'] = email
-        #     send_otp_email(email, otp)
-        #     return redirect(url_for('otp'))
+        if email.endswith('@student.mmu.edu.my') or email.endswith('@mmu.edu.my'):
+            otp = random.randint(100000, 999999)
+            session['otp'] = otp
+            session['email'] = email
+            send_otp_email(email, otp)
+            return redirect(url_for('otp'))
     
 
         return redirect('/login')
@@ -162,33 +163,33 @@ def process_signin():
     return render_template('signin.html', error=error)
 
 
-# def send_otp_email(email, otp):
-#     msg = Message(
-#         'OTP for EbComment Account Verification',
-#         recipients=[email],
-#         body=f'Welcome to EbComment , verify your account with the OTP given.\n\n'
-#              f'Your OTP:{otp} \n\n'
-#              '---Eb_Comment Team---',
-#         sender=app.config['MAIL_DEFAULT_SENDER']
-#     )
-#     mail.send(msg)
+def send_otp_email(email, otp):
+    msg = Message(
+        'OTP for EbComment Account Verification',
+        recipients=[email],
+        body=f'Welcome to EbComment , verify your account with the OTP given.\n\n'
+             f'Your OTP:{otp} \n\n'
+             '---Eb_Comment Team---',
+        sender=app.config['MAIL_DEFAULT_SENDER']
+    )
+    mail.send(msg)
 
 
 
-# @app.route('/verify_otp', methods=['GET', 'POST'])
-# def verify_otp():
-#     error = {} 
-#     if request.method == 'POST':
-#         input_otp = request.form['otp']
-#         if 'otp' in session and str(session['otp']) == input_otp:
-#             email = session.pop('email', None)
-#             session.pop('otp', None)
-#             return redirect(url_for('login'))  
-#         else:
-#             error['otp'] = "Invalid OTP, please try again"
-#             return render_template('otp.html', error=error)
+@app.route('/verify_otp', methods=['GET', 'POST'])
+def verify_otp():
+    error = {} 
+    if request.method == 'POST':
+        input_otp = request.form['otp']
+        if 'otp' in session and str(session['otp']) == input_otp:
+            email = session.pop('email', None)
+            session.pop('otp', None)
+            return redirect(url_for('login'))  
+        else:
+            error['otp'] = "Invalid OTP, please try again"
+            return render_template('otp.html', error=error)
 
-#     return render_template('otp.html')
+    return render_template('otp.html')
 
 
 @app.route('/process_login', methods=['POST'])
@@ -212,7 +213,7 @@ def process_login():
         elif email.endswith('@mmu.edu.my'):
             session['email'] = email
             session['user_id'] = user.id
-            return redirect('/admin')
+            return redirect('/a_edit')
     else:
         flash('Invalid email or password', 'danger')
     return render_template('login.html')
@@ -330,17 +331,15 @@ def profile():
                         os.remove(previous_file_path)
 
                 # Process and save the new profile picture
-                try:
-                    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-                    img_size = (140, 140)
-                    img = Image.open(profile_picture)
-                    img.thumbnail(img_size)
-                    img.save(file_path)
-                    current_user.profile_picture = filename
-                    db.session.commit()
-                    flash("Profile Picture Successfully Updated!", category='success')
-                except Exception as e:
-                    flash(f"Error updating profile picture: {e}", category='error')
+                
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                img_size = (140, 140)
+                img = Image.open(profile_picture)
+                img.thumbnail(img_size)
+                img.save(file_path)
+                current_user.profile_picture = filename
+                db.session.commit()
+                    
 
     return render_template('profile.html', user=current_user)
 
@@ -462,9 +461,23 @@ def upload():
     email = request.form['email']
     campus = request.form['campus']
     faculty_id = request.form['faculty']  # Include the faculty ID
-    
-    photo_filename = secure_filename(photo.filename)
-    photo.save(os.path.join(app.config['UPLOAD_FOLDER'], photo_filename))
+
+    if request.method == 'POST':
+        name = request.form.get('name')
+
+        if 'photo' in request.files:
+            photo = request.files['photo']
+
+            if photo and allowed_file(photo.filename):
+                filename = secure_filename(photo.filename)
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)                
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                img_size = (140, 140)
+                img = Image.open(photo)
+                img.thumbnail(img_size)
+                img.save(file_path)
+                lecturer.photo = filename
+                db.session.commit()
 
     lecturer_temp = LecturerTemp(name=name, photo=photo.filename, phone=phone, email=email, campus=campus, faculty_id=faculty_id)
     db.session.add(lecturer_temp)
@@ -480,6 +493,7 @@ def keyinsuccess():
 
 
 @app.route("/admin")
+@login_required
 def admin():
     con = get_db_connection()
     cursor = con.cursor()
@@ -494,6 +508,7 @@ def admin():
     return render_template("admin.html", num_lecturers=num_lecturers, num_users=num_users, num_comment=num_comment)
 
 @app.route("/user")
+@login_required
 def usercontrol():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -511,6 +526,7 @@ def delete_user(id):
     conn.close()
 
 @app.route('/delete_user', methods=["POST"])
+@login_required
 def delete_user_route():
     id = request.form['id']
     delete_user(id)
@@ -520,12 +536,14 @@ def get_current_time():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 @app.route('/admin/view_lecturers_temp')
+@login_required
 def view_lecturers_temp():
     lecturers_temp = LecturerTemp.query.all()
 
     return render_template('view_lecturers_temp.html', lecturers_temp=lecturers_temp)
 
 @app.route('/admin/approve_lecturer/<int:lecturer_id>', methods=['POST'])
+@login_required
 def approve_lecturer(lecturer_id):
     lecturer_temp = LecturerTemp.query.get_or_404(lecturer_id)
     
@@ -546,6 +564,7 @@ def approve_lecturer(lecturer_id):
 
 
 @app.route('/admin/reject_lecturer/<int:lecturer_id>', methods=['POST'])
+@login_required
 def reject_lecturer(lecturer_id):
     lecturer_temp = LecturerTemp.query.get_or_404(lecturer_id)
     db.session.delete(lecturer_temp)
@@ -555,6 +574,7 @@ def reject_lecturer(lecturer_id):
 
 
 @app.route("/admin_comment")
+@login_required
 def comment():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -572,12 +592,14 @@ def delete_comment(id):
     conn.close()
 
 @app.route('/delete_comment', methods=["POST"])
+@login_required
 def delete_comment_route():
     id = request.form['id']
     delete_comment(id)
     return redirect('/admin_comment')
 
 @app.route('/lecturer')
+@login_required
 def lecturer():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -590,6 +612,7 @@ def lecturer():
 
 
 @app.route('/uploadlecturer', methods=["GET", "POST"])
+@login_required
 def uploadlecturer():
     if request.method == "POST":
         name = request.form.get('name')
@@ -625,6 +648,7 @@ def uploadlecturer():
     return redirect('/lecturer')
 
 @app.route("/lecturerlist", methods=["POST", "GET"])
+@login_required
 def lecturerlist():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -642,6 +666,7 @@ def delete_lecturer(id):
     conn.close()
 
 @app.route('/delete_lecturer', methods=["POST", "GET"])
+@login_required
 def delete_lecturer_route():
     if request.method == 'GET':
         id = request.args.get('id')  # Access data from query string using request.args
@@ -652,6 +677,7 @@ def delete_lecturer_route():
     return redirect('/lecturerlist')
 
 @app.route("/edit_user/<int:id>", methods=["GET", "POST"])
+@login_required
 def edit_user(id):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -685,6 +711,7 @@ def edit_user(id):
 
     
 @app.route("/update_user/<int:id>", methods=["POST"])
+@login_required
 def update_user(id):
 
     if request.method == "POST":
@@ -706,6 +733,7 @@ def update_user(id):
     return redirect(url_for('lecturerlist'))
 
 @app.route("/history", methods=["GET"])
+@login_required
 def history():
     email = session.get("email")  # Assuming the email is stored in the session
     conn = get_db_connection()
@@ -725,6 +753,7 @@ def history():
 
 
 @app.route('/admin_edit_lecturer', methods=['GET', 'POST'])
+@login_required
 def admin_edit_lecturer():
     email = session.get('email')  # Correct key to retrieve user email from session
     
@@ -749,6 +778,7 @@ def admin_edit_lecturer():
     
 
 @app.route("/a_edit", methods=["POST", "GET"])
+@login_required
 def edit_teacher():
     user_id = session.get('id')
     user_email = session.get('email')

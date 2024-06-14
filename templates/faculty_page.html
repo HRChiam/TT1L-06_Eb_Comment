@@ -55,15 +55,15 @@
                     <a href="/keyin">Upload Lecturer Information</a>
                 </nav>
 
+                <form class = "searchbar">
+                    <div class="search">
+                        <span class="search-icon material-symbols-outlined">search</span>
+                        <input id="searchInput" class='search-input' type="search" placeholder="Search" oninput="filterLecturers(this.value)">
+                    </div>
+                </form>
+              
             </div>
 
-            <form>
-                <div class="search">
-                    <span class="search-icon material-symbols-outlined">search</span>
-                    <input id="searchInput" class='search-input' type="search" placeholder="Search"
-                        oninput="filterLecturers(this.value)">
-                </div>
-            </form>
 
             <div class="profile_dropdown">
                 <div class="profile_avatar" onclick="toggleDropdown()">
