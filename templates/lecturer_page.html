@@ -139,7 +139,7 @@
             <div class="comments_list">
                 {% for comment in comments %}
                 <div class="comment">
-                    <p><strong>{{ comment.nickname }}</strong> ({{ comment.date }} {{ comment.time }}):</p>
+                    <p><strong>{{ comment.name }}</strong> ({{ comment.date }} {{ comment.time }}):</p>
                     <p>{{ comment.comment_text }}</p>
                     <div class="rating">
                         <div class="like grow {{ 'active' if current_user.is_authenticated and comment.has_reaction(current_user, True) else '' }}"
