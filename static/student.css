@@ -502,6 +502,7 @@ header {
     position: -webkit-sticky;
     position: sticky;
     top: 80px;
+    background-color: #fff;
 }
 
 .lecturer_info img {
@@ -516,6 +517,7 @@ header {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     border-radius: 8px;
+    background-color: #fff;
 }
 
 .comment {
@@ -738,4 +740,64 @@ input[type="submit"]:hover {
 .search-input::placeholder,
 .search-icon {
     color: rgba(0, 0, 0, 0.5);
+}
+
+
+
+.fal_name_wy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.fal_name_wy h2 {
+    font-size: 36px; 
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    background-color: rgb(224, 224, 223); 
+    color: rgb(139, 170, 218);
+    padding: 20px;
+    border-radius: 20px; 
+    box-shadow: 0 4px 8px rgba(143, 63, 248, 0.5); 
+    text-align: center;
+    margin-bottom: 20px; 
+}
+
+.fal_name_wy .lecturers {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px; 
+}
+
+.fal_name_wy .lecturer_card {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 220px;
+}
+
+.fal_name_wy .lecturer_card img {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+    margin-bottom: 15px; 
+}
+
+
+.fac_page_body_wy{
+    background-color: #f0e2e8;
+}
+
+
+.lec_page_body_wy{
+    background-color: #e7eff3;
+}
+
+
+.studentmain_body_wy{
+    background-color: #c4d6dd;
 }
