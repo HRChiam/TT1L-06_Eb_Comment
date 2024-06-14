@@ -53,6 +53,7 @@
                         <a href="/faculty/FET">FET</a>
                     </div>
                     <a href="/keyin">Upload Lecturer Information</a>
+                    <a href="/main">Main Page</a>
                 </nav>
 
             </div>
@@ -116,7 +117,7 @@
     <div class="lecturer_details_container">
         <div class="lecturer_info">
             <h2>{{ lecturer.name }} - Details</h2>
-            <img src="{{ url_for('static', filename='uploads/' + lecturer.photo) }}" alt="{{ lecturer.name }}">
+            <img src="{{ url_for('static', filename='uploads/' + lecturer.photo) }}" alt="{{ lecturer.name }}" style = "width: 200px; height: auto;">
             <p><strong>Name:</strong> {{ lecturer.name }}</p>
             <p><strong>Phone:</strong> {{ lecturer.phone }}</p>
             <p><strong>Email:</strong> {{ lecturer.email }}</p>
@@ -139,7 +140,7 @@
             <div class="comments_list">
                 {% for comment in comments %}
                 <div class="comment">
-                    <p><strong>{{ comment.nickname }}</strong> ({{ comment.date }} {{ comment.time }}):</p>
+                    <p><strong>{{ comment.name }}</strong> ({{ comment.date }} {{ comment.time }}):</p>
                     <p>{{ comment.comment_text }}</p>
                     <div class="rating">
                         <div class="like grow {{ 'active' if current_user.is_authenticated and comment.has_reaction(current_user, True) else '' }}"
