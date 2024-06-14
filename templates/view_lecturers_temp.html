@@ -64,7 +64,11 @@
                 </tr>
                 {% endfor %}
             </table>
-            <button onclick="window.location.href='/index'">Back to Index</button>
+            {% if session['email'] == 'admin@gmail.com' %}
+            <button onclick="window.location.href='/admin'">Back to dashboard</button>
+            {% else %}
+            <button onclick="window.location.href='/a_edit'">Back to dashboard</button>
+            {% endif %}
         </div>
     </div>
 </body>

@@ -53,14 +53,14 @@
                     <a href="/keyin">Upload Lecturer Information</a>
                 </nav>
 
-            </div>
+                <form class = "searchbar">
+                    <div class="search">
+                        <span class="search-icon material-symbols-outlined">search</span>
+                        <input id="searchInput" class='search-input' type="search" placeholder="Search" oninput="filterLecturers(this.value)">
+                    </div>
+                </form>
 
-            <form>
-                <div class="search">
-                    <span class="search-icon material-symbols-outlined">search</span>
-                    <input id="searchInput" class='search-input' type="search" placeholder="Search" oninput="filterLecturers(this.value)">
-                </div>
-            </form>
+            </div>
 
             <div class="profile_dropdown">
                 <div class="profile_avatar" onclick="toggleDropdown()">
@@ -139,7 +139,7 @@
                     <div class="lecturer_card">
                         <a href="{{ url_for('lecturer_details', lecturer_id=lecturer.id) }}">
                             <img src="{{ url_for('static', filename='uploads/' + lecturer.photo) }}"
-                                alt="{{ lecturer.name }}">
+                                alt="{{ lecturer.name }}" style = "width: 120px; height: auto">
                             <p>{{ lecturer.name }}</p>
                         </a>
                     </div>
