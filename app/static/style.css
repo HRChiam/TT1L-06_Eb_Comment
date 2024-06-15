@@ -1504,14 +1504,14 @@ tbody tr {
 
 
 /*profile page*/
-.huiyee.profile {
+profile {
     position: absolute;
     padding: 30px;
     font-size: 17px;
     margin-left: 300px;
 }
 
-.huiyee.profile h3 {
+profile h3 {
     position: relative;
     left: 75px;
     top: 20px;
@@ -1637,7 +1637,7 @@ label {
     color: black;
 }
 
-.huiyee.profile {
+.profile {
     border: solid 2px;
     padding: 40px;
     position: relative;
