@@ -25,7 +25,6 @@
             <!-- Regular User Sidebar -->
             <li><a href="/history"><i class='bx bxs-grid-alt'></i>History Comment</a></li>
             <li><a href="/a_edit"><i class='bx bxs-grid-alt'></i>Edit Profile</a></li>
-            <li><a href="/admin/view_lecturers_temp"><i class='bx bxs-grid-alt'></i>Lecturer Info Uploaded by Student</a></li>
             <li><a href="/logout"><i class='bx bxs-grid-alt'></i>Log Out</a></li>
             {% endif %}
         </ul>
@@ -41,9 +40,6 @@
                         <th>No. </th>
                         <th>Name</th>
                         <th>Email</th>
-                        <th>Phone</th>
-                        <th>Faculty</th>
-                        <th>Campus</th>
                         <th>Delete</th>
                     </tr>
                 </thead>
@@ -54,9 +50,6 @@
                             <td>{{ loop.index }}</td>
                             <td>{{ user[1] }}</td>
                             <td>{{ user[2] }}</td>  
-                            <td>{{ user[5] }}</td>
-                            <td>{{ user[6] }}</td>
-                            <td>{{ user[7] }}</td>
                             <td> 
                                 <input type="hidden" name="id" value="{{ user[0] }}">
                                 <button type="submit"><i class='bx bx-user-minus'></i></button>

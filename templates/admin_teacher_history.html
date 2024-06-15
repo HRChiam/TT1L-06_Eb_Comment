@@ -9,7 +9,7 @@
     <link href="../static/style.css" rel="stylesheet">
 </head>
 <body>
-    <div class="Try"><h2>Eb-comment</h2><input type="research"><i class='bx bx-search-alt-2'></i></div>
+    <div class="Try"><h2>Eb-comment</h2></div>
     
     <div class="sidebar">
         <ul>
@@ -25,7 +25,6 @@
             <!-- Regular User Sidebar -->
             <li><a href="/history"><i class='bx bxs-grid-alt'></i>History Comment</a></li>
             <li><a href="/a_edit"><i class='bx bxs-grid-alt'></i>Edit Profile</a></li>
-            <li><a href="/admin/view_lecturers_temp"><i class='bx bxs-grid-alt'></i>Lecturer Info Uploaded by Student</a></li>
             <li><a href="/logout"><i class='bx bxs-grid-alt'></i>Log Out</a></li>
             {% endif %}
         </ul>
@@ -35,11 +34,10 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>No.</th>
                         <th>Student Name</th>
                         <th>comment</th>
                         <th>Faculty</th>
-                        <th>lecture</th>
                         <th>day</th>
                         <th>time</th>
                     </tr>
@@ -48,12 +46,11 @@
                         {% for comment in comments %}
                         <tr>
                             <td>{{ loop.index }}</td>
-                            <td>{{ comment[1] }}</td>
-                            <td>{{ comment[4] }}</td>
-                            <td>{{ comment[2] }}</td>
-                            <td>{{ comment[1] }}</td>
-                            <td>{{ comment[5] }}</td>
-                            <td>{{ comment[6] }}</td>
+                            <td>{{ comment.name }}</td>
+                            <td>{{ comment.faculty_name }}</td>
+                            <td>{{ comment.comment_text }}</td>
+                            <td>{{ comment.date }}</td>
+                            <td>{{ comment.time }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>              

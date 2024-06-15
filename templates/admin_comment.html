@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User</title>
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'rel='stylesheet'>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="../static/style.css" rel="stylesheet">
 </head>
 <body>
-    <div class="Try"><h2>Eb-comment</h2><input type="research"><i class='bx bx-search-alt-2'></i></div>
+    <div class="Try"><h2>Eb-comment</h2></div>
     
     <div class="sidebar">
         <ul>
@@ -25,7 +25,6 @@
             <!-- Regular User Sidebar -->
             <li><a href="/history"><i class='bx bxs-grid-alt'></i>History Comment</a></li>
             <li><a href="/a_edit"><i class='bx bxs-grid-alt'></i>Edit Profile</a></li>
-            <li><a href="/admin/view_lecturers_temp"><i class='bx bxs-grid-alt'></i>Lecturer Info Uploaded by Student</a></li>
             <li><a href="/logout"><i class='bx bxs-grid-alt'></i>Log Out</a></li>
             {% endif %}
         </ul>
@@ -36,38 +35,37 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Student Name</th>
-                        <th>comment</th>
+                        <th>No.</th>
+                        <th>Lecturer</th>
                         <th>Faculty</th>
-                        <th>lecture</th>
-                        <th>day</th>
-                        <th>time</th>
+                        <th>Student</th>
+                        <th>Comment</th>
+                        <th>Date</th>
+                        <th>Time</th>
                         <th>DELETE</th>
                     </tr>
                 </thead>
-                <form action="/delete_comment" method="post">
-                    <tbody>
-                        {% for comment in comment %}
-                        <tr>
-                            <td>{{ loop.index }}</td>
-                            <td>{{ comment[1] }}</td>
-                            <td>{{ comment[4] }}</td>
-                            <td>{{ comment[2] }}</td>
-                            <td>{{ comment[1] }}</td>
-                            <td>{{ comment[5] }}</td>
-                            <td>{{ comment[6] }}</td>
-                            <td> 
-                                <input type="hidden" name="id" value="{{ comment['id'] }}">
+                <tbody>
+                    {% for comment in comments %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ comment[1] }}</td>
+                        <td>{{ comment[2] }}</td>
+                        <td>{{ comment[3] }}</td>
+                        <td>{{ comment[4] }}</td>
+                        <td>{{ comment[5] }}</td>
+                        <td>{{ comment[6] }}</td>
+                        <td>
+                            <form action="/delete_comment" method="post">
+                                <input type="hidden" name="id" value="{{ comment[0] }}">
                                 <button type="submit"><i class='bx bx-user-minus'></i></button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </form>                
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>
-</div>
 </body>        
 </html>

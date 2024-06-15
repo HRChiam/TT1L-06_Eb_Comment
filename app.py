@@ -571,11 +571,18 @@ def reject_lecturer(lecturer_id):
 def comment():
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM comment")
-    comment = cursor.fetchall()
+    cursor.execute("""
+        SELECT comment.id, lecturer.name as lecturer_name, faculty.name as faculty_name, comment.name, comment.comment_text, comment.date, comment.time 
+        FROM comment 
+        JOIN lecturer ON comment.lecturer_id = lecturer.id 
+        JOIN faculty ON comment.faculty_id = faculty.id
+    """)
+    comments = cursor.fetchall()
     conn.close()
+    
+    return render_template("admin_comment.html", comments=comments)
 
-    return render_template("admin_comment.html", comment=comment)
+
 
 def delete_comment(id):
     conn = get_db_connection()
@@ -613,23 +620,13 @@ def uploadlecturer():
         campus = request.form.get('campus')
         
         # Handle file upload
-        photo_path = None
-        if 'photo' in request.files:
-            photo = request.files['photo']
-            if photo.filename != '':
-                # Save the file
-                photo_path = os.path.join('uploads', photo.filename)
-                photo.save(photo_path)
 
-        # Set a default value if no photo is uploaded
-        if photo_path is None:
-            photo_path = "default_photo.jpg"  # Provide a default photo path
         
         if name and email and phone and faculty:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("INSERT INTO lecturer (name, email, phone, faculty, photo, campus, faculty_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
-               (name, email, phone, faculty, photo_path, campus, faculty_id))
+            cursor.execute("INSERT INTO lecturer (name, email, phone, faculty, campus, faculty_id) VALUES (?, ?, ?, ?, ?, ?)",
+               (name, email, phone, faculty, campus, faculty_id))
 
             conn.commit()
             conn.close()
@@ -639,13 +636,17 @@ def uploadlecturer():
 
 @app.route("/lecturerlist", methods=["POST", "GET"])
 def lecturerlist():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM lecturer")
-    lecturer_data = cursor.fetchall()
-    conn.close()
+    lecturers = db.session.query(Lecturer).join(Faculty).add_columns(
+        Lecturer.id,
+        Lecturer.name,
+        Lecturer.email,
+        Lecturer.phone,
+        Lecturer.campus,
+        Faculty.name.label('faculty_name')
+    ).all()
 
-    return render_template("lecturerlist.html", lecturers=lecturer_data)
+    return render_template("lecturerlist.html", lecturers=lecturers)
+
 
 def delete_lecturer(id):
     conn = get_db_connection()
@@ -728,8 +729,14 @@ def history():
     cursor.execute("SELECT id FROM lecturer WHERE email = ?", (email,))
     lecturer_id = cursor.fetchone()[0]  # Assuming email is unique, fetch the first result
     
-    # Fetch comments associated with the lecturer's ID
-    cursor.execute("SELECT * FROM comment WHERE lecturer_id = ?", (lecturer_id,))
+    # Fetch comments associated with the lecturer's ID and join with users and faculty tables
+    cursor.execute("""
+        SELECT comment.id, comment.comment_text, comment.date, comment.time, 
+               comment.name, faculty.name as faculty_name 
+        FROM comment 
+        JOIN faculty ON comment.faculty_id = faculty.id
+        WHERE comment.lecturer_id = ?
+    """, (lecturer_id,))
     comments = cursor.fetchall()
     
     conn.close()
@@ -737,8 +744,13 @@ def history():
     return render_template("admin_teacher_history.html", comments=comments)
 
 
-@app.route('/admin_edit_lecturer', methods=['GET', 'POST'])
-def admin_edit_lecturer():
+    
+
+@app.route("/a_edit", methods=["POST", "GET"])
+def edit_teacher():
+    user_id = session.get('id')
+    user_email = session.get('email')
+
     email = session.get('email')  # Correct key to retrieve user email from session
     
     conn = get_db_connection()
@@ -757,14 +769,6 @@ def admin_edit_lecturer():
     faculties = cursor.fetchall()
     
     conn.close()
-
-    return render_template("admin_edit_lecturer.html", lecturers=lecturers, faculties=faculties)
-    
-
-@app.route("/a_edit", methods=["POST", "GET"])
-def edit_teacher():
-    user_id = session.get('id')
-    user_email = session.get('email')
 
     if request.method == "POST":
         email = request.form['email']
@@ -795,6 +799,11 @@ def edit_teacher():
                     "UPDATE lecturer SET email=?, campus=?, bio=?, phone=?, faculty_id=?, photo=? WHERE email=?",
                     (email, campus, bio, phone, faculty_id, photo_filename, user_email)
                 )
+            else:
+                cursor.execute(
+                    "UPDATE lecturer SET email=?, campus=?, bio=?, phone=?, faculty_id=? WHERE email=?",
+                    (email, campus, bio, phone, faculty_id, user_email)
+                )
             conn.commit()
 
         # Update user email
@@ -805,7 +814,15 @@ def edit_teacher():
 
         return redirect("/admin_edit_lecturer")
 
-    return "Please use the form to edit the lecturer details."
+    # Render the edit form or other appropriate response for GET requests
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM lecturer WHERE email=?", (user_email,))
+        lecturer = cursor.fetchone()
+
+    return render_template("admin_edit_lecturer.html", lecturers=lecturers, faculties=faculties)
+
+    
 
 
 
