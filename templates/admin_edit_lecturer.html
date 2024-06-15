@@ -11,7 +11,7 @@
 <body>
     <div class="Try">
         <h2>Eb-comment</h2>
-        <a href="#">{{ session['nickname'] }}</a> <!-- 显示当前的昵称 -->
+        <a href="#">{{ session['nickname'] }}</a> <!-- Display current nickname -->
     </div>
     
     <div class="sidebar">
@@ -44,7 +44,7 @@
                 <label for="faculty">FACULTY</label>
                 <select name="faculty" id="faculty">
                     {% for faculty in faculties %}
-                    <option value="{{ faculty[1] }}">{{ faculty[1] }}</option>
+                        <option value="{{ faculty[0] }}" {% if faculty[0] == lecturers[8] %} selected {% endif %}>{{ faculty[1] }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -64,7 +64,6 @@
             <button type="reset" class="Cancel">Discard Change</button>
         </form>
     </div>
-    
     
 </body>
 </html>

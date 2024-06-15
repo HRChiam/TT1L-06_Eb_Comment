@@ -749,27 +749,29 @@ def history():
 @app.route("/a_edit", methods=["POST", "GET"])
 def edit_teacher():
     user_id = session.get('id')
-    user_email = session.get('email')
-
-    email = session.get('email')  # Correct key to retrieve user email from session
+    user_email = session.get('email')  # Correct key to retrieve user email from session
     
     conn = get_db_connection()
     cursor = conn.cursor()
     
     # Retrieve lecturer ID based on email
-    cursor.execute("SELECT id FROM lecturer WHERE email = ?", (email,))
-    lecturer_id = cursor.fetchone()[0]  # Assuming email is unique, fetch the first result
+    cursor.execute("SELECT id FROM lecturer WHERE email = ?", (user_email,))
+    lecturer_result = cursor.fetchone()
+    
+    if lecturer_result is None:
+        conn.close()
+        return "No lecturer found with this email."
+
+    lecturer_id = lecturer_result[0]
     
     # Retrieve lecturer information based on ID
     cursor.execute("SELECT * FROM lecturer WHERE id = ?", (lecturer_id,))
-    lecturers = cursor.fetchone()
+    lecturer = cursor.fetchone()
     
     # Retrieve faculties
     cursor.execute("SELECT * FROM faculty")
     faculties = cursor.fetchall()
     
-    conn.close()
-
     if request.method == "POST":
         email = request.form['email']
         campus = request.form['campus']
@@ -777,33 +779,13 @@ def edit_teacher():
         phone = request.form['phone']
         faculty_id = request.form['faculty']
 
-        photo_filename = None
-        if 'photo' in request.files:
-            photo = request.files['photo']
-
-            if photo and allowed_file(photo.filename):
-                filename = secure_filename(photo.filename)
-                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-                img_size = (140, 140)
-                img = Image.open(photo)
-                img.thumbnail(img_size)
-                img.save(file_path)
-                photo_filename = filename
-
         # Update lecturer details
         with get_db_connection() as conn:
             cursor = conn.cursor()
-            if photo_filename:
-                cursor.execute(
-                    "UPDATE lecturer SET email=?, campus=?, bio=?, phone=?, faculty_id=?, photo=? WHERE email=?",
-                    (email, campus, bio, phone, faculty_id, photo_filename, user_email)
-                )
-            else:
-                cursor.execute(
-                    "UPDATE lecturer SET email=?, campus=?, bio=?, phone=?, faculty_id=? WHERE email=?",
-                    (email, campus, bio, phone, faculty_id, user_email)
-                )
+            cursor.execute(
+                "UPDATE lecturer SET email=?, campus=?, bio=?, phone=?, faculty_id=? WHERE id=?",
+                (email, campus, bio, phone, faculty_id, lecturer_id)
+            )
             conn.commit()
 
         # Update user email
@@ -812,15 +794,20 @@ def edit_teacher():
             cursor.execute("UPDATE users SET email=? WHERE id=?", (email, user_id))
             conn.commit()
 
-        return redirect("/admin_edit_lecturer")
+        # Redirect to the edit page after successful update
+        return redirect("/a_edit")
 
-    # Render the edit form or other appropriate response for GET requests
-    with get_db_connection() as conn:
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM lecturer WHERE email=?", (user_email,))
-        lecturer = cursor.fetchone()
+    # Fetch lecturer information again for rendering the template on GET request
+    cursor.execute("SELECT * FROM lecturer WHERE email=?", (user_email,))
+    lecturers = cursor.fetchone()
+
+    conn.close()
 
     return render_template("admin_edit_lecturer.html", lecturers=lecturers, faculties=faculties)
+
+
+   
+
 
     
 
