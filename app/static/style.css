@@ -869,6 +869,19 @@ header {
     transform: translate(-50%, -50%);
 }
 
+.box-wy2 {
+    max-width: 1000px;
+    margin: auto;
+    padding: 35px;
+    border-radius: 10px;
+    background-color: hsl(0, 0%, 100%);
+    box-shadow: 0 0 5px 5px rgba(65, 63, 145, 0.4);
+    position: absolute;
+    top: calc(50% + 100px);
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 #wy label {
     display: block;
     margin-bottom: 1px;
@@ -879,6 +892,16 @@ header {
 .box-wy input[type="text"],
 .box-wy input[type="email"],
 .box-wy input[type="password"] {
+    width: 100%;
+    padding: 10px 10px 10px 10px;
+    margin-bottom: 30px;
+    border: 2px solid #727096;
+    border-radius: 3px;
+}
+
+.box-wy2 input[type="text"],
+.box-wy2 input[type="email"],
+.box-wy2 input[type="password"] {
     width: 100%;
     padding: 10px 10px 10px 10px;
     margin-bottom: 30px;
@@ -907,7 +930,12 @@ header {
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
-
+.box-wy2 input[type="submit"]:hover {
+    background-color: #070d52;
+    color: rgb(119, 186, 212);
+    font-size: 18px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
 
 .rectangle-bar {
     position: absolute;
