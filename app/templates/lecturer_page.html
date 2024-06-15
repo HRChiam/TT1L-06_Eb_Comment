@@ -12,6 +12,9 @@
 </head>
 
 <body>
+    
+    <body class="lec_page_body_wy"></body>
+
     <header>
         <div class="header_container">
             <div class="left_section">
@@ -51,6 +54,7 @@
                         <a href="/faculty/FET">FET</a>
                     </div>
                     <a href="/keyin">Upload Lecturer Information</a>
+                    <a href="/main">Main Page</a>
                 </nav>
 
             </div>
@@ -114,7 +118,7 @@
     <div class="lecturer_details_container">
         <div class="lecturer_info">
             <h2>{{ lecturer.name }} - Details</h2>
-            <img src="{{ url_for('static', filename='uploads/' + lecturer.photo) }}" alt="{{ lecturer.name }}">
+            <img src="{{ url_for('static', filename='uploads/' + lecturer.photo) }}" alt="{{ lecturer.name }}" style = "width: 200px; height: auto;">
             <p><strong>Name:</strong> {{ lecturer.name }}</p>
             <p><strong>Phone:</strong> {{ lecturer.phone }}</p>
             <p><strong>Email:</strong> {{ lecturer.email }}</p>
@@ -126,7 +130,7 @@
             <h3>Leave your comment here:</h3>
             <form id="comment_form" action="{{ url_for('add_comment') }}" method="POST">
                 <input type="hidden" name="lecturer_id" value="{{ lecturer.id }}">
-                <input type="hidden" name="name" id="name_input" required>
+                <input type="hidden" name="nickname" id="nickname_input" required>
                 <div>
                     <label for="comment_text">Comment:</label>
                     <textarea id="comment_textarea" name="comment_text" required></textarea>
@@ -189,13 +193,13 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             var commentTextarea = document.getElementById("comment_textarea");
-            var nameInput = document.getElementById("name_input");
+            var nicknameInput = document.getElementById("nickname_input");
 
-            commentTextarea.addEventListener("focus", showNameField);
-            commentTextarea.addEventListener("input", showNameField);
+            commentTextarea.addEventListener("focus", showNicknameField);
+            commentTextarea.addEventListener("input", showNicknameField);
 
-            function showNameField() {
-                nameInput.style.display = "block";
+            function showNicknameField() {
+                nicknameInput.style.display = "block";
             }
         });
     </script>

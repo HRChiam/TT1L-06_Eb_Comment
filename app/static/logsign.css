@@ -97,21 +97,6 @@ input[type = "submit"]:hover {
 
 }
 
-/* .info {
-    margin-top: 170px;
-    font-size: 14px;
-    margin-left: 40px;
-    color: rgb(172, 65, 65);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding: 1px 0px 20px 50px;
-    width: 700px;
-    border-radius: 10px;
-    background-color: hsl(0, 0%, 100%,0.7);
-    box-shadow: 0 0 5px 5px rgba(65, 63, 145, 0.4);
-    margin-bottom: 50px;
-    
-} */
-
 .info-eb {
     font-size: 30px;
     color: rgb(94, 7, 7);

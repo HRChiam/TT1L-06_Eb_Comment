@@ -462,10 +462,24 @@ def upload():
     phone = request.form['phone']
     email = request.form['email']
     campus = request.form['campus']
-    faculty_id = request.form['faculty']  # Include the faculty ID
-    
-    photo_filename = secure_filename(photo.filename)
-    photo.save(os.path.join(app.config['UPLOAD_FOLDER'], photo_filename))
+    faculty_id = request.form['faculty']
+
+    if request.method == 'POST':
+        name = request.form.get('name')
+
+        if 'photo' in request.files:
+            photo = request.files['photo']
+
+            if photo and allowed_file(photo.filename):
+                filename = secure_filename(photo.filename)
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)                
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                img_size = (140, 140)
+                img = Image.open(photo)
+                img.thumbnail(img_size)
+                img.save(file_path)
+                lecturer.photo = filename
+                db.session.commit()
 
     lecturer_temp = LecturerTemp(name=name, photo=photo.filename, phone=phone, email=email, campus=campus, faculty_id=faculty_id)
     db.session.add(lecturer_temp)
@@ -494,6 +508,7 @@ def admin():
 
     return render_template("admin.html", num_lecturers=num_lecturers, num_users=num_users, num_comment=num_comment)
 
+
 @app.route("/user")
 def usercontrol():
     conn = get_db_connection()
@@ -511,6 +526,7 @@ def delete_user(id):
     conn.commit()
     conn.close()
 
+
 @app.route('/delete_user', methods=["POST"])
 def delete_user_route():
     id = request.form['id']
@@ -519,6 +535,7 @@ def delete_user_route():
 
 def get_current_time():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
 
 @app.route('/admin/view_lecturers_temp')
 def view_lecturers_temp():
@@ -572,11 +589,13 @@ def delete_comment(id):
     conn.commit()
     conn.close()
 
+
 @app.route('/delete_comment', methods=["POST"])
 def delete_comment_route():
     id = request.form['id']
     delete_comment(id)
     return redirect('/admin_comment')
+
 
 @app.route('/lecturer')
 def lecturer():
@@ -625,6 +644,7 @@ def uploadlecturer():
         
     return redirect('/lecturer')
 
+
 @app.route("/lecturerlist", methods=["POST", "GET"])
 def lecturerlist():
     conn = get_db_connection()
@@ -642,6 +662,7 @@ def delete_lecturer(id):
     conn.commit()
     conn.close()
 
+
 @app.route('/delete_lecturer', methods=["POST", "GET"])
 def delete_lecturer_route():
     if request.method == 'GET':
@@ -651,6 +672,7 @@ def delete_lecturer_route():
 
     delete_lecturer(id)
     return redirect('/lecturerlist')
+
 
 @app.route("/edit_user/<int:id>", methods=["GET", "POST"])
 def edit_user(id):
@@ -705,6 +727,7 @@ def update_user(id):
         return redirect('/lecturerlist')
     
     return redirect(url_for('lecturerlist'))
+
 
 @app.route("/history", methods=["GET"])
 def history():

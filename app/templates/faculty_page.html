@@ -14,6 +14,7 @@
 </head>
 
 <body>
+
     <header>
         <div class="header_container">
             <div class="left_section">
@@ -53,19 +54,18 @@
                         <a href="/faculty/FET">FET</a>
                     </div>
                     <a href="/keyin">Upload Lecturer Information</a>
+                    <a href="/main">Main Page</a>
                 </nav>
 
-            </div>
-            
-            <div class="searchbar">
-                <form>
+                <form class = "searchbar">
                     <div class="search">
                         <span class="search-icon material-symbols-outlined">search</span>
-                        <input id="searchInput" class='search-input' type="search" placeholder="Search"
-                            oninput="filterLecturers(this.value)">
+                        <input id="searchInput" class='search-input' type="search" placeholder="Search" oninput="filterLecturers(this.value)">
                     </div>
                 </form>
+              
             </div>
+
 
             <div class="profile_dropdown">
                 <div class="profile_avatar" onclick="toggleDropdown()">
@@ -135,22 +135,27 @@
         }
     </script>
 
+
+    <body class="fac_page_body_wy"></body>
     <div class="faculty_container">
-        <h2>{{ faculty.name }} Lecturers</h2>
-        <div class="lecturers">
-            {% for lecturer in lecturers %}
-            <div class="row">
-                <div class="column">
-                    <div class="lecturer_card">
-                        <a href="{{ url_for('lecturer_details', lecturer_id=lecturer.id) }}">
-                            <img src="{{ url_for('static', filename='uploads/' + lecturer.photo) }}"
-                                alt="{{ lecturer.name }}">
-                            <p>{{ lecturer.name }}</p>
-                        </a>
+        <div class="fal_name_wy">
+            <h2>{{ faculty.name }} Lecturers</h2>
+
+            <div class="lecturers">
+                {% for lecturer in lecturers %}
+                <div class="row">
+                    <div class="column">
+                        <div class="lecturer_card">
+                            <a href="{{ url_for('lecturer_details', lecturer_id=lecturer.id) }}">
+                                <img src="{{ url_for('static', filename='uploads/' + lecturer.photo) }}"
+                                    alt="{{ lecturer.name }}">
+                                <p>{{ lecturer.name }}</p>
+                            </a>
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
     </div>
 
