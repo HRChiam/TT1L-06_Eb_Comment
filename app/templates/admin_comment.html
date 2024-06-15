@@ -40,8 +40,6 @@
                         <th>ID</th>
                         <th>Student Name</th>
                         <th>comment</th>
-                        <th>Faculty</th>
-                        <th>lecture</th>
                         <th>day</th>
                         <th>time</th>
                         <th>DELETE</th>
@@ -52,10 +50,8 @@
                         {% for comment in comment %}
                         <tr>
                             <td>{{ loop.index }}</td>
-                            <td>{{ comment[1] }}</td>
+                            <td>{{ comment[3] }}</td>
                             <td>{{ comment[4] }}</td>
-                            <td>{{ comment[2] }}</td>
-                            <td>{{ comment[1] }}</td>
                             <td>{{ comment[5] }}</td>
                             <td>{{ comment[6] }}</td>
                             <td> 

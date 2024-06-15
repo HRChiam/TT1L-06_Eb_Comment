@@ -1,3 +1,4 @@
+/* HuaiRen */
 @import url('https://fonts.googleapis.com/css2?family=Harlow+Solid&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cooper+Black&display=swap');
 
@@ -553,7 +554,8 @@ header {
 }
 
 .grow.dislike.active {
-    color: #ED2429; /* Red */
+    color: #ED2429;
+    /* Red */
 }
 
 .like:hover,
@@ -562,12 +564,13 @@ header {
     transform: scale(1.1);
 }
 
-.like:hover{
+.like:hover {
     color: #0A509E;
 }
 
 .dislike:hover {
-    color: #ED2429; /* Red */
+    color: #ED2429;
+    /* Red */
 }
 
 
@@ -637,7 +640,7 @@ header {
     font-style: italic;
 }
 
-h1 {
+.keyinform h1 {
     margin-top: 20px;
     margin-bottom: 20px;
     text-align: center;
@@ -651,10 +654,10 @@ label {
     font-size: 15px;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="file"],
-select {
+.keyinform input[type="text"],
+.keyinform input[type="email"],
+.keyinform input[type="file"],
+.keyinform select {
     width: 100%;
     padding: 10px 0px 10px 0px;
     margin-bottom: 10px;
@@ -663,7 +666,7 @@ select {
     font-size: 15px;
 }
 
-input[type="submit"] {
+.keyinform input[type="submit"] {
     width: 100%;
     padding: 10px;
     background-color: #0492C2;
@@ -675,7 +678,7 @@ input[type="submit"] {
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
-input[type="submit"]:hover {
+.keyinform input[type="submit"]:hover {
     background-color: #1520A6;
     color: white;
     font-size: 18px;
@@ -712,27 +715,27 @@ input[type="submit"]:hover {
     margin-left: 100px;
     display: flex;
     justify-content: flex-end;
-    width: 100%; 
+    width: 100%;
 }
 
 .search {
-    --padding: 10px; 
-    --margin-left: 10px; 
+    --padding: 10px;
+    --margin-left: 10px;
     display: flex;
     align-items: center;
     padding: var(--padding);
     margin-left: var(--margin-left);
-    border-radius: 20px; 
+    border-radius: 20px;
     background: #f6f6f6;
 }
 
 .search-input {
-    font-size: 14px; 
+    font-size: 14px;
     font-family: 'Lexend', sans-serif;
     color: #333333;
     border: none;
     background: transparent;
-    width: 200px; 
+    width: 200px;
     outline: none;
 }
 
@@ -740,8 +743,6 @@ input[type="submit"]:hover {
 .search-icon {
     color: rgba(0, 0, 0, 0.5);
 }
-
-
 
 .fal_name_wy {
     display: flex;
@@ -751,22 +752,22 @@ input[type="submit"]:hover {
 }
 
 .fal_name_wy h2 {
-    font-size: 36px; 
+    font-size: 36px;
     font-family: Georgia, 'Times New Roman', Times, serif;
-    background-color: rgb(224, 224, 223); 
+    background-color: rgb(224, 224, 223);
     color: rgb(139, 170, 218);
     padding: 20px;
-    border-radius: 20px; 
-    box-shadow: 0 4px 8px rgba(143, 63, 248, 0.5); 
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(143, 63, 248, 0.5);
     text-align: center;
-    margin-bottom: 20px; 
+    margin-bottom: 20px;
 }
 
 .fal_name_wy .lecturers {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 20px; 
+    margin-top: 20px;
 }
 
 .fal_name_wy .lecturer_card {
@@ -783,21 +784,21 @@ input[type="submit"]:hover {
     width: 100%;
     height: auto;
     border-radius: 50%;
-    margin-bottom: 15px; 
+    margin-bottom: 15px;
 }
 
 
-.fac_page_body_wy{
+.fac_page_body_wy {
     background-color: #f0e2e8;
 }
 
 
-.lec_page_body_wy{
+.lec_page_body_wy {
     background-color: #e7eff3;
 }
 
 
-.studentmain_body_wy{
+.studentmain_body_wy {
     background-color: #c4d6dd;
 }
 
@@ -807,15 +808,421 @@ table {
     margin-bottom: 20px;
 }
 
-table, th, td {
+table,
+th,
+td {
     border: 1px solid #ddd;
 }
 
-th, td {
+th,
+td {
     padding: 10px;
     text-align: left;
 }
 
 th {
     background-color: #f8f8f8;
+}
+
+/* WingYan */
+.eb-sign {
+    text-align: center;
+    color: rgb(129, 10, 10);
+    padding-bottom: 15px;
+    padding-left: 10px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 20px;
+
+}
+
+.eb-log {
+    text-align: center;
+    color: rgb(129, 10, 10);
+    padding-left: 10px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 20px;
+}
+
+.box-wy {
+    max-width: 1000px;
+    margin: auto;
+    padding: 35px;
+    border-radius: 10px;
+    background-color: hsl(0, 0%, 100%);
+    box-shadow: 0 0 5px 5px rgba(65, 63, 145, 0.4);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#wy label {
+    display: block;
+    margin-bottom: 1px;
+    padding-right: 10px;
+    font-weight: bold;
+}
+
+.box-wy input[type="text"],
+.box-wy input[type="email"],
+.box-wy input[type="password"] {
+    width: 100%;
+    padding: 10px 10px 10px 10px;
+    margin-bottom: 30px;
+    border: 2px solid #727096;
+    border-radius: 3px;
+}
+
+.submit-acc {
+    width: 13%;
+    padding: 10px;
+    margin-top: 40px;
+    margin-left: 545px;
+    background-color: #3da1c2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.box-wy input[type="submit"]:hover {
+    background-color: #070d52;
+    color: rgb(119, 186, 212);
+    font-size: 18px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+
+
+.rectangle-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #110333;
+    color: white;
+    padding: 10px;
+    text-align: left 50px;
+    font-size: 20px;
+
+}
+
+
+.rectangle-bar-profile {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 90px;
+    background-color: #110333;
+    color: white;
+    padding: 10px;
+    text-align: left 50px;
+    font-size: 20px;
+
+}
+
+.info-eb {
+    font-size: 30px;
+    color: rgb(94, 7, 7);
+    font-weight: bolder;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+
+
+.create-account {
+    margin-top: 20px;
+    font-size: 17px;
+    font-weight: bolder;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-bottom: 20px;
+}
+
+
+.create-account:hover a {
+    color: #110333;
+}
+
+.bar-text-wel {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    z-index: 2;
+    color: #ffffff;
+    font-size: 35px;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bolder;
+}
+
+.bar-text-wel:hover {
+    color: rgb(193, 220, 230);
+}
+
+
+.bar-text-log a {
+    position: absolute;
+    top: 25px;
+    right: 180px;
+    z-index: 2;
+    color: #ffffff;
+    font-size: 25px;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bolder;
+}
+
+
+.bar-text-log:hover a {
+    color: rgb(193, 220, 230);
+}
+
+.bar-text-sign a {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+    z-index: 2;
+    color: #ffffff;
+    font-size: 25px;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bolder;
+}
+
+.bar-text-sign:hover a {
+    color: rgb(193, 220, 230);
+}
+
+.bar-text-back a {
+    position: absolute;
+    top: 25px;
+    right: 40px;
+    z-index: 2;
+    color: #ffffff;
+    font-size: 25px;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bolder;
+}
+
+.bar-text-back:hover a {
+    color: rgb(193, 220, 230);
+}
+
+
+.box-password {
+    max-width: 400px;
+    margin: 100px auto;
+    margin-top: 170px;
+    padding: 30px 70px 100px 50px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 5px 5px rgba(100, 7, 7, 0.4);
+}
+
+.password-background {
+    background-color: #d6c7d6;
+}
+
+
+.submit-reset {
+    width: 100%;
+    padding: 10px;
+    background-color: #420606;
+    color: rgb(248, 221, 221);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    margin-top: 20px;
+    margin-left: 10px;
+}
+
+.text-reset {
+    text-align: center;
+    color: #922a2a;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 23px;
+    padding-bottom: 10px;
+}
+
+
+.forgot-pass {
+    font-size: 15px;
+    font-weight: bolder;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.forgot-pass:hover a {
+    color: #110333;
+}
+
+
+.info {
+    margin-right: 50px;
+    background-color: rgba(255, 255, 255, 0.8);
+    width: 700px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px 5px rgba(116, 73, 9, 0.4);
+    padding: 1px 0px 20px 40px;
+    color: rgb(141, 15, 15);
+}
+
+.phone {
+    max-width: 380px;
+    height: 850px;
+    float: right;
+}
+
+.home-bg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-image: url(../static/campus-wy.jpg);
+    background-size: cover;
+    background-position: center; */
+
+    /* background-repeat: no-repeat;
+    height: 100vh; */
+}
+
+
+.home-background {
+    background-color: #f5f3cf;
+}
+
+.logsign-background {
+    background-color: #dcdef3;
+}
+
+.grey {
+    color: grey;
+}
+
+
+.error-message {
+    color: red;
+    font-size: 15px;
+    font-weight: bolder;
+    margin-top: 30px;
+    margin-bottom: 16px;
+}
+
+
+
+.logout-button {
+    background-color: #3da1c2;
+    color: white;
+    font-size: 18px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    width: 13%;
+    margin-top: 40px;
+    margin-left: 545px;
+}
+
+.container-profile {
+    margin-top: 50px;
+    margin-left: 40px;
+    margin-right: 50px;
+}
+
+.profile-background {
+    background-color: #ebf5b1;
+}
+
+.logout-support {
+    margin-left: 50px;
+}
+
+.edit {
+    margin-top: 150px;
+    margin-bottom: 10px;
+    margin-left: 130px;
+    font-weight: bolder;
+    color: #661212;
+    font-size: 30px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+
+.btn-primary:hover {
+    background-color: rgb(131, 83, 163);
+}
+
+.fixed-input {
+    background-color: #f8f9fa;
+    border: none;
+}
+
+.reset-password-btn {
+    background-color: #0e365f;
+    border-color: #0b2947;
+}
+
+
+.reset-password-btn:hover {
+    background-color: #7a091c;
+    border-color: #380303;
+}
+
+
+.photo-button {
+    margin-top: 20px;
+}
+
+.success-box {
+    margin-top: 20px;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 5px;
+    margin-left: 20px;
+
+}
+
+.expired-msg {
+    text-align: center;
+    font-size: 50px;
+    color: #420606;
+    margin-top: 200px;
+}
+
+
+.invalid-background {
+    background-color: rgb(235, 250, 236);
+}
+
+
+.box-reset {
+    max-width: 400px;
+    margin: 100px auto;
+    margin-top: 100px;
+    padding: 30px 70px 100px 50px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 5px 5px rgba(100, 7, 7, 0.4);
+}
+
+.otp-word {
+    font-size: 20px;
+    padding-top: 30px;
+}
+
+.error-message-2 {
+    color: red;
+    font-size: 16px;
+    font-weight: bolder;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-left: 75px;
+
+    background-color: #f4d8fa;
+    border: 1px solid #fa8dc0;
 }
