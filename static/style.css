@@ -227,7 +227,7 @@ table tr{
 
  .table_body{
     width: 95%;
-    max-height: calc(89%-.8rem);
+    max-height: 800px;
     background-color: rgb(242,247,247);
     margin: 20px auto;
     border-radius: 20px;
