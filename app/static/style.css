@@ -864,7 +864,7 @@ header {
     background-color: hsl(0, 0%, 100%);
     box-shadow: 0 0 5px 5px rgba(65, 63, 145, 0.4);
     position: absolute;
-    top: 50%;
+    top: calc(50% + 50px);
     left: 50%;
     transform: translate(-50%, -50%);
 }
