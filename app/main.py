@@ -40,7 +40,7 @@ app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME', 'ebcomment123@outlook.m
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD', 'hjszkqeytfsdnldp')
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER', 'ebcomment123@outlook.my')
 app.config['SECURITY_PASSWORD_SALT'] = os.getenv('SECURITY_PASSWORD_SALT', 'your_security_password_salt')
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = 'app/static/uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
 db.init_app(app)
@@ -330,8 +330,6 @@ def profile():
                     if os.path.exists(previous_file_path):
                         os.remove(previous_file_path)
 
-                # Process and save the new profile picture
-                try:
                     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
                     img_size = (140, 140)
                     img = Image.open(profile_picture)
@@ -339,9 +337,6 @@ def profile():
                     img.save(file_path)
                     current_user.profile_picture = filename
                     db.session.commit()
-                    flash("Profile Picture Successfully Updated!", category='success')
-                except Exception as e:
-                    flash(f"Error updating profile picture: {e}", category='error')
 
     return render_template('profile.html', user=current_user)
 
