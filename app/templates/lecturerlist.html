@@ -11,7 +11,7 @@
     <link href="../static/style.css" rel="stylesheet">
 </head>
 
-<body class = "huiyee">
+<body class="huiyee">
     <div class="Try">
         <h2>Eb-comment</h2><input type="research"><i class='bx bx-search-alt-2'></i>
     </div>
@@ -50,6 +50,7 @@
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Campus</th>
+                        <th>Faculty</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -58,19 +59,20 @@
                 <tbody>
                     {% for lecturer in lecturers %}
                     <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ lecturer[1] }}</td>
+                        <td>{{ lecturer.id }}</td>
+                        <td>{{ lecturer.name }}</td>
                         <td>{{ lecturer[4] }}</td>
                         <td>{{ lecturer[3] }}</td>
                         <td>{{ lecturer[5] }}</td>
+                        <td>{{ lecturer.faculty_name }}</td>
                         <td>
-                            <form action="/edit_user/{{ lecturer[0] }}" method="GET">
+                            <form action="/edit_user/{{ lecturer.id }}" method="GET">
                                 <button type="submit">Edit</button>
                             </form>
                         </td>
                         <td>
                             <form action="/delete_lecturer" method="POST">
-                                <input type="hidden" name="id" value="{{ lecturer[0] }}">
+                                <input type="hidden" name="id" value="{{ lecturer.id }}">
                                 <button type="submit"><i class='bx bx-user-minus'></i></button>
                             </form>
                         </td>
