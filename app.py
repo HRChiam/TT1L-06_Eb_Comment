@@ -493,7 +493,6 @@ def keyinsuccess():
 
 
 @app.route("/admin")
-@login_required
 def admin():
     con = get_db_connection()
     cursor = con.cursor()
@@ -508,7 +507,6 @@ def admin():
     return render_template("admin.html", num_lecturers=num_lecturers, num_users=num_users, num_comment=num_comment)
 
 @app.route("/user")
-@login_required
 def usercontrol():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -526,7 +524,6 @@ def delete_user(id):
     conn.close()
 
 @app.route('/delete_user', methods=["POST"])
-@login_required
 def delete_user_route():
     id = request.form['id']
     delete_user(id)
@@ -536,14 +533,12 @@ def get_current_time():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 @app.route('/admin/view_lecturers_temp')
-@login_required
 def view_lecturers_temp():
     lecturers_temp = LecturerTemp.query.all()
 
     return render_template('view_lecturers_temp.html', lecturers_temp=lecturers_temp)
 
 @app.route('/admin/approve_lecturer/<int:lecturer_id>', methods=['POST'])
-@login_required
 def approve_lecturer(lecturer_id):
     lecturer_temp = LecturerTemp.query.get_or_404(lecturer_id)
     
@@ -564,7 +559,6 @@ def approve_lecturer(lecturer_id):
 
 
 @app.route('/admin/reject_lecturer/<int:lecturer_id>', methods=['POST'])
-@login_required
 def reject_lecturer(lecturer_id):
     lecturer_temp = LecturerTemp.query.get_or_404(lecturer_id)
     db.session.delete(lecturer_temp)
@@ -574,7 +568,6 @@ def reject_lecturer(lecturer_id):
 
 
 @app.route("/admin_comment")
-@login_required
 def comment():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -592,14 +585,12 @@ def delete_comment(id):
     conn.close()
 
 @app.route('/delete_comment', methods=["POST"])
-@login_required
 def delete_comment_route():
     id = request.form['id']
     delete_comment(id)
     return redirect('/admin_comment')
 
 @app.route('/lecturer')
-@login_required
 def lecturer():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -612,7 +603,6 @@ def lecturer():
 
 
 @app.route('/uploadlecturer', methods=["GET", "POST"])
-@login_required
 def uploadlecturer():
     if request.method == "POST":
         name = request.form.get('name')
@@ -648,7 +638,6 @@ def uploadlecturer():
     return redirect('/lecturer')
 
 @app.route("/lecturerlist", methods=["POST", "GET"])
-@login_required
 def lecturerlist():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -666,7 +655,6 @@ def delete_lecturer(id):
     conn.close()
 
 @app.route('/delete_lecturer', methods=["POST", "GET"])
-@login_required
 def delete_lecturer_route():
     if request.method == 'GET':
         id = request.args.get('id')  # Access data from query string using request.args
@@ -677,7 +665,6 @@ def delete_lecturer_route():
     return redirect('/lecturerlist')
 
 @app.route("/edit_user/<int:id>", methods=["GET", "POST"])
-@login_required
 def edit_user(id):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -711,7 +698,6 @@ def edit_user(id):
 
     
 @app.route("/update_user/<int:id>", methods=["POST"])
-@login_required
 def update_user(id):
 
     if request.method == "POST":
@@ -733,7 +719,6 @@ def update_user(id):
     return redirect(url_for('lecturerlist'))
 
 @app.route("/history", methods=["GET"])
-@login_required
 def history():
     email = session.get("email")  # Assuming the email is stored in the session
     conn = get_db_connection()
@@ -753,7 +738,6 @@ def history():
 
 
 @app.route('/admin_edit_lecturer', methods=['GET', 'POST'])
-@login_required
 def admin_edit_lecturer():
     email = session.get('email')  # Correct key to retrieve user email from session
     
@@ -778,7 +762,6 @@ def admin_edit_lecturer():
     
 
 @app.route("/a_edit", methods=["POST", "GET"])
-@login_required
 def edit_teacher():
     user_id = session.get('id')
     user_email = session.get('email')
@@ -790,21 +773,40 @@ def edit_teacher():
         phone = request.form['phone']
         faculty_id = request.form['faculty']
 
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute("UPDATE lecturer SET email=?, campus=?, bio=?, phone=?, faculty_id=? WHERE email=?",
-                       (email, campus, bio, phone, faculty_id, user_email))
-        conn.commit()
-        conn.close()
+        photo_filename = None
+        if 'photo' in request.files:
+            photo = request.files['photo']
 
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute("UPDATE users SET email=? WHERE id=?",
-                       (email, user_id))
-        conn.commit()
-        conn.close()
+            if photo and allowed_file(photo.filename):
+                filename = secure_filename(photo.filename)
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                img_size = (140, 140)
+                img = Image.open(photo)
+                img.thumbnail(img_size)
+                img.save(file_path)
+                photo_filename = filename
 
-    return redirect("/admin_edit_lecturer")
+        # Update lecturer details
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            if photo_filename:
+                cursor.execute(
+                    "UPDATE lecturer SET email=?, campus=?, bio=?, phone=?, faculty_id=?, photo=? WHERE email=?",
+                    (email, campus, bio, phone, faculty_id, photo_filename, user_email)
+                )
+            conn.commit()
+
+        # Update user email
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE users SET email=? WHERE id=?", (email, user_id))
+            conn.commit()
+
+        return redirect("/admin_edit_lecturer")
+
+    return "Please use the form to edit the lecturer details."
+
 
 
 if __name__ == '__main__':
