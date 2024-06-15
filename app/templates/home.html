@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="j7AimJNqOKLybWxLAb0W0uYpVDvnqc_iI1_yt681uvI" />
+    <title>Welcome to Eb_Comment</title>
+    <link href="../static/style.css" rel="stylesheet">
+</head>
+
+<body>
+    
+    <div class="bar-text-wel"> -Welcome- </div>
+    <div class="bar-text-log"> <a href="{{ url_for('login') }}">Log In </a> </div>
+    <div class="bar-text-sign"><a href="{{ url_for('signin') }}">Sign Up</a> </div>
+    <div class="rectangle-bar"></div>
+    <body class="home-background"></body>
+
+
+    <div class="home-bg">
+
+        <div class="info">
+            <div class="info-eb"><h1>Eb_Comment</h1></div>
+            <h1>is a platform designed to provide students with
+                information about the lectures offered by each
+                faculty. Additionally, students are also allowed to
+                anonymously provide feedback on their lectures.</h1>
+            <div class="create-account"><a href="{{ url_for('signin') }}">Create an account now!</a></div>
+
+        </div>
+
+        <img class="phone" src="../static/phone-wy.png">
+    </div>
+  
+    
+</body>
+
+</html>

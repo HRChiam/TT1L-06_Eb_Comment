@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-site-verification" content="j7AimJNqOKLybWxLAb0W0uYpVDvnqc_iI1_yt681uvI" />
+    <title>Main Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link href="../static/style.css" rel="stylesheet">
+    </head>
+
+<body>
+    
+    <body class="studentmain_body_wy"></body>
+    
+    <header>
+        <div class="header_container">
+            <div class="left_section">
+
+                <div class="text_container">
+                    <div class="hamburger" onclick="toggleMenu()">
+                        <div class="hamburger_line"></div>
+                        <div class="hamburger_line"></div>
+                        <div class="hamburger_line"></div>
+                    </div>
+                    <span id="MM">MM</span>
+                    <span id="U">U</span>
+                </div>
+
+                <div class="bar_container">
+                    <div class="blue-bar2"></div>
+                    <div class="red-bar2"></div>
+                </div>
+
+                <span id="header_webname">Eb_Comment</span>
+
+                <nav class="menu_container" id="menuContainer">
+                    <a href="#">Cyberjaya</a>
+                    <div class="submenu">
+                        <a href="/faculty/FCI">FCI</a>
+                        <a href="/faculty/FOM">FOM</a>
+                        <a href="/faculty/FOE">FOE</a>
+                        <a href="/faculty/FCM">FCM</a>
+                        <a href="/faculty/FCA">FCA</a>
+                        <a href="/faculty/FAC">FAC</a>
+                    </div>
+                    <a href="#">Melaka</a>
+                    <div class="submenu">
+                        <a href="/faculty/FIST">FIST</a>
+                        <a href="/faculty/FOB">FOB</a>
+                        <a href="/faculty/FOL">FOL</a>
+                        <a href="/faculty/FET">FET</a>
+                    </div>
+                    <a href="/keyin">Upload Lecturer Information</a>
+                    <a href="/main">Main Page</a>
+                </nav>
+
+            </div>
+
+            <div class="profile_dropdown">
+                <div class="profile_avatar" onclick="toggleDropdown()">
+                    {% if current_user.profile_picture != 'default_profile_photo.jpg' %}
+                    <img src="{{ url_for('static', filename='uploads/' + current_user.profile_picture) }}"
+                        alt="User Profile Picture" class="rounded-circle">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='default_profile_photo.jpg') }}"
+                        alt="Default Profile Pic" class="rounded-circle">
+                    {% endif %}
+                </div>
+                <div class="dropdown_menu" id="dropdownMenu">
+                    <a href="/profile">Profile</a>
+                    <a href="/logout">Logout</a>
+                </div>
+            </div>
+            
+        </div>
+    </header>
+
+    <script>
+        function toggleMenu() {
+            var menuContainer = document.getElementById('menuContainer');
+            menuContainer.classList.toggle('active');
+        }
+
+        var menuItems = document.querySelectorAll('.menu_container a');
+        menuItems.forEach(function (menuItem) {
+            menuItem.addEventListener('click', function () {
+                var submenu = menuItem.nextElementSibling;
+                if (submenu && submenu.classList.contains('submenu')) {
+                    submenu.classList.toggle('active');
+                    menuItem.classList.toggle('rotate');
+                }
+            });
+        });
+    </script>
+
+    <script>
+        function toggleDropdown() {
+            document.getElementById('dropdownMenu').classList.toggle('show');
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches('.profile_avatar img')) {
+                var dropdowns = document.getElementsByClassName("dropdown_menu");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
+
+    <div class="faculty_image">
+        <div class="slide">
+            <div class="item">
+                <img src="{{ url_for('static', filename='FCI.jpg') }}" alt="FCI" height="600px" width="1000px">
+                <div class="content">
+                    <div class="faculty_name">Faculty of Computing & Informatics</div>
+                    <div class="campus_name">Cyberjaya</div>
+                    <a href="/faculty/FCI"><button>Lecturer Info</button></a>
+                </div>
+            </div>
+
+            <div class="item">
+                <img src="{{ url_for('static', filename='FOM.jpg') }}" alt="FOM" height="600px" width="1000px">
+                <div class="content">
+                    <div class="faculty_name">Faculty of Management</div>
+                    <div class="campus_name">Cyberjaya</div>
+                    <a href="/faculty/FOM"><button>Lecturer Info</button></a>
+                </div>
+            </div>
+
+            <div class="item">
+                <img src="{{ url_for('static', filename='FOE.jpg') }}" alt="FOE" height="600px" width="1000px">
+                <div class="content">
+                    <div class="faculty_name">Faculty of Engineering</div>
+                    <div class="campus_name">Cyberjaya</div>
+                    <a href="/faculty/FOE"><button>Lecturer Info</button></a>
+                </div>
+            </div>
+
+            <div class="item">
+                <img src="{{ url_for('static', filename='FCM.jpg') }}" alt="FCM" height="600px" width="1000px">
+                <div class="content">
+                    <div class="faculty_name">Faculty of Creative Multimedia</div>
+                    <div class="campus_name">Cyberjaya</div>
+                    <a href="/faculty/FCM"><button>Lecturer Info</button></a>
+                </div>
+            </div>
+
+            <div class="item">
+                <img src="{{ url_for('static', filename='FCA.jpg') }}" alt="FCA" height="600px" width="1000px">
+                <div class="content">
+                    <div class="faculty_name">Faculty of Cinematic Arts</div>
+                    <div class="campus_name">Cyberjaya</div>
+                    <a href="/faculty/FCA"><button>Lecturer Info</button></a>
+                </div>
+            </div>
+
+            <div class="item">
+                <img src="{{ url_for('static', filename='FAC.jpg') }}" alt="FAC" height="600px" width="1000px">
+                <div class="content">
+                    <div class="faculty_name">Faculty of Applied Communication</div>
+                    <div class="campus_name">Cyberjaya</div>
+                    <a href="/faculty/FAC"><button>Lecturer Info</button></a>
+                </div>
+            </div>
+
+            <div class="item">
+                <img src="{{ url_for('static', filename='FIST.jpg') }}" alt="FIST" height="600px" width="1000px">
+                <div class="content">
+                    <div class="faculty_name">Faculty of Information Science & Technology</div>
+                    <div class="campus_name">Melaka</div>
+                    <a href="/faculty/FIST"><button>Lecturer Info</button></a>
+                </div>
+            </div>
+
+            <div class="item">
+                <img src="{{ url_for('static', filename='FOB.png') }}" alt="FOB" height="600px" width="1000px">
+                <div class="content">
+                    <div class="faculty_name">Faculty of Business</div>
+                    <div class="campus_name">Melaka</div>
+                    <a href="/faculty/FOB"><button>Lecturer Info</button></a>
+                </div>
+            </div>
+
+            <div class="item">
+                <img src="{{ url_for('static', filename='FOL.jpg') }}" alt="FOL" height="600px" width="1000px">
+                <div class="content">
+                    <div class="faculty_name">Faculty of Law</div>
+                    <div class="campus_name">Melaka</div>
+                    <a href="/faculty/FOL"><button>Lecturer Info</button></a>
+                </div>
+            </div>
+
+            <div class="item">
+                <img src="{{ url_for('static', filename='FET.jpg') }}" alt="FET" height="600px" width="1000px">
+                <div class="content">
+                    <div class="faculty_name">Faculty of Engineering & Technology</div>
+                    <div class="campus_name">Melaka</div>
+                    <a href="/faculty/FET"><button>Lecturer Info</button></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="button">
+            <button class="prev"><i class="fa-solid fa-arrow-left"></i></button>
+            <button class="next"><i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let next = document.querySelector('.next');
+            let prev = document.querySelector('.prev');
+
+            next.addEventListener('click', function () {
+                let items = document.querySelectorAll('.item');
+                document.querySelector('.slide').appendChild(items[0]);
+            });
+
+            prev.addEventListener('click', function () {
+                let items = document.querySelectorAll('.item');
+                document.querySelector('.slide').prepend(items[items.length - 1]);
+            });
+        });
+    </script>
+</body>
+
+</html>

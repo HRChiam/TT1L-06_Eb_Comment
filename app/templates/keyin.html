@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width = device-width, initial-scale = 1" />
+    <meta name="google-site-verification" content="j7AimJNqOKLybWxLAb0W0uYpVDvnqc_iI1_yt681uvI" />
+    <title>
+        Lecturer Upload
+    </title>
+    <link href="../static/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="keyin_background">
+        <div class="keyinform">
+            <div class="header_design">
+                <img id="logo" src="{{ url_for('static', filename='MMU-logo.jpeg') }}" alt="MMU Logo">
+                <div class="blue-bar"></div>
+                <div class="red-bar"></div>
+                <span id="webname">Eb_Comment</span>
+            </div>
+            <h1>Upload Lecturer Information</h1>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <label for="name">Name:</label>
+                <input type="text" name="name" id="name" required><br>
+                <label for="photo">Photo:</label>
+                <input type="file" name="photo" id="photo" required><br>
+                <label for="phone">Phone number:</label>
+                <input type="text" name="phone" id="phone" required><br>
+                <label for="email">Email address:</label>
+                <input type="email" name="email" id="email" required><br>
+                <label for="campus">Campus:</label>
+                <select name="campus" id="campus" required onchange="updateFacultyOptions()">
+                    <option value="Cyberjaya">Cyberjaya</option>
+                    <option value="Melaka">Melaka</option>
+                </select><br>
+                <label for="faculty">Faculty:</label>
+                <select name="faculty" id="faculty" required>
+                </select><br>
+                <input type="submit" value="Submit">
+            </form>
+
+            <script>
+                function updateFacultyOptions() {
+                    var campusSelect = document.getElementById("campus");
+                    var facultySelect = document.getElementById("faculty");
+                    var selectedCampus = campusSelect.options[campusSelect.selectedIndex].value;
+
+                    facultySelect.innerHTML = '';
+
+                    var faculties = {};
+                    faculties['Cyberjaya'] = [
+                        { id: 1, name: 'FCI' },
+                        { id: 2, name: 'FOM' },
+                        { id: 3, name: 'FOE' },
+                        { id: 4, name: 'FCM' },
+                        { id: 5, name: 'FCA' },
+                        { id: 6, name: 'FAC' }
+                    ];
+                    faculties['Melaka'] = [
+                        { id: 7, name: 'FIST' },
+                        { id: 8, name: 'FOB' },
+                        { id: 9, name: 'FOL' },
+                        { id: 10, name: 'FET' }
+                    ];
+
+                    faculties[selectedCampus].forEach(function (faculty) {
+                        var option = document.createElement("option");
+                        option.text = faculty.name;
+                        option.value = faculty.id;
+                        facultySelect.add(option);
+                    });
+                }
+
+                updateFacultyOptions();
+
+            </script>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="j7AimJNqOKLybWxLAb0W0uYpVDvnqc_iI1_yt681uvI" />
+    <title>Enter OTP </title>
+    <link href="../static/style.css" rel="stylesheet">
+</head>
+<body>
+
+    <body class="invalid-background"></body>
+
+    <div class="box-reset">
+        <div class="otp-word">
+        
+            <form action="/verify_otp" method="post">
+
+            <h3>Verify your email address</h3>
+            <label for="otp">Enter OTP:</label>
+            <input type="otp" name="otp" id="otp" required><br>
+
+        
+            {% if error and error.otp %}
+            <p class="error-message">{{ error.otp }}</p>
+            {% endif %}
+
+            <input class="submit-reset" type="submit" value="Submit">
+            </form>
+        </div>
+
+     
+
+    </div>
+</body>
+</html>

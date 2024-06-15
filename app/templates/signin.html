@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" id="wy">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="google-site-verification" content="j7AimJNqOKLybWxLAb0W0uYpVDvnqc_iI1_yt681uvI" />
+
+    <title>Sign in</title>
+    <link href="../static/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="bar-text-wel"> Eb_Comment </div>
+    <div class="bar-text-back"><a href="{{ url_for('home') }}">Back</a> </div>
+    <div class="rectangle-bar"></div>
+
+    <body class="logsign-background"></body>
+
+
+    <div class="box-wy2">
+        <div class="eb-sign">
+            <h1>Welcome to Eb_Comment!</h1>
+        </div>
+
+
+        <h2>Create your account</h2>
+
+        <form action="/process_signin" method="post" enctype="multipart/form-data">
+            <label for="email">Email Address:</label>
+            <input type="email" name="email" id="email" required><br>
+
+            {% if error and error.email %}
+            <p class="error-message">{{ error.email }}</p>
+            {% endif %}
+
+            <label for="nickname">Nickname:<div class="grey">(Warning: this will be visible to all users) </div></label>
+            <input type="text" name="nickname" id="nickname" required><br>
+
+
+            <label for="password">Password:<div class="grey">(Note: must be at least 8 characters long and contain at
+                    least 4 numbers)</div></label>
+            <input type="password" name="password" id="password" required><br>
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" name="confirm_password" id="confirm_password" required><br>
+
+            {% if error and error.password %}
+            <p class="error-message">{{ error.password }}</p>
+            {% endif %}
+
+            <input class="submit-acc" type="submit" value="Submit">
+        </form>
+    </div>
+
+</body>
+
+</html>

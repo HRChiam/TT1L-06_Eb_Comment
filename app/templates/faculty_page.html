@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width = device-width, initial-scale = 1">
+    <meta name="google-site-verification" content="j7AimJNqOKLybWxLAb0W0uYpVDvnqc_iI1_yt681uvI" />
+    <title>
+        Faculty Page
+    </title>
+    <link href="../static/style.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+
+<body>
+
+    <header>
+        <div class="header_container">
+            <div class="left_section">
+
+                <div class="text_container">
+                    <div class="hamburger" onclick="toggleMenu()">
+                        <div class="hamburger_line"></div>
+                        <div class="hamburger_line"></div>
+                        <div class="hamburger_line"></div>
+                    </div>
+                    <span id="MM">MM</span>
+                    <span id="U">U</span>
+                </div>
+
+                <div class="bar_container">
+                    <div class="blue-bar2"></div>
+                    <div class="red-bar2"></div>
+                </div>
+
+                <span id="header_webname">Eb_Comment</span>
+
+                <nav class="menu_container" id="menuContainer">
+                    <a href="#">Cyberjaya</a>
+                    <div class="submenu">
+                        <a href="/faculty/FCI">FCI</a>
+                        <a href="/faculty/FOM">FOM</a>
+                        <a href="/faculty/FOE">FOE</a>
+                        <a href="/faculty/FCM">FCM</a>
+                        <a href="/faculty/FCA">FCA</a>
+                        <a href="/faculty/FAC">FAC</a>
+                    </div>
+                    <a href="#">Melaka</a>
+                    <div class="submenu">
+                        <a href="/faculty/FIST">FIST</a>
+                        <a href="/faculty/FOB">FOB</a>
+                        <a href="/faculty/FOL">FOL</a>
+                        <a href="/faculty/FET">FET</a>
+                    </div>
+                    <a href="/keyin">Upload Lecturer Information</a>
+                    <a href="/main">Main Page</a>
+                </nav>
+
+                <form class = "searchbar">
+                    <div class="search">
+                        <span class="search-icon material-symbols-outlined">search</span>
+                        <input id="searchInput" class='search-input' type="search" placeholder="Search" oninput="filterLecturers(this.value)">
+                    </div>
+                </form>
+              
+            </div>
+
+
+            <div class="profile_dropdown">
+                <div class="profile_avatar" onclick="toggleDropdown()">
+                    {% if current_user.profile_picture != 'default_profile_photo.jpg' %}
+                    <img src="{{ url_for('static', filename='uploads/' + current_user.profile_picture) }}"
+                        alt="User Profile Picture" class="rounded-circle">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='default_profile_photo.jpg') }}" alt="Default Profile Pic"
+                        class="rounded-circle">
+                    {% endif %}
+                </div>
+                <div class="dropdown_menu" id="dropdownMenu">
+                    <a href="/profile">Profile</a>
+                    <a href="/logout">Logout</a>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <script>
+        function toggleMenu() {
+            var menuContainer = document.getElementById('menuContainer');
+            menuContainer.classList.toggle('active');
+        }
+
+        var menuItems = document.querySelectorAll('.menu_container a');
+        menuItems.forEach(function (menuItem) {
+            menuItem.addEventListener('click', function () {
+                var submenu = menuItem.nextElementSibling;
+                if (submenu && submenu.classList.contains('submenu')) {
+                    submenu.classList.toggle('active');
+                    menuItem.classList.toggle('rotate');
+                }
+            });
+        });
+
+        function filterLecturers(searchTerm) {
+            var cards = document.querySelectorAll('.lecturer_card');
+            cards.forEach(function (card) {
+                var lecturerName = card.querySelector('p').innerText.toLowerCase();
+                if (lecturerName.includes(searchTerm.toLowerCase())) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function toggleDropdown() {
+            document.getElementById('dropdownMenu').classList.toggle('show');
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches('.profile_avatar img')) {
+                var dropdowns = document.getElementsByClassName("dropdown_menu");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
+
+
+    <body class="fac_page_body_wy"></body>
+    <div class="faculty_container">
+        <div class="fal_name_wy">
+            <h2>{{ faculty.name }} Lecturers</h2>
+
+            <div class="lecturers">
+                {% for lecturer in lecturers %}
+                <div class="row">
+                    <div class="column">
+                        <div class="lecturer_card">
+                            <a href="{{ url_for('lecturer_details', lecturer_id=lecturer.id) }}">
+                                <img src="{{ url_for('static', filename='uploads/' + lecturer.photo) }}"
+                                    alt="{{ lecturer.name }}">
+                                <p>{{ lecturer.name }}</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
